@@ -3,18 +3,15 @@ const mongoose =require('mongoose');
 const DonationSchema = new mongoose.Schema({
     donationType:{
         type:String,
-        required:true
+        required:true,
+        enum:["plasma","plattlates","WholeBlood","PowerRed"]
     },
     refNo:{
       type:String,
       unique:true,
       required:true
     },
-    Donor:{
-        type:String,
-        required:true,
-        ref:'UserModel'
-    },
+   
     donationId:Number,
     quantity:Number,
     timeTakenForProcess: {

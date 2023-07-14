@@ -3,7 +3,10 @@ const {parsePhoneNumber} = require('libphonenumber-js')
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
-    userName:String,
+    userName:{
+      type:String,
+      required:[true,'name not provided']
+    },
     age:Number,
     nic:{
       type:String,
@@ -78,7 +81,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.statics.login = async function(email,password){
 
     const user = await this.findOne({email:email});
-    console.log(email)
     if(user){
       const auth = await bcrypt.compare(password,user.password);
       

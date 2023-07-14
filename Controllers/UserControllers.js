@@ -1,16 +1,59 @@
+const  mongoose = require('mongoose');
+const { DonationRequestModel } = require('../Models/DonationRequestModel');
 const {UserModel} = require('../Models/UserModel');
 const jwt = require('jsonwebtoken');
+const { DonationModel } = require('../Models/DonationModel');
+const { ComplainModel } = require('../Models/ComplainModel');
 
 
+//set the living time of the cookie which will be set in the login
+const maxAge = 2*60*60;
 
-const maxAge = 24*60*60;
+/*GET
+authenticate user
+*/
+const welcomeUser = (req,res)=>{
+    
+    const token = req.cookies.jwt;
+
+    if(token){
+ 
+     jwt.verify(token,process.env.SECRET,(err,decoded)=>{
+ 
+         if(err){
+             console.log(err.message);
+             res.status(500).json("invalid token");
+         }
+         else{
+      
+              UserModel.findOne({_id:decoded.id}).then(r=>{
+                res.status(200).json({name:r.userName});
+                console.log(r);
+             }).catch(er=>{
+                res.status(404).json({msg:"user not found",code:500});
+             })
+             
+         }
+ 
+     })
+ 
+    }
+    else{
+        res.status(404).json({msg:"token not found",code:500});
+    }
+   
+}
+
+
 
 const crateToken = (id)=>{
 
     return jwt.sign({id},process.env.SECRET,{expiresIn:maxAge});
 }
 
-//adding a user model to the database
+/*POST
+adds a users to the database
+*/
 const addUser = async(req,res)=>{
     const{
         name,
@@ -50,27 +93,46 @@ const addUser = async(req,res)=>{
 
    }
    catch(error){
-    return res.status(500).json(error);
+    return res.status(500).json({msg:error.message,code:500});
    }
 
    
 }
 
-//login user
+
+/*GET
+logges in a user if the user exists
+*/
 const loginUser = async(req,res)=>{
     const {email,password} = req.body;
 
-    
+    console.log(email);
+    console.log(password);
     try{
         const user = await UserModel.login(email,password);
-        return res.status(200).json({user:user._id});
+       
+        if(user){
+            const token = crateToken(user._id);
+            console.log(token);
+            res.cookie('jwt',token,{httpOnly:true})
+            res.status(200).json({user:user._id});
+        }
+        else{
+            return res.status(500).json({msg:"user not found",code:200});
+        }
+        
+        
     }
     catch(err){
-       return res.status(500).json(err.message);
+       return res.status(500).json({msg:err.message,code:500});
     }
     
 }
 
+
+/*GET
+findUsers
+*/
 const findAllUsers = async(req,res,next)=>{
 
     await UserModel.find({}).then(result=>{
@@ -82,6 +144,65 @@ const findAllUsers = async(req,res,next)=>{
 
 }
 
+/*POST
+making requests by the user and it will be tested by an
+admin
+*/
+const makeRequest =async(req,res)=>{
+    
+    const{
+        DonorID,
+        donationType,
+    } = req.body
+
+    let id = 0;
+
+   const list = await DonationRequestModel.find({}).sort({refNo:-1});
+
+    console.log(list);
+
+   if(list.length===0){
+    id=1;
+   }
+   else{
+    id= list[0].refNo+1;
+   }
+
+    const newReq = new DonationRequestModel({
+        refNo:id,
+        donationType:donationType,
+        Donor:DonorID
+    })
+
+    newReq.save().then(r=>{
+        res.status(200).json({msg:"request has sent",code:200});
+    }).catch(er=>{
+        res.status(500).json({msg:"model saving error",code:500});
+    })
+
+ 
+}
+
+const makeComplain = async(req,res)=>{
+
+    const{User,description,refNo} = req.body;
+
+    const newComplain = new ComplainModel({
+        User:User,
+        description:description,
+        refNo:refNo
+    })
+
+    newComplain.save().then(r=>{
+        res.status(201).json({msg:"complain has made",code:200})
+    }).catch(err=>{
+        res.status(201).json({msg:"complain faild to create",code:500})
+    })
+}
+
+/*GET
+finds a user
+*/
 const findUser = async(req,res,next)=>{
 
     const{
@@ -93,19 +214,18 @@ const findUser = async(req,res,next)=>{
 
 
    await UserModel.findOne({$or:[{userName:name},{nic:nic},{phone:phoneNumber}]}).then(result=>{
-    return res.status(201).json(result);
+    return res.status(201).json({msg:result,code:200});
    }).catch(error=>{
 
-    return res.status(500).json(error);
+    return res.status(500).json({msg:error.message,code:500});
    });
 
 }
 
-const testfunc = async(req,res,next)=>{
 
-    next();
-}
-
+/*PUT
+updates a user
+*/
 const updateUser = async(req,res,next)=>{
 
       const{  name,
@@ -147,47 +267,15 @@ const updateUser = async(req,res,next)=>{
             )
         }
 
-        if(errors.length==3){
-            return res.status(500).json(errors);
+        if(errors.length>0){
+            return res.status(500).json({msg:errors, code:500});
         }
 
-        return res.status(201).json(errors);
+        return res.status(201).json({msg:"no errors",code:200});
         
         
 }
 
-const validateUser = async(req,res)=>{
-
-    const{ name,password} = req.body
-
-   let result = await UserModel.findOne({$and:[{userName:name},{password:password}]});
-
-   if(result !=null){
-    res.status(200).json(result.userName);
-
-   }
-   else{
-    res.status(450).json("user not found");
-   }
-
-}
-
-const getUser = async(req,res)=>{
-
-    
-    const{ name,password} = req.body
-
-   let result = await UserModel.findOne({$or:[{userName:name},{password:password}]});
-
-   if(result !=null){
-    res.status(200).json(result);
-
-   }
-   else{
-    res.status(450).json("user not found");
-   }
-
-}
 
 module.exports  = {
     
@@ -195,9 +283,10 @@ module.exports  = {
     updateUser,
     findAllUsers,
     findUser,
-    validateUser,
-    getUser,
-    loginUser
+    makeRequest,
+    loginUser,
+    welcomeUser,
+    makeComplain,
 
 };
 

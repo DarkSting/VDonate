@@ -1,9 +1,6 @@
 const mongoose =require('mongoose');
 
 const ComplainSchema = new mongoose.Schema({
-    location:{
-        type:String,
-    },
     User:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
@@ -17,7 +14,6 @@ const ComplainSchema = new mongoose.Schema({
       checkedBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'AdminModel',
-        required:true
       },
       description:{
         type:String,

@@ -4,9 +4,9 @@ const {
     updateUser,
     findAllUsers,
     findUser,
-    validateUser,
-    getUser,
-    loginUser
+    loginUser,
+    makeRequest,
+    welcomeUser
 } = require('../Controllers/UserControllers.js');
 const{authenticateUser} = require('../Middlewares/authMiddleware.js')
 
@@ -17,9 +17,9 @@ routes.post('/addUser',addUser);
 routes.post('/updateUser',updateUser);
 routes.get('/findUser',findUser);
 routes.get('/findAllUsers',findAllUsers);
-routes.post('/validateUser',validateUser)
-routes.post('/getUser',getUser);
-routes.post('/loginUser',authenticateUser,loginUser);
+routes.post('/loginUser',loginUser);
+routes.post('/makeRequest',makeRequest);
+routes.get('/userDashBoard',welcomeUser);
 
 
 module.exports =routes;

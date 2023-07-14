@@ -19,7 +19,7 @@ const sendmail = async(req,res) =>{
         service :'gmail',
         auth:{
             user:sender,
-            pass:'gvaqaxjfnfcodscf',
+            pass:process.env.MAIL_PASSWORD,
 
         }
     }
@@ -82,7 +82,7 @@ const sendmailwithfile = async(req,res)=>{
         service :'gmail',
         auth:{
             user:sender,
-            pass:'gvaqaxjfnfcodscf',
+            pass:process.env.MAIL_PASSWORD,
 
         }
     }
@@ -132,10 +132,10 @@ const sendmailwithfile = async(req,res)=>{
     await transporter.sendMail(message).then(()=>{
 
         return res.status(201).json({
-            msg:"you should receive a msg"
+            msg:"you should receive a msg",code:200
         });
     }).catch(error=>{
-        return res.status(500).json({error});
+        return res.status(500).json({msg:"unable to send mail",code:500});
     })
 
 

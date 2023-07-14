@@ -1,6 +1,7 @@
 const mongoose =require('mongoose');
 const {AdminSchema} = require('./AdminModel');
-const {UserSchema} = require('./UserModel')
+const {UserSchema} = require('./UserModel');
+const { DonationRequestModel, DonationRequestSchema } = require('./DonationRequestModel');
 
 const CampaignSchema = new mongoose.Schema({
     location:{
@@ -15,10 +16,6 @@ const CampaignSchema = new mongoose.Schema({
         type:[AdminSchema]
         ,required:true
     },
-    DonorsGroup:{
-        type:[UserSchema],
-        required:true
-    },
       isValidated:{
         type:Boolean,
         default:false,
@@ -27,32 +24,14 @@ const CampaignSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-      _id: {
-        type: String, // or any other desired type for your custom ID
-        required: true,
-        unique: true
-      },
-      name:String,
-     
-      bloodGroup:{
-        type:[String],
-        required:true,
-        validate:{
-            validator: function (value) {
-                
-                const bloodTypeRegex = /^(A|B|AB|O)[+-]$/;
-                if(!bloodTypeRegex.test(value)){
-                  return false;
-                }
-              },
-              message: 'Please enter a valid blood type',
-        }
+      donationRequest:{
+        type:[DonationRequestSchema],
+        required:[true,'didnt get any donation requests']
       }
       
-    
 
 });
 
-const CampaignModel = mongoose.model('DonationModel',CampaignSchema);
+const CampaignModel = mongoose.model('CampaignModel',CampaignSchema);
 
 module.exports ={CampaignModel};
