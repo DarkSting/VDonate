@@ -44,6 +44,21 @@ const welcomeUser = (req,res)=>{
    
 }
 
+const updateUserApproval = (req,res)=>{
+
+    const{approval,objectId} = req.body;
+
+    UserModel.updateOne({_id:objectId},{isValidated:approval}).then(r=>{
+
+        console.log(r);
+        res.status(200).json({msg:"user approved",code:200});
+       
+
+    }).catch(err=>{
+        res.status(500).json({msg:"user cannot approved",code:500});
+    })
+
+}
 
 
 const crateToken = (id)=>{
@@ -61,22 +76,18 @@ const addUser = async(req,res)=>{
         nic,
         gender,
         email,
-        phoneNumber,
+        phone,
         bloodType,
         password
+
     
     } = req.body
-
-    console.log(email)
-    console.log(nic)
-    console.log(name)
-    console.log(phoneNumber)
    try{
 
     var newUser = new UserModel({
         userName:name,
         email:email,
-        phone:phoneNumber,
+        phone:phone,
         gender:gender,
         bloodType:bloodType,
         age:age,
@@ -159,7 +170,6 @@ const makeRequest =async(req,res)=>{
 
    const list = await DonationRequestModel.find({}).sort({refNo:-1});
 
-    console.log(list);
 
    if(list.length===0){
     id=1;
@@ -183,21 +193,65 @@ const makeRequest =async(req,res)=>{
  
 }
 
+/**
+ * POST
+ * making a complain
+ */
+
 const makeComplain = async(req,res)=>{
 
-    const{User,description,refNo} = req.body;
+    const{User,description} = req.body;
+    const token = req.cookies.jwt;
 
-    const newComplain = new ComplainModel({
-        User:User,
-        description:description,
-        refNo:refNo
-    })
+    let refid =0;
 
-    newComplain.save().then(r=>{
-        res.status(201).json({msg:"complain has made",code:200})
-    }).catch(err=>{
-        res.status(201).json({msg:"complain faild to create",code:500})
-    })
+
+    const list = await ComplainModel.find({}).sort({refNo:-1});
+    
+    if(list.length===0){
+        refidid=1;
+    }
+    else{
+        refid= parseInt(list[0].refNo)+1;
+    }
+    if(token){
+ 
+     jwt.verify(token,process.env.SECRET,(err,decoded)=>{
+ 
+         if(err){
+             console.log(err.message);
+             res.status(500).json("invalid token");
+         }
+         else{
+      
+              UserModel.findOne({_id:decoded.id}).then(r=>{
+                
+                const newComplain = new ComplainModel({
+                    User:decoded.id,
+                    description:description,
+                    refNo:refid
+                })
+                console.log(description);
+                
+                newComplain.save().then(r=>{
+                    res.status(201).json({msg:"complain has made",code:200})
+                }).catch(err=>{
+                    res.status(500).json({msg:"complain failed to create",code:500})
+                })
+
+             }).catch(er=>{
+                res.status(404).json({msg:"user not found",code:500});
+             })
+             
+         }
+ 
+     })
+ 
+    }
+    else{
+        res.status(404).json({msg:"token not found",code:500});
+    }
+   
 }
 
 /*GET
@@ -287,6 +341,7 @@ module.exports  = {
     loginUser,
     welcomeUser,
     makeComplain,
+    updateUserApproval
 
 };
 

@@ -6,9 +6,14 @@ const {
     findUser,
     loginUser,
     makeRequest,
-    welcomeUser
+    welcomeUser,
+    makeComplain,
+    updateUserApproval
 } = require('../Controllers/UserControllers.js');
-const{authenticateUser} = require('../Middlewares/authMiddleware.js')
+const{authenticateUser, authenticateUserMiddleware} = require('../Middlewares/authMiddleware.js');
+const { makeDonationRequest, createDonation } = require('../Controllers/DonationController.js');
+const { sendmail } = require('../Controllers/MailControllers.js');
+const { getYetToValidateUsers } = require('../Controllers/AdminControllers.js');
 
 const routes = Router();
 
@@ -20,6 +25,11 @@ routes.get('/findAllUsers',findAllUsers);
 routes.post('/loginUser',loginUser);
 routes.post('/makeRequest',makeRequest);
 routes.get('/userDashBoard',welcomeUser);
+routes.post('/makeComplain',makeComplain);
+routes.post('/makeDonationRequest',makeDonationRequest);
+routes.put('/updateUserApproval',updateUserApproval);
+routes.post('/mail',sendmail);
+
 
 
 module.exports =routes;

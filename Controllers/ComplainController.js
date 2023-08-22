@@ -4,7 +4,6 @@ const {ComplainModel} = require('../Models/ComplainModel');
 //adding a user model to the database
 const addComplain = async(req,res)=>{
     const{
-        location,
         User,
         checkedBy,
         description,
@@ -14,7 +13,6 @@ const addComplain = async(req,res)=>{
    try{
 
     var newComplain = new ComplainModel({
-        location:location,
         User:User,
         checkedBy:checkedBy,
         description:description,

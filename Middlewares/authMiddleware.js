@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 
-const authenticateUser = (req,res,next)=>{
+const authenticateUser = (req)=>{
 
    const token = req.cookies.jwt;
 
@@ -11,18 +11,52 @@ const authenticateUser = (req,res,next)=>{
 
         if(err){
             console.log(err.message);
-            res.status(500).json("invalid token");
+            return false;
         }
         else{
             console.log(decoded);
-            next();
+            return true;
         }
 
     })
 
    }
 
+
 }
 
 
-module.exports = {authenticateUser}
+const authenticateUserMiddleware = (req,res,next)=>{
+
+    const token = req.cookies.jwt;
+ 
+    if(token){
+ 
+     jwt.verify(token,process.env.SECRET,(err,decoded)=>{
+ 
+         if(err){
+             console.log(err.message);
+             res.status(500).json({msg:"invalid token"})
+         }
+         else{
+             console.log(decoded);
+             next();
+         }
+ 
+     })
+ 
+    }
+ 
+ 
+ }
+
+const maxAge = 2*60*60
+
+const createToken = (id)=>{
+
+    return jwt.sign({id},process.env.SECRET,{expiresIn:maxAge})
+
+}
+
+
+module.exports = {authenticateUser,createToken,authenticateUserMiddleware}

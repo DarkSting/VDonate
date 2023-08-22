@@ -26,10 +26,6 @@ const AdminSchema = new mongoose.Schema({
           message: 'Please enter a valid email address',
         },
       },
-      isValidated:{
-        type:Boolean,
-        default:false,
-      },
       createdAt: {
         type: Date,
         default: Date.now,
@@ -66,21 +62,17 @@ const AdminSchema = new mongoose.Schema({
               message: 'Please enter a valid blood type',
         }
       },
-      role:{
+      licenseNumber:{
         type:String,
-        default:null
-      },
-      yearOfEXp:{
-        type:String,
-        default:null
-      },
-      qualifications:{
-        type:[String],
-        default:null
+        required:[true,'medical licence not provided'],
+        unique:[true,'A number is already registered with the provided number']
       }
-      
-    
-
+      ,
+      password:{
+        type:String,
+        default:""
+      }
+  
 });
 
 const AdminModel = mongoose.model('AdminModel',AdminSchema);

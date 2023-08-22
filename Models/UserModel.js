@@ -67,12 +67,12 @@ const UserSchema = new mongoose.Schema({
         type:String,
         validate:{
             validator: function (value) {
-                const bloodTypeRegex = /^(A|B|AB|O)[+-]$/;
+                const bloodTypeRegex = /^(A|B|AB|O|N)[+-]$/;
                 return bloodTypeRegex.test(value);
               },
               message: 'Please enter a valid blood type',
         }
-        ,default:null
+        ,default:'N-'
       }
       
 
@@ -96,11 +96,13 @@ UserSchema.statics.login = async function(email,password){
 }
 
 //hashing the password
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function () {
+if(this.password!==""){
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   console.log(this.password);
-  next();
+}
+  
 });
 
 const UserModel = mongoose.model('UserModel',UserSchema);
