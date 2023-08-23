@@ -83,13 +83,17 @@ const AdminSchema = new mongoose.Schema({
 
 AdminSchema.statics.login = async function(lisence,password){
 
-  const user = this.findOne({licenseNumber:lisence});
+  const user = await this.findOne({licenseNumber:lisence});
+
+ 
 
   if(user){
       const auth = await bcrypt.compare(password,user.password);
       
       if(auth){
+       
         return user;
+        
       }
       else{
         throw Error("invalid password");

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { AdminModel } = require('../Models/AdminModel');
 
 
 const authenticateUser = (req)=>{
@@ -26,25 +27,35 @@ const authenticateUser = (req)=>{
 }
 
 
-const authenticateUserMiddleware = (req,res,next)=>{
+const authenticateAdminMiddleware = (req,res,next)=>{
 
     const token = req.cookies.jwt;
- 
+
     if(token){
  
      jwt.verify(token,process.env.SECRET,(err,decoded)=>{
  
          if(err){
              console.log(err.message);
-             res.status(500).json({msg:"invalid token"})
+             res.status(500).json("invalid token");
          }
          else{
-             console.log(decoded);
-             next();
+      
+               AdminModel.findOne({_id:decoded.id}).then(r=>{
+                req.body.user = r;
+                next();
+  
+             }).catch(er=>{
+                return res.status(404).json({msg:"user not found",code:500});
+             })
+             
          }
  
      })
  
+    }
+    else{
+        return res.status(404).json({msg:"token not found",code:500});
     }
  
  
@@ -59,4 +70,4 @@ const createToken = (id)=>{
 }
 
 
-module.exports = {authenticateUser,createToken,authenticateUserMiddleware}
+module.exports = {authenticateUser,createToken,authenticateAdminMiddleware}

@@ -17,9 +17,6 @@ const sendmailInternal = async(
 
 
     const sender = 'akashgeethanjana320@gmail.com';
- 
-
-    
 
     let config = {
         service :'gmail',
