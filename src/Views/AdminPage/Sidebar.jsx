@@ -82,6 +82,8 @@ const state = [
   "Inbox",
   "Inventory",
   "Reports",
+  "New Admins"
+
 ];
 
 {
@@ -141,6 +143,25 @@ const Sidebar = (props) => {
                 <ListItemText
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[0]}
+                />
+              </ListItemBtn>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <ListItemBtn
+                to="newadmins"
+                selected={selectedItem === state[7]}
+                onClick={() => {
+                  setSelectedItem(state[7]);
+                }}
+                sx={ListButtonProp(props)}
+              >
+                <ListItemIcon>
+                  <Person sx={IconProp(props)} />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{ display: { xs: "none", md: "block" } }}
+                  primary={state[7]}
                 />
               </ListItemBtn>
             </ListItem>

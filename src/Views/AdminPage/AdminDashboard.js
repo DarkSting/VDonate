@@ -16,7 +16,7 @@ export default function UserPage() {
 
   useEffect(() => {
     axios
-      .get("/user/userDashBoard")
+      .get("/admin/admindashboard")
       .then((response) => {
         setUserState(true);
         setUser(response.data.name);

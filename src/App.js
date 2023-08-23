@@ -20,6 +20,7 @@ import UserApprovals, {
   UserApprovalLoader,
 } from "./Views/AdminPage/ApproveUsers";
 import AdminLogin from "./Views/LoginPage/AdminLogin";
+import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,11 +32,17 @@ const router = createBrowserRouter(
       <Route path="userdashboard" element={<Dashboard />}>
         
       </Route>
+
       <Route path="admindashboard" element={<AdminDashboard />}>
         <Route
           path="approvedonor"
           loader={UserApprovalLoader}
           element={<UserApprovals />}
+        />
+         <Route
+          path="newadmins"
+          loader={UserApprovalLoader}
+          element={<NewAdminSignUps />}
         />
       </Route>
       <Route path="adminsignup" element={<AdminSignUp />} />

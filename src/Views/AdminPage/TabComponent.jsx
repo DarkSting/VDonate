@@ -20,6 +20,8 @@ export default function Tab({
           justifyContent: "center",
           flexDirection: "column",
           width: "100%",
+          alignSelf:'flex-start',
+          marginTop:'10px'
         }}
       >
         <Box

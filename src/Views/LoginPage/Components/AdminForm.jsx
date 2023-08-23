@@ -120,13 +120,13 @@ export default function AdminLoginForm() {
       console.log(data.password);
 
       await axios
-        .post("/admin/loginUser", data)
+        .post("/admin/loginadmin", data)
         .then((res) => {
           console.log(res);
           setsccMSG("Login succeed");
           setSeverity("success");
           setsccColor("#03C988");
-          navigate("/userdashboard");
+          navigate("/admindashboard");
         })
         .catch((err) => {
           console.log(err);

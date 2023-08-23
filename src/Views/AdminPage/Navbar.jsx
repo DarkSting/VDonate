@@ -205,7 +205,7 @@ const NavComponent = ({setLoggedOut,props})=>{
     }).catch(err=>{
 
     })
-    navigate('/login');
+    navigate('/adminlogin');
   }
 
  
