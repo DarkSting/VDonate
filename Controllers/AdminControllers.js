@@ -185,7 +185,7 @@ const updatePassword = async(req,res)=>{
             if(mailsent){
 
                 console.log("mail sent")
-                await AdminModel.findOneAndUpdate({email:usermail},{password:newpass,isActive:true}).then(r=>{
+                await AdminModel.findOneAndUpdate({email:usermail},{password:newpass}).then(r=>{
 
                     return res.status(200).json({msg:"password updated"});
     

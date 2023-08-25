@@ -3,7 +3,8 @@ const{
     addDonation,
     findAllDonations,
     findDonation,
-    updateDonation
+    updateDonation,
+    getNotApprovedDonationRequest
 } = require('../Controllers/DonationController');
 
 const {Router} = require('express');
@@ -14,5 +15,6 @@ routes.post('/addDonation',addDonation);
 routes.post('/updateDonation',updateDonation);
 routes.get('/findAllDonations',findAllDonations);
 routes.get('/findDonation',findDonation);
+routes.get('/getdonationrequests',getNotApprovedDonationRequest);
 
 module.exports = routes;

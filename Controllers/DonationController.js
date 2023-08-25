@@ -170,6 +170,41 @@ const findDonation = async(req,res,next)=>{
 
 }
 
+const getNotApprovedDonationRequest = async(req,res)=>{
+
+    const foundrequests = await DonationRequestModel.find({isApproved:false});
+
+    let requestsArrays = [];
+
+    //preparing the model accessing from the frontend 
+    for(let request of foundrequests){
+
+        try{
+            let currentModel = {};
+
+            if(request?.User){
+                const User = await UserModel.findOne({_id:request.User._id});
+    
+                currentModel.User = User;
+                currentModel.request =request;
+                requestsArrays.push(currentModel);
+            }
+
+        }catch(error){
+
+           return res.status(500).json({msg:error.message});
+
+        }
+    
+
+
+    }
+
+
+    return res.status(200).json({requestsArrays});
+
+}
+
 const updateDonation = async(req,res,next)=>{
 
       const{ 
@@ -235,7 +270,8 @@ module.exports  = {
     findAllDonations,
     findDonation,
     makeDonationRequest,
-    createDonation
+    createDonation,
+    getNotApprovedDonationRequest
 
 };
 

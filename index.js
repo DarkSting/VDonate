@@ -22,6 +22,7 @@ app.get('/remove-cookie', (req, res) => {
     res.sendStatus(200);
   });
 app.use('/admin',AdminRoutes);
+app.use('/donation',require('./Routes/DonationRoutes.js'));
 app.use('/complain',ComplainRoutes)
 app.get('/getCookie',(req,res)=>{
     
