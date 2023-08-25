@@ -15,6 +15,7 @@ import {
   Report,
   Inbox,
   Dashboard,
+  RequestPage,
 } from "@mui/icons-material";
 
 import EmergencyShareIcon from "@mui/icons-material/EmergencyShare";
@@ -82,7 +83,8 @@ const state = [
   "Inbox",
   "Inventory",
   "Reports",
-  "New Admins"
+  "New Admins",
+  "Requests"
 
 ];
 
@@ -96,7 +98,7 @@ const Sidebar = (props) => {
   updateData(props.bordeColor, props.backColor);
 
   return (
-    <Grid container spacing={2} sx={{ height: "93vh" }}>
+    <Grid container spacing={2} sx={{ height: "93vh", marginTop:10 }}>
       <Grid item xs={2} md={3} lg={2}>
         <Box
           position="fixed"
@@ -128,6 +130,8 @@ const Sidebar = (props) => {
               },
             }}
           >
+
+                    {/*Approve donors */}
             <ListItem disablePadding>
               <ListItemBtn
                 to="approvedonor"
@@ -147,6 +151,7 @@ const Sidebar = (props) => {
               </ListItemBtn>
             </ListItem>
 
+        {/*New admins */}
             <ListItem disablePadding>
               <ListItemBtn
                 to="newadmins"
@@ -166,9 +171,28 @@ const Sidebar = (props) => {
               </ListItemBtn>
             </ListItem>
 
+            <ListItem disablePadding>
+              <ListItemBtn
+                to="donationrequests"
+                selected={selectedItem === state[8]}
+                onClick={() => {
+                  setSelectedItem(state[8]);
+                }}
+                sx={ListButtonProp(props)}
+              >
+                <ListItemIcon>
+                  <RequestPage sx={IconProp(props)} />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{ display: { xs: "none", md: "block" } }}
+                  primary={state[8]}
+                />
+              </ListItemBtn>
+            </ListItem>
+
             {/*Pending Campaigns*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn
                 to="noone"
                 selected={selectedItem === state[1]}
                 onClick={() => {
@@ -183,12 +207,13 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[1]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
 
             {/*Blood Stock*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn 
+                to="uploadtests"
                 selected={selectedItem === state[2]}
                 onClick={() => {
                   setSelectedItem(state[2]);
@@ -202,7 +227,7 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[2]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
 
             {/*Emergencies*/}
@@ -293,7 +318,7 @@ const Sidebar = (props) => {
             width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "flex-start",
             height: "100%",
             overflow: "scroll",
           }}

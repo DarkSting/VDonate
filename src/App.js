@@ -21,6 +21,9 @@ import UserApprovals, {
 } from "./Views/AdminPage/ApproveUsers";
 import AdminLogin from "./Views/LoginPage/AdminLogin";
 import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
+import UploadTest from "./Views/TestsPage/UserContent";
+import DonationRequestTab from "./Views/UserPage/DonationRequestTab";
+import DonationReqTab from "./Views/AdminPage/Components/DonationRequestTabs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,6 +46,17 @@ const router = createBrowserRouter(
           path="newadmins"
           loader={UserApprovalLoader}
           element={<NewAdminSignUps />}
+        />
+
+          <Route
+          path="donationrequests"
+          element={<DonationReqTab/>}
+        />
+
+        <Route
+          path="uploadtests"
+          loader={UserApprovalLoader}
+          element={<UploadTest />}
         />
       </Route>
       <Route path="adminsignup" element={<AdminSignUp />} />

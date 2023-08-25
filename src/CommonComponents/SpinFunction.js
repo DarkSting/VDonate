@@ -81,7 +81,7 @@ const checkDataAvailability = (isLoading,text,setIsLoading,buttonStatus,navigate
           
       }else{
         return <>
-          <Typography variant="h4" sx={{backgroundColor:"#F5F5F5",padding:'20px',borderRadius:'20px'}}>No Approvals yet</Typography>
+          <Typography variant="h4" sx={{backgroundColor:"#F5F5F5",padding:'20px',borderRadius:'10px'}}>{text}</Typography>
         </>;
       }
 
