@@ -7,9 +7,10 @@ const {
     ,confirmAdmin,
     getYetToValidateUsers,
     loginAdmin,
-    updatePassword,
     welcomeAdmin,
-    getNewlySignedAdmins
+    getNewlySignedAdmins,
+    updatePasswordAdmin,
+    updatePasswordUser
 } = require('../Controllers/AdminControllers.js');
 const { authenticateUser } = require('../Middlewares/authMiddleware.js');
 
@@ -25,7 +26,8 @@ routes.get('/findAllAdmins',findAllAdmins);
 routes.post('/confirmAdmin',confirmAdmin);
 routes.get('/validateUsers',getYetToValidateUsers);
 routes.get('/getnewadmins',getNewlySignedAdmins);
-routes.post('/updatepassword',updatePassword);
+routes.post('/updatepassword',updatePasswordAdmin);
+routes.post('/updatepassworduser',updatePasswordUser)
 
 
 module.exports =routes;

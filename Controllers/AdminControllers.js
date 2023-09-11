@@ -125,7 +125,7 @@ const loginAdmin = async(req,res)=>{
 
 }
 
-const updatePassword = async(req,res)=>{
+const updatePasswordAdmin = async(req,res)=>{
 
     const{password,usermail} = req.body;
 
@@ -212,9 +212,114 @@ const updatePassword = async(req,res)=>{
             })
         }
     }
+    else{
+        return res.status(404).json({msg:"unable to find the user"});
+    }
 
 
 }
+
+const updatePasswordUser= async(objectId,password)=>{
+
+
+    //check whether the mail is provided 
+    if(!objectId){
+
+       return false;
+
+    }
+
+    //preparing the mail components
+    const subject = "You signup has been approved";
+    const title = "Your new password";
+    let intro = "";
+    const buttontxt = "";
+    const instructions = "Thank you for joining with us";
+
+
+    //hashing the password
+    const salt = await bcrypt.genSalt();
+   
+    let newpass = "";
+
+    function generatePass() {
+    let pass = '';
+    let str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+        'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+ 
+    for (let i = 1; i <= 5; i++) {
+        let char = Math.floor(Math.random()
+            * str.length + 1);
+ 
+        pass += str.charAt(char)
+        }
+        return pass;
+    }
+
+    const foundUser = await UserModel.findOne({_id:objectId});
+
+    //check whether the user is available
+    if(foundUser){
+
+        //check whether the user is provided the password if not generate the password automatically
+        if(!password){
+
+            let userpass = generatePass();
+            newpass = await bcrypt.hash(userpass, salt);
+    
+            console.log(userpass)
+            intro = `<p>your new password is <b>${userpass}</b></p>`
+
+            //sending the mail
+            const mailsent = sendmailInternal(foundUser.email,subject,title,intro,buttontxt,instructions);
+    
+            //check whether mail is sent or not 
+            if(mailsent){
+
+
+                const status =await UserModel.findOneAndUpdate({email:foundUser.email},{password:newpass}).then(r=>{
+
+                    console.log(r);
+                    
+                    return true;
+    
+                }).catch(error=>{
+    
+                    console.log(error);
+                    return false;
+                })
+               
+
+                return status;
+
+            }
+            else{
+                return false;
+            }
+
+        }
+        else{
+            
+            newpass = await bcrypt.hash(password, salt);
+           const status = await UserModel.findOneAndUpdate({email:foundUser.email})({password:password}).then(r=>{
+
+                return true;
+
+            }).catch(error=>{
+
+                return false;
+            })
+
+            return status;
+        }
+    }
+    else{
+        
+        return false;
+
+    }
+
+};
 
 const getNewlySignedAdmins = async(req,res)=>{
 
@@ -241,6 +346,7 @@ const getYetToValidateUsers= (req,res)=>{
             cObj.phone = value.phone;
             cObj.id = value.nic;
             cObj.objectId = value._id;
+            cObj.email = value.email;
             array.push(cObj);
 
         })
@@ -393,9 +499,10 @@ module.exports  = {
     confirmAdmin,
     getYetToValidateUsers,
     loginAdmin,
-    updatePassword,
+    updatePasswordAdmin,
     welcomeAdmin,
-    getNewlySignedAdmins
+    getNewlySignedAdmins,
+    updatePasswordUser
 
 };
 

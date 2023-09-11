@@ -12,6 +12,7 @@ dotenv.config();
 
 //app configuration
 const app = express();
+app.set("trust proxy", true);
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(cookieParser());

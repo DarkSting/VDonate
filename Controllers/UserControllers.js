@@ -4,6 +4,8 @@ const {UserModel} = require('../Models/UserModel');
 const jwt = require('jsonwebtoken');
 const { DonationModel } = require('../Models/DonationModel');
 const { ComplainModel } = require('../Models/ComplainModel');
+const {resolver} = require('../Middlewares/IPResolver');
+const { updatePasswordUser } = require('./AdminControllers');
 
 
 //set the living time of the cookie which will be set in the login
@@ -44,19 +46,29 @@ const welcomeUser = (req,res)=>{
    
 }
 
-const updateUserApproval = (req,res)=>{
+const updateUserApproval = async(req,res)=>{
 
     const{approval,objectId} = req.body;
 
     UserModel.updateOne({_id:objectId},{isValidated:approval}).then(r=>{
 
         console.log(r);
-        res.status(200).json({msg:"user approved",code:200});
+  
        
 
     }).catch(err=>{
-        res.status(500).json({msg:"user cannot approved",code:500});
+       return res.status(500).json({msg:"user cannot approved",code:500});
     })
+
+    const status = await updatePasswordUser(objectId);
+
+    console.log(status);
+    if(status){
+        return res.status(200).json({msg:"password is updated"});
+    }
+    else{
+        return res.status(500).json({msg:"couldnt update the password"});
+    }
 
 }
 
@@ -78,10 +90,14 @@ const addUser = async(req,res)=>{
         email,
         phone,
         bloodType,
-        password
+        password,
+        latitude,
+        longitude
 
     
     } = req.body
+
+
    try{
 
     var newUser = new UserModel({
@@ -92,8 +108,13 @@ const addUser = async(req,res)=>{
         bloodType:bloodType,
         age:age,
         nic:nic,
-        password:password
-        
+        password:password,
+
+        location:{
+            latitude:latitude,
+            longitude:longitude
+
+        }
         
     })
 
@@ -117,8 +138,10 @@ logges in a user if the user exists
 const loginUser = async(req,res)=>{
     const {email,password} = req.body;
 
-    console.log(email);
+    console.log(await resolver(req.ip));
     console.log(password);
+
+
     try{
         const user = await UserModel.login(email,password);
        
@@ -151,7 +174,6 @@ const findAllUsers = async(req,res,next)=>{
     }).catch(error=>{
        return res.status(500).json(error)
     });
-
 
 }
 
