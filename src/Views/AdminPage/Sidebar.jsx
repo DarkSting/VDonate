@@ -193,7 +193,7 @@ const Sidebar = (props) => {
             {/*Pending Campaigns*/}
             <ListItem disablePadding>
               <ListItemBtn
-                to="noone"
+                to="campaign"
                 selected={selectedItem === state[1]}
                 onClick={() => {
                   setSelectedItem(state[1]);

@@ -4,10 +4,8 @@ import {
   Grid,
   TextField,
   Stack,
-  Paper,
   Typography,
   Card,
-  CardActionArea,
   CardActions,
   Button,
   CardMedia,
@@ -16,15 +14,13 @@ import {
 import logo from "../../../CommonComponents/images/logo.png";
 import "./text.css";
 import frmBack from "../../../CommonComponents/images/login image.jpg";
-import { useEffect, useState } from "react";
-import Axios from "axios";
+import { useState } from "react";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Password } from "@mui/icons-material";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import axios from "../../../api/axios";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
 
@@ -137,10 +133,7 @@ export default function Form() {
         password: arr[1],
       };
 
-      console.log(data.email);
-      console.log(data.password);
-
-      await axios
+      axios
         .post("/user/loginUser", data)
         .then((res) => {
           console.log(res);
@@ -150,7 +143,7 @@ export default function Form() {
           navigate("/userdashboard");
         })
         .catch((err) => {
-          console.log(err);
+          console.log("Login Failed");
           setsccMSG("Login Failed");
           setSeverity("error");
           setsccColor("#F24C3D");
@@ -174,9 +167,14 @@ export default function Form() {
     }
 
     if (!isNameNull && !isPasswordNull) {
+      
       post(arr);
+      setsccMSG("Loading..");
+      setSeverity("warning");
+      setsccColor("#FFCC70");
+
     } else {
-      setsccMSG("Login Failed");
+      setsccMSG("Please fill both fields");
       setsccColor("#F24C3D");
       setSeverity("error");
     }
@@ -386,7 +384,6 @@ export default function Form() {
         <Snackbar
           open={state.open}
           onClose={handleClose}
-          onMouseMove={handleClose}
           anchorOrigin={anchorOrigin}
           TransitionComponent={state.Transition}
           message={sccMSG}

@@ -25,7 +25,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
-
+import googleUrl from 'axios';
 const TextBox = styled(TextField)({
   width: "100%",
   "& .MuiOutlinedInput-root": {
@@ -131,9 +131,55 @@ export default function Form({ fontColor }) {
     ? { vertical: "bottom", horizontal: "center" } // for small screens
     : { vertical: "bottom", horizontal: "left" };
 
-  const handleSignUp = (arr) => {
+const handleSignUp = (arr)=>{
+    const apiKey = 'AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY';
+    console.log(latitude);
+    console.log(longitude);
+
+const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+
+googleUrl.get(apiUrl)
+  .then((response) => {
+    if (response.data.status === 'OK') {
+      const addressComponents = response.data.results[0].address_components;
+      let city = '';
+
+      console.log(response.data);
+      for (const component of addressComponents) {
+        
+        if (component.types.includes('locality')) {
+          city = component.long_name;
+          console.log(city);
+          break; // Stop searching once the city is found
+        }
+      }
+      
+      handleLogin(arr);
+
+
+    } else {
+      console.log('Error: Unable to retrieve location information');
+    }
+  })
+  .catch((error) => {
+    console.log(`Error: ${error.message}`);
+  });
+
+  }
+
+
+
+  const handleLogin = (arr) => {
+
+if(!longitude || !latitude ){
+
+  setsccMSG("Fail to set the location cannot proceed the sign up")
+  return ;
+}
+
     let convertedDOB = ConvertToDOB(year, month, day);
     const post = async (arr, yr) => {
+
       const data = {
         name: arr[0].toLowerCase(),
         age: yr,
@@ -142,6 +188,8 @@ export default function Form({ fontColor }) {
         email: arr[1],
         phone: arr[4],
         password: arr[5],
+        latitude: latitude,
+        longitude : longitude
       };
 
       await Axios.post("user/addUser", data, {
@@ -151,15 +199,17 @@ export default function Form({ fontColor }) {
       })
         .then((res) => {
           console.log(res);
-          setsccMSG("Sign Up Success");
+      
           setSeverity("success");
           setsccColor("#03C988");
+          setsccMSG("Sign Up Success");
         })
         .catch((err) => {
           console.log(err);
-          setsccMSG("Sign Up Failed");
+      
           setSeverity("error");
           setsccColor("#F24C3D");
+          setsccMSG("Sign Up Failed");
         });
     };
 
@@ -177,7 +227,6 @@ export default function Form({ fontColor }) {
     }
 
     // Example usage
-
     let age = calculateAge(convertedDOB);
 
     let valid = isNaN(new Date(convertedDOB));
@@ -272,6 +321,9 @@ export default function Form({ fontColor }) {
   const [day, setDay] = useState("");
   const [sccMSG, setsccMSG] = useState("");
   const [severity, setSeverity] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [error, setError] = useState(null);
 
   const [state, setState] = useState({
     open: false,
@@ -285,13 +337,36 @@ export default function Form({ fontColor }) {
     });
   };
 
+  //getting the location
+  const getLocation = ()=>{
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const { latitude, longitude } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+        },
+        function (error) {
+          setError("Error getting location: " + error.message);
+        }
+      );
+    } else {
+      
+      setError("Geolocation is not supported by this browser.");
+  
+    }
+  
+  }
+
   const handleClose = () => {
     setState({
       ...state,
       open: false,
     });
   };
-  const valueList = [name, email, nic, gender, phonenum];
+
+  const valueList = [name, email, nic, gender, phonenum,latitude,longitude];
 
   const ConvertToDOB = (yy, mm, dd) => {
     let y = yy.trim();
@@ -538,8 +613,8 @@ export default function Form({ fontColor }) {
                     size="Large"
                     sx={btnprop}
                     onClick={() => {
+                      getLocation();
                       handleSignUp(valueList);
-                      console.log("hello");
                       handleClick(SlideTransition);
                     }}
                   >

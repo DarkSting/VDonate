@@ -14,7 +14,6 @@ function UploadTest() {
   };
 
   const handleUpload = () => {
-    
 
 
     if (selectedFile) {

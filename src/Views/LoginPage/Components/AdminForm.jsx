@@ -12,6 +12,7 @@ import {
   Button,
   CardMedia,
   CardContent,
+  Icon,
 } from "@mui/material";
 import logo from "../../../CommonComponents/images/logo.png";
 import "./text.css";
@@ -20,6 +21,11 @@ import { useEffect, useState } from "react";
 import Axios from "axios";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import {
+
+  Refresh
+
+} from "@mui/icons-material";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -154,6 +160,9 @@ export default function AdminLoginForm() {
 
     if (!isNameNull && !isPasswordNull) {
       post(arr);
+      setsccMSG("Loading..");
+      setSeverity("warning");
+      setsccColor("#FFCC70");
     } else {
       setsccMSG("Login Failed");
       setsccColor("#F24C3D");
@@ -175,6 +184,7 @@ export default function AdminLoginForm() {
     open: false,
     Transition: Slide,
   });
+
 
   const handleClick = (Transition) => {
     setState({

@@ -21,9 +21,10 @@ import UserApprovals, {
 } from "./Views/AdminPage/ApproveUsers";
 import AdminLogin from "./Views/LoginPage/AdminLogin";
 import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
-import UploadTest from "./Views/TestsPage/UserContent";
+import UploadTest from "./Views/TestsPage/Reports";
 import DonationRequestTab from "./Views/UserPage/DonationRequestTab";
 import DonationReqTab from "./Views/AdminPage/Components/DonationRequestTabs";
+import DualBoxCard from "./Views/AdminPage/AddCampaign";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +47,11 @@ const router = createBrowserRouter(
           path="newadmins"
           loader={UserApprovalLoader}
           element={<NewAdminSignUps />}
+        />
+
+        <Route
+          path="campaign"
+          element={<DualBoxCard/>}
         />
 
           <Route

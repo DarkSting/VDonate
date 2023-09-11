@@ -28,6 +28,7 @@ const CardObject = ({
   name,
   phone,
   id,
+  email,
   resetArry,
   array,
   mongoID,
@@ -50,9 +51,17 @@ const CardObject = ({
       });
   };
 
-  const userId = id;
-  const objectID = mongoID;
+  const [userId,setUserID] = useState('')
+  const [objectID,setObjectID] = useState('')
   const [isSent, setSent] = useState(false);
+
+  useEffect(()=>{
+
+setUserID(id);
+setObjectID(mongoID);
+
+
+  },[])
 
   return (
     <Card>
@@ -60,8 +69,9 @@ const CardObject = ({
         <Typography variant="h5" component="div">
           {name}
         </Typography>
-        <Typography variant="body1">{id}</Typography>
-        <Typography variant="body1">{phone}</Typography>
+        <Typography variant="body1"><b>User id :</b>{id}</Typography>
+        <Typography variant="body1"><b>User phone :</b>{phone}</Typography>
+        <Typography variant="body1"><b>User mail :</b>{email}</Typography>
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "center" }}>
         {!isSent ? (
@@ -114,6 +124,7 @@ export default function UserApprovals() {
             name={value.name}
             phone={value.phone}
             id={value.id}
+            email={value.email}
             mongoID={value.objectId}
             resetArry={setApprovals}
             array={approvals}

@@ -11,11 +11,11 @@ const CardList = ({ Data}) => {
     return (
         <div>
             {Data.map((card, index) => (
-                <Card  elevation={1} key={index} sx={{marginTop:2}}>
+                
+                card.User===null? <></> : (<Card  elevation={1} key={index} sx={{marginTop:2}}>
                     <CardContent>
-                        <div >
-                            <Typography variant="h5">User Information</Typography>
-                            
+                        <div>
+                            <Typography variant="h5">User Information</Typography> 
                         </div>
                         <Typography variant="body1">
                             <strong>Name:</strong> {card.User.userName}
@@ -38,7 +38,7 @@ const CardList = ({ Data}) => {
                                 Approve
                     </Button>
                         </CardActions>
-                </Card>
+                </Card>)
             ))}
         </div>
     );
@@ -50,12 +50,13 @@ export default function DonationRequest(){
     const[requests,setRequests] = useState([]);
     const[loading,setLoading] = useState(false);
 
+
     useEffect(()=>{
 
         Axios.get('donation/getdonationrequests').then(r=>{
             setRequests(r.data.requestsArrays);
             setLoading(true);
-
+            console.log(r.data);
         }).catch(error=>{
 
             console.log(error);
