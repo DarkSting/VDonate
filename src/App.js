@@ -11,6 +11,9 @@ import Email from './Views/UserPage/SendingEmails';
 import QR from './QRCode/QRCode.js'
 import PageNotFound from './CommonComponents/PageNotFound';
 import UserApprovals, { UserApprovalLoader } from './Views/AdminPage/ApproveUsers';
+import GoogleMap from './Views/Map/MapPage';
+import SimpleMap from './Views/Map/MapPage';
+import CustomMap from './Views/Map/MapPageVariant';
 
 
 const router = createBrowserRouter(
@@ -22,10 +25,11 @@ const router = createBrowserRouter(
           <Route path="signup" element={<SignUpPage/>} />
           <Route path="login" element={<LoginPage />} />
           <Route path="userdashboard" element={<Dashboard />} >
+          <Route path="" loader={UserApprovalLoader} element={<CustomMap />}/>
               
           </Route>
           <Route path="admindashboard" element={<AdminDashboard />} >
-           <Route path="approvedonor" loader={UserApprovalLoader} element={<UserApprovals />}/>
+           <Route path="approvedonor" loader={UserApprovalLoader} element={<SimpleMap />}/>
           </Route>
           <Route path="adminsignup" element={<AdminSignUp />} />
           <Route path="*" element={<PageNotFound error="Page Not Found 404"/>} />
