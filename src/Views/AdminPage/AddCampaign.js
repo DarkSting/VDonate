@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState,useContext, useEffect } from 'react';
 import {
     Card,
     CardContent,
@@ -10,8 +10,15 @@ import {
 import Wrapper from '../../CommonComponents/Wrap';
 import Tab from "./TabComponent";
 import { MyContext } from "../..";
+import Axios from '../../api/axios';
 
 function CardForm(){
+
+    useEffect(()=>{
+
+      Axios.get()
+
+    })
 
     const initialList = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
 

@@ -99,7 +99,7 @@ const Sidebar = (props) => {
 
   return (
     <Grid container spacing={2} sx={{ height: "93vh", marginTop:10 }}>
-      <Grid item xs={2} md={3} lg={2}>
+      <Grid item xs={1.3} md={3} lg={2}>
         <Box
           position="fixed"
           sx={{
@@ -124,6 +124,7 @@ const Sidebar = (props) => {
                 lg: "column",
                 md: "column",
               },
+              
               scrollbarWidth: "none", // Firefox
               "&::-webkit-scrollbar": {
                 display: "none", // Chrome, Safari, Edge, and Opera
@@ -131,7 +132,7 @@ const Sidebar = (props) => {
             }}
           >
 
-                    {/*Approve donors */}
+            {/*Approve donors */}
             <ListItem disablePadding>
               <ListItemBtn
                 to="approvedonor"
@@ -307,7 +308,7 @@ const Sidebar = (props) => {
           </List>
         </Box>
       </Grid>
-      <Grid item xs={10} md={9} lg={10}>
+      <Grid item xs={10.4} md={9} lg={10}>
         {/*content */}
         <Box
           sx={{
