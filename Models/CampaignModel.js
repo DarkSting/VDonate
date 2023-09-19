@@ -8,6 +8,11 @@ const CampaignSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    organizedBy:{
+      type:mongoose.Schema.ObjectId,
+      required:[true,"organizer required"],
+      ref:'adminmodels'
+    },
     timeBegin:{
         type:Date,
         required:true
@@ -16,7 +21,7 @@ const CampaignSchema = new mongoose.Schema({
         type:[AdminSchema]
         ,required:true
     },
-      isValidated:{
+      isCompleted:{
         type:Boolean,
         default:false,
       },
@@ -24,12 +29,14 @@ const CampaignSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-      donationRequest:{
-        type:[DonationRequestSchema],
-        required:[true,'didnt get any donation requests']
-      }
+      donors:[
+        {
+          type:mongoose.Schema.ObjectId,
+          ref:'usermodels'
+        }
+      ]
+      ,
       
-
 });
 
 const CampaignModel = mongoose.model('CampaignModel',CampaignSchema);
