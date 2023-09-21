@@ -4,7 +4,11 @@ const{
     findAllDonations,
     findDonation,
     updateDonation,
-    getNotApprovedDonationRequest
+    getNotApprovedDonationRequest,
+    deleteDonationRequests,
+    acceptDonationRequest,
+    getApprovedRequests,
+    getRejectedRequests
 } = require('../Controllers/DonationController');
 
 const {Router} = require('express');
@@ -16,5 +20,10 @@ routes.post('/updateDonation',updateDonation);
 routes.get('/findAllDonations',findAllDonations);
 routes.get('/findDonation',findDonation);
 routes.get('/getdonationrequests',getNotApprovedDonationRequest);
+routes.put('/deletedonationrequest',deleteDonationRequests);
+routes.post('/acceptdonationrequest',acceptDonationRequest)
+routes.get('/getapprovedrequests',getApprovedRequests);
+routes.get('/getrejectedrequests',getRejectedRequests);
+
 
 module.exports = routes;

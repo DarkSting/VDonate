@@ -1,9 +1,7 @@
 const mongoose =require('mongoose');
-const {AdminSchema} = require('./AdminModel');
-const {UserSchema} = require('./UserModel');
-const { DonationRequestModel, DonationRequestSchema } = require('./DonationRequestModel');
 
 const CampaignSchema = new mongoose.Schema({
+
     location:{
         type:String,
         required:true
@@ -17,10 +15,12 @@ const CampaignSchema = new mongoose.Schema({
         type:Date,
         required:true
     },
-    StaffGroup:{
-        type:[AdminSchema]
-        ,required:true
-    },
+    
+    StaffGroup:[{
+        
+      type:mongoose.Schema.ObjectId,
+      ref:'adminmodels'
+    }],
       isCompleted:{
         type:Boolean,
         default:false,
@@ -34,8 +34,13 @@ const CampaignSchema = new mongoose.Schema({
           type:mongoose.Schema.ObjectId,
           ref:'usermodels'
         }
-      ]
-      ,
+      ],
+      bloodContainer:{
+        type:mongoose.Schema.ObjectId,
+        ref:'bloodBagmodels'
+      }
+      
+
       
 });
 

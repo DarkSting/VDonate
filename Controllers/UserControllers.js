@@ -200,10 +200,15 @@ const makeRequest =async(req,res)=>{
     id= list[0].refNo+1;
    }
 
+   const time = new Date(0);
+
+   console.log(time);
+
     const newReq = new DonationRequestModel({
         refNo:id,
         donationType:donationType,
-        Donor:DonorID
+        Donor:DonorID,
+        approvedDate:time
     })
 
     newReq.save().then(r=>{

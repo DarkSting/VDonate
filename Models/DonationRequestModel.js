@@ -1,11 +1,13 @@
 const mongoose =require('mongoose');
 
 const DonationRequestSchema = new mongoose.Schema({
-    donationType:{
+    
+  donationType:{
         type:String,
         required:[true,"donation type required"],
         enum:["Plasma","Plattlates","WholeBlood","PowerRed"]
-    },   
+    }, 
+
     refNo:{
       type:Number,
       unique:true,
@@ -17,6 +19,7 @@ const DonationRequestSchema = new mongoose.Schema({
       ref:'UserModel',
       required:[true,"User reference required"]
     },
+
       isApproved:{
         type:Boolean,
         default:false,
@@ -26,15 +29,18 @@ const DonationRequestSchema = new mongoose.Schema({
         type:String,
         ref:'AdminModel'
       },
+
      description:{
       type:String,
       default:""
+     },
+
+     approvedDate:{
+      type:Date,
+      
      }
     
-
 });
-
-
 
 const DonationRequestModel = mongoose.model('DonationRequestModel',DonationRequestSchema);
 

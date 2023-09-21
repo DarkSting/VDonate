@@ -1,9 +1,9 @@
-const { authenticateUser, createToken } = require('../Middlewares/authMiddleware');
 const {AdminModel} = require('../Models/AdminModel');
 const { UserModel } = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 const {sendmailInternal} = require('./MailControllers');
 const jwt = require('jsonwebtoken');
+const { createToken } = require('../Middlewares/authMiddleware');
 
 
 //check the the admin login
@@ -119,7 +119,7 @@ const loginAdmin = async(req,res)=>{
 
     }catch(error){
 
-        return res.status(500).json(error);
+        return res.status(500).json(error.message);
 
     }
 

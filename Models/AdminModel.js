@@ -85,8 +85,6 @@ AdminSchema.statics.login = async function(lisence,password){
 
   const user = await this.findOne({licenseNumber:lisence});
 
- 
-
   if(user){
       const auth = await bcrypt.compare(password,user.password);
       

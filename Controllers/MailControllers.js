@@ -154,6 +154,86 @@ const sendmail = async(req,res) =>{
 
 }
 
+
+//campaign mail generator
+const campaignMail = async(req,res,next) =>{
+
+    
+
+    const sender = 'akashgeethanjana320@gmail.com';
+    const {
+        receivers,
+        title,
+        location,
+        endTime,
+        startTime,
+        organizedBy
+
+    
+    } = req.body;
+
+  
+
+    let config = {
+        service :'gmail',
+        auth:{
+            user:sender,
+            pass:process.env.MAIL_PASSWORD,
+
+        }
+    }
+
+    let transporter = nodemailer.createTransport(config);
+
+    let mailGenerator = new Mailgen({
+        theme:"salted",
+        product:{
+            name:"VDonate",
+            link:"https://mailgen.js/",
+            copyright:`Copyright © ${2023}  VDonate. All rights reserved`
+        }
+    })
+
+    let response = {
+        body:{
+            greeting: 'Dear Donor',
+            title:title,
+            intro:intro,
+            action: [
+                {
+                    instructions: ['As your per request we have decided to assign you to the following blood donation campaign.',
+                    `<b>Location</b> ${location}`,
+                    `<b>Started at</b> ${startTime}`,
+                    `<b>End at</b> ${endTime}`,
+                    `<b>Organized By</b> ${organizedBy}`
+                ],
+                    
+                }]
+            ,outro:['We are hoping your attendence for the following campaign, We are appreciate your contribution. Thank You!']
+        }
+    }
+
+    let mail = mailGenerator.generate(response);
+
+    let message = {
+        from :sender,
+        to:receivers,
+        subject:'You have been assigned to a donation campaign',
+        html:mail
+    }
+
+    await transporter.sendMail(message).then(()=>{
+
+        next();
+
+    }).catch(error=>{
+        return res.status(500).json({error});
+    })
+
+
+
+}
+
 const sendmailwithfile = async(req,res)=>{
 
     const sender = 'akashgeethanjana320@gmail.com';
@@ -222,7 +302,7 @@ const sendmailwithfile = async(req,res)=>{
 
 }
 
-module.exports = {sendmail,sendmailwithfile,sendmailInternal };
+module.exports = {sendmail,sendmailwithfile,sendmailInternal,campaignMail };
 
 
 
