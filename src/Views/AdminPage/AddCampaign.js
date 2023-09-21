@@ -11,6 +11,7 @@ import Wrapper from '../../CommonComponents/Wrap';
 import Tab from "./TabComponent";
 import { MyContext } from "../..";
 import Axios from '../../api/axios';
+import { Stack } from 'react-bootstrap';
 
 function CardForm(){
 
@@ -48,7 +49,7 @@ function CardForm(){
         <CardContent>
           <div style={{ display: 'flex' }}>
             <div style={{ flex: 1 }}>
-              <Typography variant="subtitle1">Available Items:</Typography>
+              <Typography variant="body1"><b>Available Donors:</b></Typography>
               <List>
                 {availableItems.map((item, index) => (
                   <ListItem key={index} button onClick={() => handleSelectItem(item)}>
@@ -58,7 +59,7 @@ function CardForm(){
               </List>
             </div>
             <div style={{ flex: 1 }}>
-              <Typography variant="subtitle1">Selected Items:</Typography>
+              <Typography variant="body1"><b>To Be Added Donors:</b></Typography>
               <List>
                 {selectedItems.map((item, index) => (
                   <ListItem key={index} button onClick={() => handleDeselectItem(item)}>
@@ -68,9 +69,11 @@ function CardForm(){
               </List>
             </div>
           </div>
+          <Stack>
           <Button variant="contained" color="primary" onClick={() => console.log(selectedItems)}>
             Save
           </Button>
+          </Stack>
         </CardContent>
       </Card>
    

@@ -129,6 +129,10 @@ export default function DonationRequestTab(props) {
         donationType: arr[1],
       };
 
+      setsccMSG("Sending....");
+      setSeverity("warning");
+      setsccColor("#EE9322");
+
       await Axios.post("/user/makeDonationRequest", data)
         .then((res) => {
           console.log(res);

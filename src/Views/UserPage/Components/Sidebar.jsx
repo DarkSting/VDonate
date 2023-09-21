@@ -37,6 +37,8 @@ import UsersContent from '../UserContent';
 import UserComplainTab  from "../ComplainTab";
 import DonationRequestTab from'../DonationRequestTab';
 import SubTab from './SubTabs';
+import CustomMap from "../../Map/DonorMap";
+import MapContainer from "../../Map/DonorMap2";
 
 
 {/*implementation */}
@@ -105,7 +107,7 @@ function renderComponent(current,props,array){
     case array[0]:
       return <CustomTab title="Add Campaign" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderTabsContent(props)}/>
     case array[1]:
-      return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderUserContent()}/>
+      return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<CustomMap />}/>
     case array[5]:
       return <CustomTab title="Complains" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderComplainContent(props)}/>
   }
