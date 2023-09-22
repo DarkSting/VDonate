@@ -166,11 +166,22 @@ const foundUser = await UserModel.findOne({_id:donorID})
 const foundRequestID = await DonationRequestModel.findOne({_id:requestID});
 
 //if the request is a valid request then proceed the process
-if(foundUser){
+if(foundUser && foundRequestID){
     
     const time = new Date();
     time.setHours(0,0,0);
-    await DonationRequestModel.findOneAndUpdate({_id:foundRequestID._id},{isApproved:true},{approvedDate:time}).then(r=>{
+
+    const query = {$and:[{User:donorID},{_id:requestID}]};
+
+    const update = {
+      $set: {
+        approvedDate:time,
+        isApproved:true
+      },
+    };
+
+
+    await DonationRequestModel.findOneAndUpdate(query,update).then(r=>{
         return res.status(200).json({msg:"request approved"});
     }).catch(error=>{
         return res.status(500).json({msg:error.message});
@@ -194,13 +205,26 @@ const deleteDonationRequests = async(req,res)=>{
     maxtime.setMonth(6);
 
     console.log(`${maxtime}`);
+
+
+    const query = {$and:[{User:donorID},{_id:requestID}]};
+
+    const update = {
+      $set: {
+        approvedDate:maxtime,
+        isApproved:false
+      },
+    };
+
     //since we want to display the rejected approval we wont delete it permenently instead updating it
-    await DonationRequestModel.findOneAndUpdate({$and:[{User:donorID},{_id:requestID}]},{isApproved:true},{approvedDate:maxtime}).then(r=>{
+    await DonationRequestModel.findOneAndUpdate(query,update).then(r=>{
 
         return res.status(200).json({msg:"request rejected"});
     }).catch(error=>{
         return res.status(500).json({msg:error.message})
     })
+
+
 
 }
 
@@ -214,7 +238,7 @@ const getRejectedRequests = async(req,res)=>{
 
     console.log(maxtime);
 
-    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:true},{approvedDate:maxtime}]});
+    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:false},{approvedDate:maxtime}]});
 
     let requestsArrays = [];
 
@@ -228,6 +252,7 @@ const getRejectedRequests = async(req,res)=>{
                 const User = await UserModel.findOne({_id:request.User._id});
     
                 if(User){
+                    User.password = null;
                     currentModel.User = User;
                     currentModel.request =request;
                     requestsArrays.push(currentModel);
@@ -275,7 +300,7 @@ const getApprovedRequests = async(req,res)=>{
 
     const time = new Date(0);
 
-    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:true},{approvedDate:time}]});
+    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:true},{approvedDate:{$gt:time}}]});
 
     let requestsArrays = [];
 
@@ -289,6 +314,7 @@ const getApprovedRequests = async(req,res)=>{
                 const User = await UserModel.findOne({_id:request.User._id});
     
                 if(User){
+                    User.password = null;
                     currentModel.User = User;
                     currentModel.request =request;
                     requestsArrays.push(currentModel);
@@ -332,6 +358,7 @@ const getNotApprovedDonationRequest = async(req,res)=>{
                 const User = await UserModel.findOne({_id:request.User._id});
     
                 if(User){
+                    User.password = null;
                     currentModel.User = User;
                     currentModel.request =request;
                     requestsArrays.push(currentModel);
