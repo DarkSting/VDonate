@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardActions, Button, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import Axios from '../../api/axios';
-import LoadingSpinner from '../../CommonComponents/LoadingSpinner';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
-
 
 
 const RequestCard = ({Data,index})=>{
@@ -59,15 +57,17 @@ export default function RejectedDonationRequests(){
     useEffect(()=>{
 
         Axios.get('donation/getrejectedrequests').then(r=>{
-            setRequests(r);
+            setRequests(r.data.requestsArrays);
             setLoading(true);
-            console.log(r.data);
+            console.log(r.data.requestsArrays);
         }).catch(error=>{
 
             console.log(error);
+
         })
 
     },[])
+
 
     return(
         requests.length>0?(<CardList Data={requests} />):LoadSubSpinner(loading,setLoading,"No Rejected Requests")

@@ -4,17 +4,12 @@ import SignUpPage from "./Views/SignUpPage/UserSignUpPage";
 import AdminSignUp from "./Views/SignUpPage/AdminSignUp";
 import Dashboard from "./Views/UserPage/UserDashboard";
 import AdminDashboard from "./Views/AdminPage/AdminDashboard";
-import TestPage from "./Views/TestsPage/BloodTest";
 import {
   Route,
   RouterProvider,
-  Routes,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import UserPage from "./Views/AdminPage/AdminDashboard";
-import Email from "./Views/UserPage/SendingEmails";
-import QR from "./QRCode/QRCode.js";
 import PageNotFound from "./CommonComponents/PageNotFound";
 import UserApprovals, {
   UserApprovalLoader,
@@ -22,9 +17,10 @@ import UserApprovals, {
 import AdminLogin from "./Views/LoginPage/AdminLogin";
 import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
 import UploadTest from "./Views/TestsPage/Reports";
-import DonationRequestTab from "./Views/UserPage/DonationRequestTab";
 import DonationReqTab from "./Views/AdminPage/Components/DonationRequestTabs";
-import DualBoxCard from "./Views/AdminPage/AddCampaign";
+import { useSnackbar } from "./CommonComponents/SnackBarContext";
+import { Snackbar as SnackbarMui, SnackbarContent } from '@mui/material';
+import CampaignTab from "./Views/AdminPage/AddCampaign";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,7 +47,7 @@ const router = createBrowserRouter(
 
         <Route
           path="campaign"
-          element={<DualBoxCard/>}
+          element={<CampaignTab />}
         />
 
           <Route
@@ -72,7 +68,37 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+
+  const { open, message,  closeSnackbar, icon, color} = useSnackbar();
+
+
+  return( 
+  <>
+  <RouterProvider router={router} />
+  <SnackbarMui
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+      open={open}
+      autoHideDuration={3000} // Adjust the duration as needed
+      onClose={closeSnackbar}
+    >
+      <SnackbarContent
+        style={{
+          backgroundColor: color, // Customize colors
+        }}
+        message={
+          <span>
+            {icon}
+            {message}
+          </span>
+        }
+      />
+    </SnackbarMui>
+  </>
+  
+  );
 }
 
 export default App;

@@ -1,7 +1,6 @@
 import { Typography } from '@mui/material';
 import SpinnerLoader, { SubSpinner } from './LoadingSpinner';
 import NotFound from './PageNotFound';
-import {Error,Check} from '@mui/icons-material';
 
 const checkDataAvailability = (isLoading,text,setIsLoading,buttonStatus,navigateTo)=>{
 
@@ -81,7 +80,7 @@ const checkDataAvailability = (isLoading,text,setIsLoading,buttonStatus,navigate
           
       }else{
         return <>
-          <Typography variant="h4" sx={{backgroundColor:"#F5F5F5",padding:'20px',borderRadius:'10px',textAlign:'center',alignItems:'center'}}>{text}</Typography>
+          <Typography variant="h4" sx={{backgroundColor:"#F5F5F5",padding:'20px',borderRadius:'10px',textAlign:'center',alignItems:'center',marginTop:'50px'}}>{text}</Typography>
         </>;
       }
 

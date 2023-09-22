@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardActions, Button, Typography } from '@mui/material';
 import Axios from '../../api/axios';
-import LoadingSpinner from '../../CommonComponents/LoadingSpinner';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -12,6 +11,9 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
     const [userId,setID] = useState(Data.User._id);
     const [requestId,setRequestID] = useState(Data.request._id);
 
+
+    console.log(Data.request._id);
+
     function setApprove(){
 
         setText('Loading...');
@@ -19,7 +21,8 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
         setOpen(true);
         Axios.post('donation/acceptdonationrequest',{donorID:userId, requestID:requestId}).then(r=>{
             console.log(r.data);
-            let newarray = itemArray.filter((item)=>item.User._id !==userId);
+            let newarray = itemArray.filter((item)=>
+                item.request._id !==requestId);
             setArray(newarray);
             setSeverity('success');
             setText('Approved');
@@ -41,9 +44,16 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
         setOpen(true);
         Axios.put('donation/deletedonationrequest/',{donorID:userId, requestID:requestId}).then(r=>{
             console.log(r.data);
+            let newarray = itemArray.filter((item)=>
+                item.request._id !==requestId);
+            setArray(newarray);
+            setSeverity('success');
+            setText('Rejected');
+            setOpen(true);
         }).catch(error=>{
 
-            console.log(error);
+            setSeverity('error');
+            setText('Failed to reject');
 
         })
 
@@ -98,6 +108,7 @@ const CardList = ({ Data, itemArray, setArray,setOpen,setText,setSeverity}) => {
             ))}
         </div>
     );
+
 };
 
 
@@ -109,7 +120,6 @@ export default function DonationRequest(){
     const [severity, setServerity] = useState('success');
     const [text, setText] = useState('null');
       
-
 
     useEffect(()=>{
 

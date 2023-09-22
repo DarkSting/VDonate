@@ -1,16 +1,8 @@
 import styled from "@emotion/styled";
 import {
-  AccountBox,
-  Article,
   Group,
   Explore,
-  Home,
-  ModeNight,
   Person,
-  Settings,
-  Storefront,
-  PersonAdd,
-  Mail,
   Bloodtype,
   Report,
   Inbox,
@@ -23,38 +15,36 @@ import EmergencyShareIcon from "@mui/icons-material/EmergencyShare";
 import {
   Box,
   List,
-  Stack,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Grid,
-  Switch,
+
 } from "@mui/material";
 import React, { useState, useContext } from "react";
 import { Outlet } from "react-router-dom";
 import { CustomListLinkButton } from "../../CommonComponents/LinkButton";
 import { MyContext } from "../..";
 
-{
-  /*implementation */
-}
 
-{
-  /*properties of elements */
-}
+
 const ListButtonProp = (props) => {
   return {
     "&.Mui-selected": {
       borderLeft: "solid 5px " + props.bordeColor,
       backgroundColor: props.backColor,
       color: "white",
+      
     },
     "&.Mui-selected:hover": { backgroundColor: props.bordeColor },
     "&:hover": {
       backgroundColor: props.backHoverColor,
       color: "white",
     },
+    border:'0px solid',
+    borderRadius:'0px 5px 5px 0px'
+    
   };
 };
 
@@ -71,26 +61,24 @@ const IconProp = (prop) => {
 
 const ListItemBtn = styled(CustomListLinkButton)(({ theme }) => ({}));
 
-{
-  /*sidebar options */
-}
+/*sidebar options */
 
 const state = [
-  "Approvals",
+  "User Approvals",
   "Campaigns",
   "Blood Stock",
   "Emergencies",
   "Inbox",
   "Inventory",
   "Reports",
-  "New Admins",
+  "Admin Approvals",
   "Requests"
 
 ];
 
-{
+
   /*sidebar */
-}
+
 const Sidebar = (props) => {
   const [selectedItem, setSelectedItem] = useState("Campaign");
   const { updateData } = useContext(MyContext);
@@ -214,7 +202,7 @@ const Sidebar = (props) => {
             {/*Blood Stock*/}
             <ListItem disablePadding>
               <ListItemBtn 
-                to="uploadtests"
+                to="bloodstock"
                 selected={selectedItem === state[2]}
                 onClick={() => {
                   setSelectedItem(state[2]);
@@ -289,7 +277,7 @@ const Sidebar = (props) => {
             </ListItem>
             {/*Reports*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemButton to="uploadtests"
                 selected={selectedItem === state[6]}
                 onClick={() => {
                   setSelectedItem(state[6]);

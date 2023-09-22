@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState} from 'react';
 import DonationRequest from "../DonationRequest";
 import { Box,Tab, Tabs, Typography } from '@mui/material';
-import Wrapper from '../../../CommonComponents/Wrap';
-import GetApprovedDonationRequests from '../ApprovedDonationRequestsTab';
+import GetApprovedDonationRequests from '../ApproveDonationRequestsTab';
 import RejectedDonationRequests from '../RejectedRequestsTab';
-import MainTab from "../TabComponent";
+import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -29,6 +29,8 @@ function TabPanel(props) {
   
 
   function ContentTabs({currentTab,handleTabChange}){
+
+    
 
     return(
       <div>
@@ -57,16 +59,17 @@ function TabPanel(props) {
 
 
   function DonationReqTab() {
+    
+    const {  darkColor } = useContext(MyContext);
+
     const [currentTab, setCurrentTab] = useState(0);
-    const { color, darkColor } = useContext(MyContext);
 
     const handleTabChange = (event, newValue) => {
       setCurrentTab(newValue);
     };
+    
   
     return (
-
-
       <MainTab
           title="Requests"
           fontSize="h4"
@@ -74,8 +77,7 @@ function TabPanel(props) {
           titleBackColor={darkColor}
           renderContent={<ContentTabs currentTab={currentTab} handleTabChange={handleTabChange} />}
         ></MainTab>
-       
-        
+
     );
   }
   

@@ -1,27 +1,24 @@
 import {
-  Box,
   CardActions,
   CardContent,
   Typography,
   Button,
   Stack,
-  List,
-  Paper,
+
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "../../api/axios";
-import checkDataAvailability, {
+import{
   LoadSubSpinner,
 } from "../../CommonComponents/SpinFunction";
-import { useLoaderData } from "react-router-dom";
 import { Card } from "react-bootstrap";
-import Tab from "./TabComponent";
+import Tab from "../../CommonComponents/TabComponent";
 import { MyContext } from "../..";
-import { ContactSupportOutlined } from "@mui/icons-material";
 
-{
+
+
   /**card object */
-}
+
 const CardObject = ({
   state,
   color,
@@ -94,9 +91,9 @@ setObjectID(mongoID);
 
 
 
-{
+
   /**getting approvals from the backend */
-}
+
 export default function UserApprovals() {
   useEffect(() => {
     axios
@@ -107,14 +104,14 @@ export default function UserApprovals() {
       .catch((err) => {
         setApprovals([]);
       });
-  }, []);
+  },[]);
 
   const [approvals, setApprovals] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
 
   console.log(approvals);
 
-  const loadApprovals = () => {
+  const LoadApprovals = () => {
     return (
       <Stack spacing={1} sx={{ width: "50%", marginTop: "10px" }}>
         {approvals.map((value) => (
@@ -134,31 +131,34 @@ export default function UserApprovals() {
     );
   };
 
-  {
+  
     /**use context */
-  }
+  
+
   const { color, darkColor } = useContext(MyContext);
 
   return (
     <>
-      {approvals.length === 0 ? (
-        LoadSubSpinner(isLoaded, setLoaded)
-      ) : (
+
         <Tab
-          title="Approvals"
+          title="User SignUp Approvals"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
-          renderContent={loadApprovals()}
+          renderContent={approvals.length === 0 ? (
+            LoadSubSpinner(isLoaded, setLoaded,"No User Signups Yet")
+          ) : (
+            <LoadApprovals />
+          )}
         ></Tab>
-      )}
+      {}
     </>
   );
 }
 
-{
+
   /**loader function to get data */
-}
+
 export function UserApprovalLoader() {
   var result = null;
 

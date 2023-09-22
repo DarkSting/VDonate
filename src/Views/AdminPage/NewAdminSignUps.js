@@ -1,27 +1,26 @@
 import {
-    Box,
+
     CardActions,
     CardContent,
     Typography,
     Button,
     Stack,
-    List,
-    Paper,
+
   } from "@mui/material";
   import React, { useContext, useEffect, useState } from "react";
   import axios from "../../api/axios";
-  import checkDataAvailability, {
+  import {
     LoadSubSpinner,
   } from "../../CommonComponents/SpinFunction";
-  import { useLoaderData } from "react-router-dom";
+
   import { Card } from "react-bootstrap";
-  import Tab from "./TabComponent";
+  import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
-  import { ContactSupportOutlined } from "@mui/icons-material";
+
   
-  {
+  
     /**card object */
-  }
+
   const CardObject = ({
     state,
     color,
@@ -54,7 +53,6 @@ import {
     };
   
     const userId = id;
-    const objectID = mongoID;
     const [isSent, setSent] = useState(false);
   
     return (
@@ -90,9 +88,9 @@ import {
   
   
   
-  {
+  
     /**getting approvals from the backend */
-  }
+  
   export default function NewAdminSignUps() {
     useEffect(() => {
       axios
@@ -132,18 +130,18 @@ import {
       );
     };
   
-    {
+    
       /**use context */
-    }
-    const { color, darkColor } = useContext(MyContext);
+    
+    const {  darkColor } = useContext(MyContext);
   
     return (
       <>
         {approvals.length === 0 ? (
-          LoadSubSpinner(isLoaded, setLoaded)
+          LoadSubSpinner(isLoaded, setLoaded, "No Approvals Yet")
         ) : (
           <Tab
-            title="Approvals"
+            title="Admin Signup Approvals"
             fontSize="h4"
             fontColor="white"
             titleBackColor={darkColor}
@@ -154,9 +152,9 @@ import {
     );
   }
   
-  {
+  
     /**loader function to get data */
-  }
+  
   export function UserApprovalLoader() {
     var result = null;
   

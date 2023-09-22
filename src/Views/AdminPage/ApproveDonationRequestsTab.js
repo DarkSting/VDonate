@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardActions, Button, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import Axios from '../../api/axios';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 
@@ -44,9 +44,9 @@ export default function GetApprovedDonationRequests(){
     const[requests,setRequests] = useState([]);
     const[loading,setLoading] = useState(false);
 
-
     useEffect(()=>{
 
+       
         Axios.get('donation/getapprovedrequests').then(r=>{
             setRequests(r.data.requestsArrays);
             setLoading(true);
@@ -59,7 +59,9 @@ export default function GetApprovedDonationRequests(){
     },[])
 
     return(
+
         requests.length>0?(<CardList Data={requests} />):LoadSubSpinner(loading,setLoading,"No Approved Requests")
+
     )
 
 }

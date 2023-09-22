@@ -7,24 +7,51 @@ import {
     ListItem,
     ListItemText,
     Button}from '@mui/material';
-import Wrapper from '../../CommonComponents/Wrap';
-import Tab from "./TabComponent";
+import Tab from "../../CommonComponents/TabComponent";
 import { MyContext } from "../..";
 import Axios from '../../api/axios';
 import { Stack } from 'react-bootstrap';
+import { useSnackbar } from '../../CommonComponents/SnackBarContext';
+import { ArrowUpward, CircleOutlined } from '@mui/icons-material';
 
 function CardForm(){
 
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [availableItems, setAvailableItems] = useState([]);  
+    const {openSnackbar, closeSnackbar} = useSnackbar();
+    const {darkColor} = useContext(MyContext);
+
     useEffect(()=>{
+      openSnackbar({
+        message: 'Loading',
+        color:'#000000',
+        
+      })
+        Axios.get('donation/getapprovedrequests').then(r=>{
+        //setAvailableItems(r.data.requestsArrays);
+        let tempArray = [];
+        r.data.requestsArrays.map((value)=>{
+            tempArray.push(value.User);
+        })
 
-      Axios.get()
+        setAvailableItems(tempArray);
+        openSnackbar({
+          message: 'Data Loaded',
+          color:'green',
+          
+        })
+      
 
+    }).catch(error=>{
+      openSnackbar({
+        message: 'Loading',
+        color:'red',
+        
+      })
+        console.log(error);
     })
 
-    const initialList = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
-
-    const [selectedItems, setSelectedItems] = useState([]);
-    const [availableItems, setAvailableItems] = useState(initialList);
+    },[])
   
     const handleSelectItem = (item) => {
       const newSelectedItems = [...selectedItems, item];
@@ -53,7 +80,7 @@ function CardForm(){
               <List>
                 {availableItems.map((item, index) => (
                   <ListItem key={index} button onClick={() => handleSelectItem(item)}>
-                    <ListItemText primary={item} />
+                    <ListItemText primary={item.userName} />
                   </ListItem>
                 ))}
               </List>
@@ -63,14 +90,20 @@ function CardForm(){
               <List>
                 {selectedItems.map((item, index) => (
                   <ListItem key={index} button onClick={() => handleDeselectItem(item)}>
-                    <ListItemText primary={item} />
+                    <ListItemText primary={item.userName} />
                   </ListItem>
                 ))}
               </List>
             </div>
           </div>
           <Stack>
-          <Button variant="contained" color="primary" onClick={() => console.log(selectedItems)}>
+          <Button variant="contained" color="primary" onClick={() =>{
+            openSnackbar({
+              message: 'Creating Campaign...',
+              color:'#000000',
+              icon:<ArrowUpward />
+            })
+          }}>
             Save
           </Button>
           </Stack>
@@ -82,9 +115,9 @@ function CardForm(){
 }
 
 
-function DualBoxCard() {
+function CampaignTab() {
   
-    const { color, darkColor } = useContext(MyContext);
+    const { darkColor } = useContext(MyContext);
 
     return (
         <Tab title="Campaigns" fontSize="h4" fontColor="white" renderContent={<CardForm />} titleBackColor={darkColor}></Tab>
@@ -92,4 +125,4 @@ function DualBoxCard() {
   
 }
 
-export default DualBoxCard;
+export default CampaignTab;
