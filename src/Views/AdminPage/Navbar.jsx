@@ -1,4 +1,4 @@
-import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode} from "@mui/icons-material";
+import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person} from "@mui/icons-material";
 
 import {
   AppBar,
@@ -181,6 +181,16 @@ const NavComponent = ({setLoggedOut,props})=>{
   const[anchorEl,setAnchorEl,] = useState(null);
 
   const open = Boolean(anchorEl);
+  
+  const [openLogout, setOpenLogout] = useState(false);
+
+  const handleOpenLogout = () => {
+    setOpenLogout(true);
+  };
+
+  const handleCloseLogoutConfirm = () => {
+    setOpenLogout(false);
+  };
 
   const handleClick = (event)=>{
     setAnchorEl(event.currentTarget);
@@ -205,7 +215,7 @@ const NavComponent = ({setLoggedOut,props})=>{
     }).catch(err=>{
 
     })
-    navigate('/login');
+    navigate('/adminlogin');
   }
 
  
@@ -213,7 +223,7 @@ const NavComponent = ({setLoggedOut,props})=>{
   return (
 
     <>
-    <NavBar position="sticky" props={props} sx={{marginTop:'0px',backgroundColor:props.color}}>
+    <NavBar position="fixed" props={props} sx={{marginTop:'0px',backgroundColor:props.color}}>
 
       {/*navigation toolbar where the components are attached inside this box*/}
       <StyledToolbar props={props}>
@@ -292,8 +302,16 @@ const NavComponent = ({setLoggedOut,props})=>{
               Theme
           </ListItemText>
         </MenuItem>
+        <MenuItem onClick={handleClickOpen} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+          <ListItemIcon>
+            <Person />
+          </ListItemIcon>
+          <ListItemText>
+              Profile
+          </ListItemText>
+        </MenuItem>
         <Divider />
-        <MenuItem onClick={handleLogout} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+        <MenuItem onClick={handleOpenLogout} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
             <Lock  />
           </ListItemIcon>
@@ -326,6 +344,30 @@ const NavComponent = ({setLoggedOut,props})=>{
           <Button onClick={()=>{props.setColor(text);handleClose();}}>Change</Button>
         </DialogActions>
       </Dialog>
+      <div>
+      <Dialog
+        open={openLogout}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+
+        <DialogTitle id="alert-dialog-title">Confirm Logout</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" color="red">
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleCloseLogoutConfirm} color="primary">
+            Cancel
+          </Button>
+          <Button variant="outlined" onClick={handleLogout} color="primary" autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
     </>
   );
 }

@@ -31,7 +31,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import CustomTab from './TabComponent'; 
-import UsersContent from '../UserContent';
+import UsersContent from '../Reports';
 
 const ListButtonProp = (props) => {
   return {

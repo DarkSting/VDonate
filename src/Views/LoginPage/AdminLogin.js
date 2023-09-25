@@ -1,18 +1,15 @@
 import Navbar from "../../CommonComponents/Navbar";
+import AdminLoginForm from "./Components/AdminForm";
 import Form from "./Components/Form";
 import './Components/text.css'
-import Loc from "../SignUpPage/Location";
 
 
 export default function(){
 
     return(
         <>
-        <Navbar color="#0C356A"  hoverColor="#279EFF"/>
-        <Form />
-      
+        <Navbar color="#9681EB"  hoverColor="#6527BE"/>
+        <AdminLoginForm />
         </>
     );
 }
-
-

@@ -1,4 +1,4 @@
-import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode} from "@mui/icons-material";
+import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person} from "@mui/icons-material";
 
 import {
   AppBar,
@@ -26,6 +26,8 @@ import React, { useState } from "react";
 import { Stack } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router-dom";
+import Axios from '../../../api/axios'
+
 
 
 {/*properties of elements */}
@@ -154,6 +156,19 @@ const TextBox = styled(TextField)({
 {/*Navbar */}
 const Navbar = (props) => {
   
+  
+  const [openLogout, setOpenLogout] = useState(false);
+
+  const handleOpenLogout = () => {
+    setOpenLogout(true);
+  };
+
+  const handleCloseLogoutConfirm = () => {
+    setOpenLogout(false);
+  };
+
+
+
   {/*navigation hook */}
   const navigate = useNavigate();
 
@@ -191,6 +206,21 @@ const Navbar = (props) => {
   const handleClose = () =>{
     setAnchorEl(null);
     setOpenDialog(false);
+
+
+  }
+
+  const handleLogout=()=>{
+    setAnchorEl(null);
+    setOpenDialog(false);
+
+    Axios.get('/remove-cookie').then(r=>{
+      console.log('cookie removed');
+
+    }).catch(err=>{
+
+    })
+    navigate('/userlogin');
   }
 
 
@@ -276,8 +306,19 @@ const Navbar = (props) => {
               Theme
           </ListItemText>
         </MenuItem>
+        <MenuItem onClick={handleClickOpen} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+          <ListItemIcon>
+            <Person />
+          </ListItemIcon>
+          <ListItemText>
+              Profile
+          </ListItemText>
+        </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+        <MenuItem onClick={()=>{
+          handleOpenLogout();
+          
+          }} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
             <Lock  />
           </ListItemIcon>
@@ -310,6 +351,30 @@ const Navbar = (props) => {
           <Button onClick={()=>{props.setColor(text);handleClose();}}>Change</Button>
         </DialogActions>
       </Dialog>
+      <div>
+      <Dialog
+        open={openLogout}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+
+        <DialogTitle id="alert-dialog-title">Confirm Logout</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" color="red">
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button variant="contained" onClick={handleCloseLogoutConfirm} color="primary">
+            Cancel
+          </Button>
+          <Button variant="outlined" onClick={handleLogout} color="primary" autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
     </>
   );
 };

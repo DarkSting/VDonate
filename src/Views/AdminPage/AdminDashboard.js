@@ -1,59 +1,58 @@
-import Navbar from "./Navbar"
+import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import darkenColor from "../../CommonComponents/ColorDarker.js";
-import axios from '../../api/axios';
-import Spinner from '../../CommonComponents/SpinFunction'
-import { NavLink,Outlet } from "react-router-dom";
+import axios from "../../api/axios";
+import Spinner from "../../CommonComponents/SpinFunction";
+import { MyContext } from "../../index";
 
+export default function UserPage() {
+  const [color, setColor] = useState("#1F8A70");
+  const [foundUser, setUserState] = useState(false);
+  const [user, setUser] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  const {updateUser} = useContext(MyContext);
 
-export default function UserPage(){
-    
-    const[color,setColor]= useState("#1F8A70");
-    const[foundUser,setUserState]= useState(false);
-    const[user,setUser] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+  let darkColor = color;
 
+  useEffect(() => {
+    axios
+      .get("/admin/admindashboard")
+      .then((response) => {
+        setUserState(true);
+        setUser(response.data.name);
+        setIsLoading(true);
+        updateUser(response.data.name);
+      })
+      .catch((error) => {
+        setUserState(false);
+        setUser("");
+        setIsLoading(false);
+      });
+  }, []);
 
-    let darkColor = color;
+  darkColor = darkenColor(darkColor, 40);
 
-   
-
-
-    useEffect(() => {
-
-
-        axios.get('/user/userDashBoard')
-          .then(response => {
-            setUserState(true);
-            setUser(response.data.name);
-            setIsLoading(true);
-            
-          })
-          .catch(error => {
-            setUserState(false);
-            setUser('');
-            setIsLoading(false)
-          });
-
-          
-      }, []);
-
-    darkColor = darkenColor(darkColor,40);
-
-    return(
-
-       <>
-
-        {!foundUser ? Spinner(isLoading,"Page Not Found 404",setIsLoading,"flex"): (
+  return (
+    <>
+      {!foundUser ? (
+        Spinner(isLoading, "Page Not Found 404", setIsLoading, "flex")
+      ) : (
         <>
-        <Navbar color={color} hoverColor={darkColor} setColor={setColor} name={user}/>
-            <Sidebar bordeColor={darkColor} backColor={color} backHoverColor={darkenColor(darkColor,20)} />
-            </>
-      )}    
-      </>
-        
-        
-    );
+          <Navbar
+            color={color}
+            hoverColor={darkColor}
+            setColor={setColor}
+            name={user}
+          />
+          <Sidebar
+            bordeColor={darkColor}
+            backColor={color}
+            backHoverColor={darkenColor(darkColor, 20)}
+          />
+        </>
+      )}
+    </>
+  );
 }

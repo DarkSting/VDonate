@@ -37,9 +37,7 @@ import UsersContent from '../UserContent';
 import UserComplainTab  from "../ComplainTab";
 import DonationRequestTab from'../DonationRequestTab';
 import SubTab from './SubTabs';
-import { CustomListLinkButton } from "../../../CommonComponents/LinkButton";
-import SimpleMap from "../../Map/MapPage";
-import CustomMap from "../../Map/MapPageVariant";
+import CustomMap from "../../Map/DonorMap";
 
 
 
@@ -80,11 +78,6 @@ const ListText = styled(ListItemText)(({theme})=>({
 
 }));
 
-const ListItemBtn = styled(CustomListLinkButton)(({theme})=>({
-
-
-}));
-
 {/*add here other contents to be rendered inside a function */}
 function renderTabsContent(props){
 
@@ -107,21 +100,16 @@ function renderComplainContent(props){
   );
 }
 
-
 {/*sidebar options */}
 function renderComponent(current,props,array){
 
   switch(current){
-
     case array[0]:
       return <CustomTab title="Add Campaign" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderTabsContent(props)}/>
     case array[1]:
-      return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderUserContent()}/>
+      return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<CustomMap />}/>
     case array[5]:
       return <CustomTab title="Complains" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderComplainContent(props)}/>
-    case array[3]:
-      return <CustomTab title="Emergencies" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<CustomMap />}/>
-
   }
 
 }
@@ -134,6 +122,7 @@ const Sidebar = (props) => {
 
   const[selectedItem, setSelectedItem] = useState('Campaign');
   
+
 
   return (
     
@@ -150,12 +139,12 @@ const Sidebar = (props) => {
           display: 'none' // Chrome, Safari, Edge, and Opera
         }}}>
           <ListItem disablePadding>
-            <ListItemBtn  selected={selectedItem===state[0]} onClick={()=>{setSelectedItem(state[0])}} sx={ListButtonProp(props)}>
+            <ListItemButton selected={selectedItem===state[0]} onClick={()=>{setSelectedItem(state[0])}} sx={ListButtonProp(props)}>
               <ListItemIcon>
                 <Group sx={IconProp(props)}/>
               </ListItemIcon>
               <ListText sx={{display:{xs:'none',md:'block'}}} primary={state[0]} />
-            </ListItemBtn>
+            </ListItemButton>
           </ListItem>
 
         {/*Pending Campaigns*/}
@@ -180,7 +169,7 @@ const Sidebar = (props) => {
 
         {/*Emergencies*/}
           <ListItem disablePadding>
-            <ListItemButton  selected={selectedItem===state[3]} onClick={()=>{setSelectedItem(state[3])}} sx={ListButtonProp(props)}>
+            <ListItemButton selected={selectedItem===state[3]} onClick={()=>{setSelectedItem(state[3])}} sx={ListButtonProp(props)}>
               <ListItemIcon>
                 <EmergencyShareIcon sx={IconProp(props)}/>
               </ListItemIcon>

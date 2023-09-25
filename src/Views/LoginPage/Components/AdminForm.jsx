@@ -4,23 +4,33 @@ import {
   Grid,
   TextField,
   Stack,
+  Paper,
   Typography,
   Card,
+  CardActionArea,
   CardActions,
   Button,
   CardMedia,
   CardContent,
+  Icon,
 } from "@mui/material";
 import logo from "../../../CommonComponents/images/logo.png";
 import "./text.css";
 import frmBack from "../../../CommonComponents/images/login image.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Axios from "axios";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import {
+
+  Refresh
+
+} from "@mui/icons-material";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {  useNavigate } from "react-router-dom";
+import { Password } from "@mui/icons-material";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "../../../api/axios";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
 import Footer from "../../../CommonComponents/Footer";
@@ -29,20 +39,20 @@ const TextBox = styled(TextField)({
   width: "100%",
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#0C356A", // Set background color to "#9681EB"
+      borderColor: "#9681EB", // Set background color to "#9681EB"
     },
     "&:hover fieldset": {
-      borderColor: "#0C356A", // Set hover color to the dark color of "#9681EB"
+      borderColor: "#4B3FBF", // Set hover color to the dark color of "#9681EB"
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#0C356A",
+      borderColor: "#4B3FBF",
     },
   },
   "& label": {
-    color: "#0C356A",
+    color: "#9681EB",
   },
   "& label.Mui-focused": {
-    color: "#0C356A",
+    color: "#9681EB",
   },
 });
 
@@ -58,13 +68,13 @@ const fieldProp = {
 const btnprop = {
   width: "20%",
   height: "50px",
-  backgroundColor: "#0C356A",
+  backgroundColor: "#6527BE",
   borderRadius: "40px",
   marginBottom: "10px",
   color: "white",
   "&:hover": {
-    border: "1px solid #0C356A",
-    color: "#0C356A",
+    border: "1px solid #6527BE",
+    color: "#6527BE",
     backgroundColor: "white",
     fontWeight: "bolder",
   },
@@ -75,7 +85,7 @@ const textprop = {
   alignContent: "center",
   color: "black",
   flexWrap: "wrap",
-  color: "#0C356A",
+  color: "#6527BE",
   fontSize: "1.5rem",
   fontFamily: "'Delius', cursive",
 };
@@ -92,34 +102,13 @@ const descboxprop = {
   padding: "10px",
 };
 
-const signupbtn = {
-  width: "80%",
-  borderColor: "#0C356A",
-  color: "#0C356A",
-  "&:hover": {
-    backgroundColor: "#0C356A",
-    color: "white",
-    borderColor: "transparent",
-  },
-};
+
 
 function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
 }
 
-const UserButton = styled(CustomLinkButton)({
-    "&:hover": {
-      backgroundColor: "#0C356A", 
-      color: "white", 
-    },
-
-    borderColor: "#0C356A", 
-    borderWidth: 1, 
-    borderStyle: "solid",
-    color: "#0C356A",
-  });
-
-export default function Form() {
+export default function AdminLoginForm() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -130,21 +119,24 @@ export default function Form() {
   const handleSignUp = (arr) => {
     const post = async (arr) => {
       const data = {
-        email: arr[0],
+        licenseNumber: arr[0],
         password: arr[1],
       };
 
-      axios
-        .post("/user/loginUser", data)
+      console.log(data.email);
+      console.log(data.password);
+
+      await axios
+        .post("/admin/loginadmin", data)
         .then((res) => {
           console.log(res);
           setsccMSG("Login succeed");
           setSeverity("success");
           setsccColor("#03C988");
-          navigate("/userdashboard");
+          navigate("/admindashboard");
         })
         .catch((err) => {
-          console.log("Login Failed");
+          console.log(err);
           setsccMSG("Login Failed");
           setSeverity("error");
           setsccColor("#F24C3D");
@@ -153,14 +145,14 @@ export default function Form() {
 
     if (arr[0] === "") {
       isNameNull = true;
-      setNameErr("name is not provided");
+      setNameErr("license is not provided");
     } else {
       isNameNull = false;
       setNameErr("");
     }
 
     if (arr[1] === "") {
-      setPasswordErr("Email is not provided");
+      setPasswordErr("Password is not provided");
       isPasswordNull = true;
     } else {
       setPasswordErr("");
@@ -168,14 +160,12 @@ export default function Form() {
     }
 
     if (!isNameNull && !isPasswordNull) {
-      
       post(arr);
       setsccMSG("Loading..");
       setSeverity("warning");
       setsccColor("#FFCC70");
-
     } else {
-      setsccMSG("Please fill both fields");
+      setsccMSG("Login Failed");
       setsccColor("#F24C3D");
       setSeverity("error");
     }
@@ -184,7 +174,7 @@ export default function Form() {
   var isNameNull,
     isPasswordNull = false;
   let navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [license,setLicenseId] = useState("");
   const [password, setPassword] = useState("");
   const [nameErr, setNameErr] = useState("");
   const [sccColor, setsccColor] = useState("");
@@ -195,6 +185,7 @@ export default function Form() {
     open: false,
     Transition: Slide,
   });
+
 
   const handleClick = (Transition) => {
     setState({
@@ -210,7 +201,19 @@ export default function Form() {
     });
   };
 
-  const valueList = [name, password];
+  const valueList = [license, password];
+
+  const UserButton = styled(CustomLinkButton)({
+    "&:hover": {
+      backgroundColor: "#9681EB", // Change to desired hover color
+      color: "white", // Change to desired hover text color
+    },
+
+    borderColor: "#9681EB", // Change to desired hover border color
+    borderWidth: 1, // Change to desired hover border width
+    borderStyle: "solid",
+    color: "#9681EB",
+  });
 
  
 
@@ -250,7 +253,7 @@ export default function Form() {
                     variant="h3"
                     sx={{
                       fontFamily: "'Courier Prime', monospace",
-                      color: "#0C356A",
+                      color: "#6527BE",
                     }}
                   >
                     VDONATE
@@ -262,7 +265,7 @@ export default function Form() {
                   <Typography sx={textprop}>
                     Lets be a part of<br></br>donating journey
                   </Typography>
-                  <UserButton to="/adminlogin">Go To Admin Login</UserButton>
+                  <UserButton to="/userlogin">Back To User Login</UserButton>
                 </Stack>
               </Stack>
             </Box>
@@ -306,17 +309,17 @@ export default function Form() {
                       sx={{
                         marginLeft: "10px",
                         alignContent: "center",
-                        color: "#279EFF",
+                        color: "#6527BE",
                       }}
                     >
                       Login
                     </Typography>
 
                     <TextBox
-                      label="EMAIL"
+                      label="LISENCE ID"
                       variant="outlined"
                       onChange={(e) => {
-                        setName(e.target.value);
+                    setLicenseId(e.target.value);
                       }}
                     >
                       {" "}
@@ -385,10 +388,11 @@ export default function Form() {
         <Snackbar
           open={state.open}
           onClose={handleClose}
+          onMouseMove={handleClose}
           anchorOrigin={anchorOrigin}
           TransitionComponent={state.Transition}
           message={sccMSG}
-          key={state.Transition.name}
+          key={state.Transition.license}
           autoHideDuration={5000}
           sx={{ width: { sm: "auto", lg: "30%" } }}
         >
@@ -405,7 +409,7 @@ export default function Form() {
             {sccMSG}
           </Alert>
         </Snackbar>
-        <Footer backColor="#0C356A" marginTop='100px' />
+        <Footer backColor="#9681EB" marginTop='100px'/>
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
-import daker from "../../CommonComponents/ColorDarker";
-import { Stack } from "react-bootstrap";
+import daker from "./ColorDarker";
 
 export default function Tab({
   title,
@@ -27,13 +26,13 @@ export default function Tab({
         <Box
           sx={{
             backgroundColor: lightColor,
-            borderBottom: "3px solid " + titleBackColor,
-            width: "100%",
+            //borderBottom: "3px solid " + titleBackColor,
+            width: "100%",borderRadius:'0px 30px',
           }}
         >
           <Typography
             variant={fontSize}
-            sx={{ padding: "10px", color: fontColor }}
+            sx={{ padding: "10px", color: fontColor, textAlign:'left', marginLeft:'30px' }}
           >
             {title}
           </Typography>
