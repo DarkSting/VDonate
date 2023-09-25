@@ -23,8 +23,6 @@ const addCampaign = async (req, res) => {
   }
 };
 
-
-
 const findAllCampaign = async (req, res, next) => {
   await CampaignModel.find({})
     .then((result) => {
@@ -65,9 +63,7 @@ const assignDonorsToCampaigns = async (req, res, next) => {
 };
 
 const createDonatePool = async (req, res) => {
-
   const { donors, location, organizedBy, endTime, startTime } = req.body;
-
 
   let foundDonors = [];
   let bloodBags = [];
@@ -88,31 +84,31 @@ const createDonatePool = async (req, res) => {
   });
 
   if (matchedDocuments.length === searchArray.length) {
-    console.log('Documents that match the searchArray exactly:');
+    console.log("Documents that match the searchArray exactly:");
     console.log(matchedDocuments);
   } else {
-    console.log('Not all values in the searchArray are found in the documents.');
-    console.log('Matched Documents:');
+    console.log(
+      "Not all values in the searchArray are found in the documents."
+    );
+    console.log("Matched Documents:");
     console.log(matchedDocuments);
-    console.log('Missing Values:');
-    const missingValues = searchArray.filter(value => !matchedDocuments.some(doc => doc.myArray.includes(value)));
+    console.log("Missing Values:");
+    const missingValues = searchArray.filter(
+      (value) => !matchedDocuments.some((doc) => doc.myArray.includes(value))
+    );
     console.log(missingValues);
   }
 
-  for(let currentDonor of foundDonors){
-
+  for (let currentDonor of foundDonors) {
     let newBloodBag = new BloodBagModel({
-        dateCreated:Date(),
-        donor:currentDonor._id,
-        capacity:0,
-        bloodType:currentDonor.bloodType,
-        donationType:"",
-        presevativesAdded:""
-    })
-
+      dateCreated: Date(),
+      donor: currentDonor._id,
+      capacity: 0,
+      bloodType: currentDonor.bloodType,
+      donationType: "",
+      presevativesAdded: "",
+    });
   }
-
-
 };
 
 //add donors to the campaign

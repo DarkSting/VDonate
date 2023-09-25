@@ -1,33 +1,28 @@
-const mongoose =require('mongoose');
-const {DonationSchema} = require('./DonationModel')
+const mongoose = require("mongoose");
+const { DonationSchema } = require("./DonationModel");
 
 const InventorySchema = new mongoose.Schema({
-    
-    bloodUnits:{
-        type:Number,
-        required:true
+  bloodUnits: {
+    type: Number,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (value) {
+        const bloodTypeRegex = /^(A|B|AB|O)[+-]$/;
+        return bloodTypeRegex.test(value);
+      },
+      message: "Please enter a valid blood type",
     },
-    category:{
-        type:String,
-        required:true,
-        validate:{
-            validator: function (value) {
-                const bloodTypeRegex = /^(A|B|AB|O)[+-]$/;
-                return bloodTypeRegex.test(value);
-              },
-              message: 'Please enter a valid blood type',
-        }
-    },
-   Donations:{
-    type:[DonationSchema],
-    required:true
-   }
-   ,    
-    
-    
-
+  },
+  Donations: {
+    type: [DonationSchema],
+    required: true,
+  },
 });
 
-const InventoryModel = mongoose.model('InventoryModel',InventorySchemaSchema);
+const InventoryModel = mongoose.model("InventoryModel", InventorySchemaSchema);
 
-module.exports ={InventoryModel};
+module.exports = { InventoryModel };
