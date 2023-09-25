@@ -12,6 +12,7 @@ dotenv.config();
 
 //app configuration
 const app = express();
+app.set("trust proxy", true);
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -22,6 +23,7 @@ app.get('/remove-cookie', (req, res) => {
     res.sendStatus(200);
   });
 app.use('/admin',AdminRoutes);
+app.use('/donation',require('./Routes/DonationRoutes.js'));
 app.use('/complain',ComplainRoutes)
 app.get('/getCookie',(req,res)=>{
     

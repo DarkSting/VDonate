@@ -1,5 +1,6 @@
 const mongoose =require('mongoose');
 const {parsePhoneNumber} = require('libphonenumber-js')
+const bcrypt = require('bcrypt');
 
 const AdminSchema = new mongoose.Schema({
     userName:String,
@@ -71,9 +72,35 @@ const AdminSchema = new mongoose.Schema({
       password:{
         type:String,
         default:""
+      },
+      
+      isActive:{
+        type:Boolean,
+        default:false
       }
   
 });
+
+AdminSchema.statics.login = async function(lisence,password){
+
+  const user = await this.findOne({licenseNumber:lisence});
+
+  if(user){
+      const auth = await bcrypt.compare(password,user.password);
+      
+      if(auth){
+       
+        return user;
+        
+      }
+      else{
+        throw Error("invalid password");
+      }
+  }
+
+  Error("user not found")
+}
+
 
 const AdminModel = mongoose.model('AdminModel',AdminSchema);
 

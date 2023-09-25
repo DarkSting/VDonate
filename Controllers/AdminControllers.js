@@ -1,7 +1,45 @@
-const { authenticateUser } = require('../Middlewares/authMiddleware');
 const {AdminModel} = require('../Models/AdminModel');
 const { UserModel } = require('../Models/UserModel');
+const bcrypt = require('bcrypt');
+const {sendmailInternal} = require('./MailControllers');
+const jwt = require('jsonwebtoken');
+const { createToken } = require('../Middlewares/authMiddleware');
 
+
+//check the the admin login
+const welcomeAdmin = (req,res)=>{
+    
+    const token = req.cookies.jwt;
+
+    console.log(token);
+
+    if(token){
+ 
+     jwt.verify(token,process.env.SECRET,(err,decoded)=>{
+ 
+         if(err){
+             console.log(err.message);
+             res.status(500).json("invalid token");
+         }
+         else{
+      
+              AdminModel.findOne({_id:decoded.id}).then(r=>{
+                return res.status(200).json({name:r.userName});
+                
+             }).catch(er=>{
+                return res.status(404).json({msg:"user not found",code:500});
+             })
+             
+         }
+ 
+     })
+ 
+    }
+    else{
+       return res.status(404).json({msg:"token not found",code:500});
+    }
+   
+}
 
 //adding a user model to the database
 const addAdmin = async(req,res)=>{
@@ -14,9 +52,20 @@ const addAdmin = async(req,res)=>{
         phone,
         bloodType,
         photo,
-        licenseNumber
+        licenseNumber,
+        role
 
     } = req.body
+
+    if(!name ||
+        !age||
+        !nic||
+        !email ||
+        !phone ||
+        !licenseNumber){
+
+            return res.status(500).json({msg:"provide necessary details"})
+        }
 
    try{
 
@@ -24,15 +73,12 @@ const addAdmin = async(req,res)=>{
         userName:name,
         email:email,
         phone:phone,
-        gender:gender,
-        bloodType:bloodType,
         age:age,
         nic:nic,
-        photo:photo,
-        licenseNumber:licenseNumber
+        licenseNumber:licenseNumber,
+        role:role
 
-        
-        
+ 
     })
 
     const result = await newAdmin.save()
@@ -40,7 +86,7 @@ const addAdmin = async(req,res)=>{
 
    }
    catch(error){
-    return res.status(500).json(error);
+    return res.status(500).json({msg:error.message});
    }
     
 
@@ -50,22 +96,241 @@ const addAdmin = async(req,res)=>{
  * 
  * loggin Admin
  */
-const loginAdmin = (req,res)=>{
+const loginAdmin = async(req,res)=>{
 
-    const{email,password} = req.body;
+    const{licenseNumber,password} = req.body;
 
-    AdminModel.find({email:email}).then(r=>{
-        if(authenticateUser(r._id)){
+    try{
 
-            //since this for testing purposes please provide the bcrypt.compare() over here
-            if(password===r.password){
-                res.status(200).json({msg:"access granted",code:200});
+        const user = await AdminModel.login(licenseNumber,password);
+
+        
+        if(user){
+            if(user.isActive){
+                const token = createToken(user._id);
+                res.cookie('jwt',token,{httpOnly:true});
+                return res.status(200).json(user);
             }
+            else{
+                return res.status(500).json({msg:"please complete the registration process"});
+            }
+            
+        }
+
+    }catch(error){
+
+        return res.status(500).json(error.message);
+
+    }
+
+}
+
+const updatePasswordAdmin = async(req,res)=>{
+
+    const{password,usermail} = req.body;
+
+    //check whether the mail is provided 
+    if(!usermail){
+        res.status(404).json({msg:"please provide the mail"})
+    }
+
+    //preparing the mail components
+    const subject = "Request approved";
+    const title = "Your new password";
+    let intro = "";
+    const buttontxt = "";
+    const instructions = "Thank you for joining with us";
+
+
+    //hashing the password
+    const salt = await bcrypt.genSalt();
+   
+    let newpass = "";
+
+    function generatePass() {
+    let pass = '';
+    let str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+        'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+ 
+    for (let i = 1; i <= 5; i++) {
+        let char = Math.floor(Math.random()
+            * str.length + 1);
+ 
+        pass += str.charAt(char)
+        }
+        return pass;
+    }
+
+    const foundUser = await AdminModel.findOne({email:usermail});
+
+
+    console.log(foundUser);
+
+    //check whether the user is available
+    if(foundUser){
+
+        //check whether the user is provided the password if not generate the password automatically
+        if(!password){
+
+            let userpass = generatePass();
+            newpass = await bcrypt.hash(userpass, salt);
+    
+            console.log(userpass)
+            intro = `<p>your new password is <b>${userpass}</b></p>`
+
+            //sending the mail
+            const mailsent = sendmailInternal(usermail,subject,title,intro,buttontxt,instructions);
+    
+            //check whether mail is sent or not 
+            if(mailsent){
+
+                console.log("mail sent")
+                await AdminModel.findOneAndUpdate({email:usermail},{password:newpass}).then(r=>{
+
+                    return res.status(200).json({msg:"password updated"});
+    
+                }).catch(error=>{
+    
+                    return res.status(500).json({msg:error.message});
+                })
+            }
+            else{
+                return res.status(500).json({msg:"unable to send the mail"})
+            }
+
         }
         else{
-            res.status(404).json({msg:"user not found",code:500});
+            
+            newpass = await bcrypt.hash(password, salt);
+            await AdminModel.findOneAndUpdate({email:usermail})({password:newpass}).then(r=>{
+
+                return res.status(200).json({msg:"password updated"});
+
+            }).catch(error=>{
+
+                return res.status(500).json({msg:error.message});
+            })
         }
-    })
+    }
+    else{
+        return res.status(404).json({msg:"unable to find the user"});
+    }
+
+
+}
+
+const updatePasswordUser= async(objectId,password)=>{
+
+
+    //check whether the mail is provided 
+    if(!objectId){
+
+       return false;
+
+    }
+
+    //preparing the mail components
+    const subject = "You signup has been approved";
+    const title = "Your new password";
+    let intro = "";
+    const buttontxt = "";
+    const instructions = "Thank you for joining with us";
+
+
+    //hashing the password
+    const salt = await bcrypt.genSalt();
+   
+    let newpass = "";
+
+    function generatePass() {
+    let pass = '';
+    let str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+        'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+ 
+    for (let i = 1; i <= 5; i++) {
+        let char = Math.floor(Math.random()
+            * str.length + 1);
+ 
+        pass += str.charAt(char)
+        }
+        return pass;
+    }
+
+    const foundUser = await UserModel.findOne({_id:objectId});
+
+    //check whether the user is available
+    if(foundUser){
+
+        //check whether the user is provided the password if not generate the password automatically
+        if(!password){
+
+            let userpass = generatePass();
+            newpass = await bcrypt.hash(userpass, salt);
+    
+            console.log(userpass)
+            intro = `<p>your new password is <b>${userpass}</b></p>`
+
+            //sending the mail
+            const mailsent = sendmailInternal(foundUser.email,subject,title,intro,buttontxt,instructions);
+    
+            //check whether mail is sent or not 
+            if(mailsent){
+
+
+                const status =await UserModel.findOneAndUpdate({email:foundUser.email},{password:newpass}).then(r=>{
+
+                    console.log(r);
+                    
+                    return true;
+    
+                }).catch(error=>{
+    
+                    console.log(error);
+                    return false;
+                })
+               
+
+                return status;
+
+            }
+            else{
+                return false;
+            }
+
+        }
+        else{
+            
+            newpass = await bcrypt.hash(password, salt);
+           const status = await UserModel.findOneAndUpdate({email:foundUser.email})({password:password}).then(r=>{
+
+                return true;
+
+            }).catch(error=>{
+
+                return false;
+            })
+
+            return status;
+        }
+    }
+    else{
+        
+        return false;
+
+    }
+
+};
+
+const getNewlySignedAdmins = async(req,res)=>{
+
+    const foundAdmins = await AdminModel.find({isActive:false});
+
+    if(foundAdmins.length>0){
+        return res.status(200).json(foundAdmins);
+    }
+    else{
+        return res.status(500).json(foundAdmins);
+    }
 
 }
 
@@ -81,6 +346,7 @@ const getYetToValidateUsers= (req,res)=>{
             cObj.phone = value.phone;
             cObj.id = value.nic;
             cObj.objectId = value._id;
+            cObj.email = value.email;
             array.push(cObj);
 
         })
@@ -144,6 +410,7 @@ const findAdmin = async(req,res)=>{
    });
 
 }
+
 
 
 const updateAdmin = async(req,res,next)=>{
@@ -230,7 +497,12 @@ module.exports  = {
     findAllAdmins,
     findAdmin,
     confirmAdmin,
-    getYetToValidateUsers
+    getYetToValidateUsers,
+    loginAdmin,
+    updatePasswordAdmin,
+    welcomeAdmin,
+    getNewlySignedAdmins,
+    updatePasswordUser
 
 };
 

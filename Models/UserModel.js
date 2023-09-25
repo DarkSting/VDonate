@@ -1,6 +1,7 @@
 const mongoose =require('mongoose');
 const {parsePhoneNumber} = require('libphonenumber-js')
 const bcrypt = require('bcrypt');
+const { locationSchema } = require('./Location');
 
 const UserSchema = new mongoose.Schema({
     userName:{
@@ -20,6 +21,7 @@ const UserSchema = new mongoose.Schema({
       type:Boolean,
       default:false
     },
+    
     email: {
         type: String,
         required: true,
@@ -40,6 +42,7 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+
       phone: {
         type: String,
         unique:true,
@@ -63,6 +66,12 @@ const UserSchema = new mongoose.Schema({
       photo:{
         type:Buffer,
       },
+
+      location:{
+        type:locationSchema,
+        required:[true,"location required"]
+      }
+     ,
       bloodType:{
         type:String,
         validate:{

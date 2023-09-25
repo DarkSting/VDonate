@@ -1,35 +1,45 @@
 const mongoose =require('mongoose');
-const {AdminSchema} = require('./AdminModel');
-const {UserSchema} = require('./UserModel');
-const { DonationRequestModel, DonationRequestSchema } = require('./DonationRequestModel');
 
 const CampaignSchema = new mongoose.Schema({
+
     location:{
         type:String,
         required:true
     },
+    organizedBy:{
+      type:String
+    },
     timeBegin:{
         type:Date,
-        required:true
+        required:[true,"begin time required"]
     },
-    StaffGroup:{
-        type:[AdminSchema]
-        ,required:true
-    },
-      isValidated:{
+    
+    StaffGroup:[{
+        
+      type:mongoose.Schema.ObjectId,
+      ref:'adminmodels'
+    }],
+      isCompleted:{
         type:Boolean,
         default:false,
       },
-     endAt: {
+     timeEnd: {
         type: Date,
-        default: Date.now,
+        required:[true,"end time required"],
       },
-      donationRequest:{
-        type:[DonationRequestSchema],
-        required:[true,'didnt get any donation requests']
+      donors:[
+        {
+          type:mongoose.Schema.ObjectId,
+          ref:'usermodels'
+        }
+      ],
+      bloodContainer:{
+        type:mongoose.Schema.ObjectId,
+        ref:'bloodBagmodels'
       }
       
 
+      
 });
 
 const CampaignModel = mongoose.model('CampaignModel',CampaignSchema);
