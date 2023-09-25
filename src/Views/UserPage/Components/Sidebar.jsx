@@ -129,14 +129,15 @@ const Sidebar = (props) => {
     
       <Grid container spacing={2} sx={{height:'93vh'}}>
         <Grid item xs={2} md={3} lg={2}>
-      <Box position="fixed" sx={{ width:'100%', display: 'flex',flexDirection:'row',justifyContent: {sm:'center',lg:'flex-start',md:'flex-start'}}} >
+      <Box position="fixed" sx={{marginTop:'50px' , width:'100%', display: 'flex',flexDirection:'row',justifyContent: {sm:'center',lg:'flex-start',md:'flex-start'}}} >
 
         {/*Campaign */}
         <List id="List" sx={{overflowX:'scroll',display:'flex',flexDirection:{
           sm:'row', lg:'column',md:'column'
         } ,scrollbarWidth: 'none', // Firefox
         '&::-webkit-scrollbar': {
-          display: 'none' // Chrome, Safari, Edge, and Opera
+          display: 'none',
+          // Chrome, Safari, Edge, and Opera
         }}}>
           <ListItem disablePadding>
             <ListItemButton selected={selectedItem===state[0]} onClick={()=>{setSelectedItem(state[0])}} sx={ListButtonProp(props)}>

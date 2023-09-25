@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 
-const fileaxios = axios.create({
+const nameaxios = axios.create({
     baseURL:'http://localhost:8080',
     headers: {
-        'Content-Type':'multipart/form-data',
+        'Content-Type':'application/json',
       },
       withCredentials:true
 })
 
-export default fileaxios;
+export default nameaxios;
