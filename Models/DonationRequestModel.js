@@ -29,6 +29,11 @@ const DonationRequestSchema = new mongoose.Schema({
     ref: "AdminModel",
   },
 
+  isAssigned:{
+    type:Boolean,
+    default:false
+  }
+,
   description: {
     type: String,
     default: "",

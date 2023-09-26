@@ -1,17 +1,17 @@
 const {
-  addCampaign,
   findAllCampaign,
-  findCampaign,
   updateCampaign,
+  createCampaign,
+  findPendingCampaigns,
 } = require("../Controllers/CampaignControllers");
 
 const { Router } = require("express");
 
 const routes = Router();
 
-routes.post("/addCampaign", addCampaign);
+routes.post("/addCampaign", createCampaign);
 routes.post("/updateCampaign", updateCampaign);
 routes.get("/findAllCampaigns", findAllCampaign);
-routes.get("/findCampaign", findCampaign);
+routes.get('/getpendingcampaigns',findPendingCampaigns);
 
 module.exports = routes;

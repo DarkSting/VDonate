@@ -1,5 +1,7 @@
 const BloodBagModel = require("../Models/BloodBagModel");
+const BloodContainerModel = require("../Models/BloodContainerModel");
 const { CampaignModel } = require("../Models/CampaignModel");
+const { DonationRequestModel } = require("../Models/DonationRequestModel");
 const { UserModel } = require("../Models/UserModel");
 
 //adding a user model to the database
@@ -23,6 +25,85 @@ const addCampaign = async (req, res) => {
   }
 };
 
+const createCampaign = async(req,res)=>{
+
+    const{startTime,endTime,location,staff,donors,organizedBy} = req.body;
+
+    console.log("campaign creating");
+
+    const foundCampaign = await CampaignModel.findOne({$and:[{timeBegin:{$gte:startTime}},{timeBegin:{$lte:endTime}}]});
+
+    let foundDonors = donors;
+
+    if(!foundCampaign){
+
+      let assignedBloodBags = [];
+
+      //creating blood bags for each user
+      for(let currentDonor of foundDonors){
+
+        const foundRequest = await DonationRequestModel.findOne({User:currentDonor._id})
+
+        let newBloodBag = new BloodBagModel({
+            dateCreated:Date(),
+            donor:currentDonor._id,
+            capacity:0,
+            bloodType:currentDonor.bloodType,
+            donationType:foundRequest.donationType,
+            presevativesAdded:""
+        });
+
+
+        assignedBloodBags.push(newBloodBag);
+
+        try{
+          await newBloodBag.save()
+          //await DonationRequestModel.updateOne({_id:foundRequest._id},{isAssigned:true})
+        }
+        catch(error){
+          return res.status(500).json({msg:error.message})
+        }
+        
+      }
+
+      const newBloodConatiner = new BloodContainerModel({
+      bloodBags:assignedBloodBags
+      })
+
+      try{
+        await newBloodConatiner.save();
+      }
+      catch(error){
+          return res.status(500).json({msg:error.message})
+      } 
+
+
+        const newCampaign = new CampaignModel({
+          location:location,
+          timeBegin:startTime,
+          timeEnd:endTime,
+          donors:foundDonors,
+          bloodContainer:newBloodConatiner
+        
+        })
+
+        newCampaign.save().then(r=>{
+
+          return res.status(201).json({msg:"campaign created"});
+
+        }).catch(error=>{
+
+          return res.status(500).json({msg:"campaign created"});
+
+        });
+
+    }
+    else{
+      return res.status(409).json({msg:"a campaign is already assigned"})
+    }
+
+}
+
 const findAllCampaign = async (req, res, next) => {
   await CampaignModel.find({})
     .then((result) => {
@@ -33,83 +114,61 @@ const findAllCampaign = async (req, res, next) => {
     });
 };
 
-const findCampaign = async (req, res, next) => {
-  const { id, name } = req.body;
+const findPendingCampaigns = async (req, res) => {
+  
+  const { startTime, endTime } = req.query;
 
-  await CampaignModel.findOne({ $or: [{ name: name }, { _id: id }] })
-    .then((result) => {
-      return res.status(201).json(result);
-    })
-    .catch((error) => {
-      return res.status(500).json(error);
-    });
-};
+  let foundCampaigns = [];
 
-//asign donors to the campaigns
-const assignDonorsToCampaigns = async (req, res, next) => {
-  const { donors, location, organizedBy, endTime, startTime } = req.body;
 
-  if (!location || !organizedBy || !endTime || !startTime) {
-    return res.status(500).json({ msg: "missing required fields" });
-  }
+  const st = !startTime? new Date() : new Date(startTime)
+  const et = !endTime? new Date() : new Date(endTime)
 
-  if (donors.length > 0) {
-    next();
-  } else {
-    return res
-      .status(500)
-      .json({ msg: "found empty donors cannot create a campaign" });
-  }
-};
+  console.log(st);
+  console.log(et);
 
-const createDonatePool = async (req, res) => {
-  const { donors, location, organizedBy, endTime, startTime } = req.body;
+  if(startTime && endTime ){
 
-  let foundDonors = [];
-  let bloodBags = [];
+    try{
 
-  // Find documents where any value in searchArray is included in donors
-  UserModel.find({ myArray: { $in: searchArray } }, (err, results) => {
-    if (err) {
-      console.error(err);
-      return;
+      foundCampaigns = await CampaignModel.find({$and:[{timeBegin:{$gte:st}},{timeEnd:{$lte:et}},{isCompleted:false}]});
+
+    
+
+      console.log(foundCampaigns);
+    
+      
     }
+    catch(error){
+      console.log(error.message);
+    }
+    
 
-    foundDonors = results;
-
-    // Check if the retrieved documents match the donors exactly
-    const matchedDocuments = results.filter((doc) => {
-      return searchArray.every((value) => doc.myArray.includes(value));
-    });
-  });
-
-  if (matchedDocuments.length === searchArray.length) {
-    console.log("Documents that match the searchArray exactly:");
-    console.log(matchedDocuments);
-  } else {
-    console.log(
-      "Not all values in the searchArray are found in the documents."
-    );
-    console.log("Matched Documents:");
-    console.log(matchedDocuments);
-    console.log("Missing Values:");
-    const missingValues = searchArray.filter(
-      (value) => !matchedDocuments.some((doc) => doc.myArray.includes(value))
-    );
-    console.log(missingValues);
+  }
+  else{
+    foundCampaigns = await CampaignModel.find({isCompleted:false});
+  
   }
 
-  for (let currentDonor of foundDonors) {
-    let newBloodBag = new BloodBagModel({
-      dateCreated: Date(),
-      donor: currentDonor._id,
-      capacity: 0,
-      bloodType: currentDonor.bloodType,
-      donationType: "",
-      presevativesAdded: "",
-    });
-  }
+  return res.status(200).json(foundCampaigns);
+
 };
+
+// returns the container
+const getBloodContainer = async(campaign) =>{
+
+  const containerID = campaign.bloodContainer;
+
+  const foundContainer = await BloodContainerModel.findOne({_id:containerID});
+
+  if(foundContainer){
+    
+    return foundContainer;
+  }
+
+  return null;
+}
+
 
 //add donors to the campaign
 const findDonorInCampaign = async (req, res, next) => {
@@ -230,7 +289,8 @@ module.exports = {
   addCampaign,
   updateCampaign,
   findAllCampaign,
-  findCampaign,
   findDonorInCampaign,
   removeUsersFromCampaign,
+  createCampaign,
+  findPendingCampaigns
 };
