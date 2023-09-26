@@ -16,12 +16,11 @@ import UserApprovals, {
 } from "./Views/AdminPage/ApproveUsers";
 import AdminLogin from "./Views/LoginPage/AdminLogin";
 import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
-import UploadTest from "./Views/TestsPage/Reports";
 import DonationReqTab from "./Views/AdminPage/Components/DonationRequestTabs";
 import { useSnackbar } from "./CommonComponents/SnackBarContext";
 import { Snackbar as SnackbarMui, SnackbarContent } from "@mui/material";
-import CampaignTab from "./Views/AdminPage/AddCampaign";
 import ReportTab from "./Views/TestsPage/Components/ReportTabs";
+import CampaignTabs from "./Views/AdminPage/Components/CampaignTabs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,7 +43,7 @@ const router = createBrowserRouter(
           element={<NewAdminSignUps />}
         />
 
-        <Route path="campaign" element={<CampaignTab />} />
+        <Route path="campaign" element={<CampaignTabs />} />
 
         <Route path="donationrequests" element={<DonationReqTab />} />
 

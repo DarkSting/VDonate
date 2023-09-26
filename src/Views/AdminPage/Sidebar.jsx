@@ -69,7 +69,7 @@ const state = [
   "Blood Stock",
   "Emergencies",
   "Inbox",
-  "Inventory",
+  "Complains",
   "Reports",
   "Admin Approvals",
   "Requests"
@@ -159,7 +159,8 @@ const Sidebar = (props) => {
                 />
               </ListItemBtn>
             </ListItem>
-
+            
+            {/*Donation requests */}
             <ListItem disablePadding>
               <ListItemBtn
                 to="donationrequests"
@@ -179,7 +180,7 @@ const Sidebar = (props) => {
               </ListItemBtn>
             </ListItem>
 
-            {/*Pending Campaigns*/}
+            {/*Campaigns*/}
             <ListItem disablePadding>
               <ListItemBtn
                 to="campaign"
@@ -195,26 +196,6 @@ const Sidebar = (props) => {
                 <ListItemText
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[1]}
-                />
-              </ListItemBtn>
-            </ListItem>
-
-            {/*Blood Stock*/}
-            <ListItem disablePadding>
-              <ListItemBtn 
-                to="bloodstock"
-                selected={selectedItem === state[2]}
-                onClick={() => {
-                  setSelectedItem(state[2]);
-                }}
-                sx={ListButtonProp(props)}
-              >
-                <ListItemIcon>
-                  <Bloodtype sx={IconProp(props)} />
-                </ListItemIcon>
-                <ListItemText
-                  sx={{ display: { xs: "none", md: "block" } }}
-                  primary={state[2]}
                 />
               </ListItemBtn>
             </ListItem>
@@ -275,6 +256,7 @@ const Sidebar = (props) => {
                 />
               </ListItemButton>
             </ListItem>
+            
             {/*Reports*/}
             <ListItem disablePadding>
               <ListItemButton to="uploadtests"
@@ -301,10 +283,10 @@ const Sidebar = (props) => {
         <Box
           sx={{
             marginLeft: {
-              xs: -3.5,
-              lg: -4,
+              xs: 0,
+              lg: 1,
             },
-            width: "100%",
+            width: "95%",
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",

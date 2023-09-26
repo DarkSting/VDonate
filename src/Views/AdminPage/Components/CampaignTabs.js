@@ -1,11 +1,9 @@
 import React, { useContext, useState} from 'react';
-import DonationRequest from "../DonationRequest";
 import { Box,Tab, Tabs, Typography } from '@mui/material';
-import GetApprovedDonationRequests from '../ApproveDonationRequestsTab';
-import RejectedDonationRequests from '../RejectedRequestsTab';
 import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
-
+import AddCampaign from '../AddCampaign';
+import PendingCampaignTab from '../PendingCampaigns';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -40,25 +38,25 @@ function TabPanel(props) {
         aria-label="Multiple Tabs Example"
         sx={{alignSelf:'flex-start',marginTop:2}}
       >
-        <Tab label="Pending Requests" />
-        <Tab label="Approved Requests" />
-        <Tab label="Rejected Requests" />
+        <Tab label="Add Campaign" />
+        <Tab label="Pending Campaigns" />
+        <Tab label="Cancelled Campaigns" />
       </Tabs>
-      <TabPanel value={currentTab} index={0}>
-        <DonationRequest />
+      <TabPanel value={currentTab} index={0} >
+        <AddCampaign />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <GetApprovedDonationRequests />
+        <PendingCampaignTab />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
-        <RejectedDonationRequests />
+        
       </TabPanel>
     </div>
     )
   }
 
 
-  function DonationReqTab() {
+  function CampaignTabs() {
     
     const {  darkColor } = useContext(MyContext);
 
@@ -71,7 +69,7 @@ function TabPanel(props) {
   
     return (
       <MainTab
-          title="Requests"
+          title="Campaigns"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
@@ -81,5 +79,5 @@ function TabPanel(props) {
     );
   }
   
-  export default DonationReqTab;
+  export default CampaignTabs;
   
