@@ -127,7 +127,7 @@ const loginAdmin = async(req,res)=>{
 
 const updatePasswordAdmin = async(req,res)=>{
 
-    const{password,usermail} = req.body;
+    const{password,usermail,approval} = req.body;
 
     //check whether the mail is provided 
     if(!usermail){
@@ -170,7 +170,7 @@ const updatePasswordAdmin = async(req,res)=>{
     if(foundUser){
 
         //check whether the user is provided the password if not generate the password automatically
-        if(!password){
+        if(!foundUser.isActive && approval){
 
             let userpass = generatePass();
             newpass = await bcrypt.hash(userpass, salt);
@@ -185,7 +185,7 @@ const updatePasswordAdmin = async(req,res)=>{
             if(mailsent){
 
                 console.log("mail sent")
-                await AdminModel.findOneAndUpdate({email:usermail},{password:newpass}).then(r=>{
+                await AdminModel.findOneAndUpdate({email:usermail},{$set:{password:newpass,isActive:true}}).then(r=>{
 
                     return res.status(200).json({msg:"password updated"});
     
@@ -199,10 +199,10 @@ const updatePasswordAdmin = async(req,res)=>{
             }
 
         }
-        else{
+        else if(foundUser.isActive){
             
             newpass = await bcrypt.hash(password, salt);
-            await AdminModel.findOneAndUpdate({email:usermail})({password:newpass}).then(r=>{
+            await AdminModel.findOneAndUpdate({email:usermail},{password:newpass}).then(r=>{
 
                 return res.status(200).json({msg:"password updated"});
 
@@ -210,6 +210,10 @@ const updatePasswordAdmin = async(req,res)=>{
 
                 return res.status(500).json({msg:error.message});
             })
+        }else{
+
+            return res.status(500).json({msg:"Profile is deactivated"});
+
         }
     }
     else{

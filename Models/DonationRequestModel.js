@@ -34,7 +34,10 @@ const DonationRequestSchema = new mongoose.Schema({
       type:String,
       default:""
      },
-
+     isAssigned:{
+      type:Boolean,
+      default:false
+    },
      approvedDate:{
       type:Date,
       

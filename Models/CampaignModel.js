@@ -19,6 +19,10 @@ const CampaignSchema = new mongoose.Schema({
       type:mongoose.Schema.ObjectId,
       ref:'adminmodels'
     }],
+    isCancelled:{
+      type:Boolean,
+      default:false
+    },
       isCompleted:{
         type:Boolean,
         default:false,

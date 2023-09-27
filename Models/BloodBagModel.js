@@ -35,7 +35,7 @@ const BloodBagSchema = new mongoose.Schema({
     },
     presevativesAdded:{
         type:String,
-        enum:["AS-1", "AS-3", "AS-5" ]
+        enum:["AS-1", "AS-3", "AS-5",""]
     },
     filled:{
         type:Boolean,
