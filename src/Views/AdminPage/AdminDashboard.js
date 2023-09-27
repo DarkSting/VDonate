@@ -1,5 +1,5 @@
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Navbar from "./Components/Navbar";
+import Sidebar from "./Components/Sidebar";
 import { useContext, useEffect, useState } from "react";
 import darkenColor from "../../CommonComponents/ColorDarker.js";
 import axios from "../../api/axios";
@@ -12,7 +12,7 @@ export default function UserPage() {
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const {updateUser} = useContext(MyContext);
+  const { updateUser } = useContext(MyContext);
 
   let darkColor = color;
 

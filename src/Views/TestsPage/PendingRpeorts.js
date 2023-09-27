@@ -3,12 +3,16 @@ import fileaxios from '../../api/fileapi';
 import nameaxios from '../../api/nameaxios';
 import { MyContext } from '../..';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button ,TableHead} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button ,TableHead, Stack} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const backendUrl = 'http://localhost:8080';
 
-const DownloadLink = ({ file }) => {
+const DownloadLink = ({ file,setFiles,currentArray }) => {
+
+
+    const {openSnackbar} = useSnackbar();
+
     const handleDownload = () => {
       // Create a Blob with the file content
       const blob = new Blob([file.content], { type: file.contentType });
@@ -21,13 +25,41 @@ const DownloadLink = ({ file }) => {
       // Simulate a click on the download link
       downloadLink.click();
     };
+
+    function removeDownloadLink(){
+
+      nameaxios.post(`/checkfile?username=${file.userName}&filename=${file.fileName}`).then(r=>{
+
+        const newArray = currentArray.filter((item)=>file.fileName!==item.fileName)
+        setFiles(newArray);
+        openSnackbar({
+            message: `${file.fileName} Checked `,
+            color:'green',
+        
+    })
+
+    }).catch(error=>{
+
+        openSnackbar({
+            message: `${file.fileName} Failed to check the document`,
+            color:'red',
+        
+    })
+
+    })
+
+
+    }
   
     return (
-      <Button varinat="contained" onClick={handleDownload}>Download</Button>
+      <Stack spacing={1}>
+      <Button variant="contained" onClick={handleDownload}>Download</Button>
+      <Button variant="contained" onClick={removeDownloadLink} sx={{backgroundColor:'indigo','&:hover':{backgroundColor:'green'}}}>Checked</Button>
+      </Stack>
     );
   };
 
-function FileList({ files }) {
+function FileList({ files ,setFiles,currentArray}) {
 
 
   
@@ -50,7 +82,7 @@ function FileList({ files }) {
               <TableCell>{file.userName}</TableCell>
               <TableCell>{file.createdDate}</TableCell>
               <TableCell>
-                <DownloadLink file={file} />
+                <DownloadLink file={file} setFiles={setFiles} currentArray={currentArray} />
               </TableCell>
             </TableRow>
           ))}
@@ -101,7 +133,7 @@ function PendingFilesTab() {
   return (
     <div>
       <h1>File Management</h1>
-      <FileList files={files} />
+      <FileList files={files} setFiles={setFiles} currentArray={files} />
     </div>
   );
 }

@@ -133,7 +133,7 @@ export default function AdminLoginForm() {
           setsccMSG("Login succeed");
           setSeverity("success");
           setsccColor("#03C988");
-          navigate("/admindashboard");
+          navigate("/admindashboard/campaign");
         })
         .catch((err) => {
           console.log(err);

@@ -107,6 +107,7 @@ function CardForm(){
 
 
     const validateForm = () => {
+      console.log(startTime)
       return  staff !== null &&
         originRef !== null &&
         selectedItems.length > 0 &&
@@ -117,8 +118,16 @@ function CardForm(){
     const handleSubmit = () => {
       if (validateForm()) {
         // Handle form submission
-        Axios.post('/trip/createtrip',{
-        
+
+        openSnackbar({
+          message: 'Creating Campaign...',
+          color:'#000000',
+        })
+        Axios.post('/campaign/addCampaign',{
+          startTime:startTime,
+          endTime:endTime,
+          location:originRef.current.children[0].children[0].value,
+          donors:selectedItems
         }).then(value=>{
                 openSnackbar({
                   message: 'Campaign Created!',
@@ -132,6 +141,7 @@ function CardForm(){
             color:'red',
             
           })
+          console.log(e);
         })
        
       } else {
@@ -151,12 +161,11 @@ function CardForm(){
 
   }
   
-    
   
     return (
       
   
-      <Card sx={{width:'200%', flex:1}}>
+      <Card sx={{width:'100%', flex:1}}>
         <CardContent>
           <div style={{ display: 'flex' }}>
             <div style={{ flex: 1 }}>
@@ -218,11 +227,7 @@ function CardForm(){
       />
         <Box sx={{display:'flex',justifyContent:'center'}}>
           <Button variant="contained" color="primary" onClick={() =>{
-            openSnackbar({
-              message: 'Creating Campaign...',
-              color:'#000000',
-              icon:<ArrowUpward fontSize='small' />
-            })
+            handleSubmit();
           }} sx={{width:'10%',}}>
             Save
           </Button>
@@ -241,7 +246,7 @@ function CampaignTab() {
     const { darkColor } = useContext(MyContext);
 
     return (
-        <Tab title="Campaigns" fontSize="h4" fontColor="white" renderContent={<CardForm />} titleBackColor={darkColor}></Tab>
+        <CardForm />
     );
   
 }

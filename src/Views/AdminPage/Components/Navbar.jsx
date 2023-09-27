@@ -26,9 +26,9 @@ import React, { useState } from "react";
 import { Stack } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { Navigate, useNavigate } from "react-router-dom";
-import Axios from "../../api/axios";
-import LoadingSpinner from "../../CommonComponents/LoadingSpinner";
-import checkDataAvailability, { checkDataAvailabilityWithoutSetter } from "../../CommonComponents/SpinFunction";
+import Axios from "../../../api/axios";
+import LoadingSpinner from "../../../CommonComponents/LoadingSpinner";
+import checkDataAvailability, { checkDataAvailabilityWithoutSetter } from "../../../CommonComponents/SpinFunction";
 
 
 {/*properties of elements */}

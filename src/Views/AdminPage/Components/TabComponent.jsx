@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
-import daker from "../../CommonComponents/ColorDarker";
+import daker from "../../../CommonComponents/ColorDarker";
 import { Stack } from "react-bootstrap";
 
 export default function Tab({

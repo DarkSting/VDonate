@@ -4,13 +4,15 @@ import Axios from '../../api/axios';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 
 
-const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
+const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity,setRemovedItem})=>{
 
     const [userId,setID] = useState(Data.User._id);
     const [requestId,setRequestID] = useState(Data.request._id);
 
+    const {openSnackbar, closeSnackbar} = useSnackbar();
 
     console.log(Data.request._id);
 
@@ -20,13 +22,20 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
         setSeverity('warning');
         setOpen(true);
         Axios.post('donation/acceptdonationrequest',{donorID:userId, requestID:requestId}).then(r=>{
-            console.log(r.data);
+            console.log(itemArray);
             let newarray = itemArray.filter((item)=>
-                item.request._id !==requestId);
+                item.request._id !==Data.request._id);
             setArray(newarray);
             setSeverity('success');
+            openSnackbar({
+                message: 'Data Loaded',
+                color:'green',
+                
+              })
+            console.log(itemArray);
             setText('Approved');
             setOpen(true);
+            setRemovedItem(Data.User);
 
         }).catch(error=>{
             setSeverity('error');
@@ -38,17 +47,17 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
     }
 
     function deleteApproval(){
-
         setText('Loading...');
         setSeverity('warning');
         setOpen(true);
-        Axios.put('donation/deletedonationrequest/',{donorID:userId, requestID:requestId}).then(r=>{
+        Axios.put('donation/deletedonationrequest/',{donorID:Data.User._id, requestID:Data.request._id}).then(r=>{
             console.log(r.data);
             let newarray = itemArray.filter((item)=>
-                item.request._id !==requestId);
+                item.request._id !==Data.request._id);
             setArray(newarray);
             setSeverity('success');
             setText('Rejected');
+            setRemovedItem(Data.User);
             setOpen(true);
         }).catch(error=>{
 
@@ -97,14 +106,16 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity})=>{
 }
 
 
-const CardList = ({ Data, itemArray, setArray,setOpen,setText,setSeverity}) => {
+const CardList = ({ Data, itemArray, setArray,setOpen,setText,setSeverity,setRemovedItem}) => {
 
 
     return (
         <div>
             {Data.map((card, index) => (
                 
-                card.User===null? <></> : (<RequestCard Data={card} itemArray={itemArray} setArray={setArray} setOpen={setOpen} setSeverity={setSeverity} setText={setText}/>)
+                card.User===null? <></> : (<RequestCard Data={card} itemArray={itemArray} setArray={setArray} 
+                    setRemovedItem={setRemovedItem}
+                    setOpen={setOpen} setSeverity={setSeverity} setText={setText}/>)
             ))}
         </div>
     );
@@ -119,6 +130,7 @@ export default function DonationRequest(){
     const [open, setOpen] = useState(false);
     const [severity, setServerity] = useState('success');
     const [text, setText] = useState('null');
+    const [removedItem , setRemovedItem] = useState(null);
       
 
     useEffect(()=>{
@@ -134,9 +146,11 @@ export default function DonationRequest(){
 
     },[])
 
+
+
     return(
         <>
-        {requests.length>0?(<CardList Data={requests} itemArray={requests} setArray={setRequests} setOpen={setOpen} setSeverity={setServerity} setText={setText} />):LoadSubSpinner(loading,setLoading,"No Pending Requests")}
+        {requests.length>0?(<CardList Data={requests} itemArray={requests} setArray={setRequests} setOpen={setOpen} setSeverity={setServerity} setText={setText} setRemovedItem={setRemovedItem}/>):LoadSubSpinner(loading,setLoading,"No Pending Requests")}
         <Snackbar
       open={open}
       autoHideDuration={4000} // Adjust as needed

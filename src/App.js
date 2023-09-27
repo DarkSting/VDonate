@@ -16,13 +16,11 @@ import UserApprovals, {
 } from "./Views/AdminPage/ApproveUsers";
 import AdminLogin from "./Views/LoginPage/AdminLogin";
 import NewAdminSignUps from "./Views/AdminPage/NewAdminSignUps";
-import UploadTest from "./Views/TestsPage/Reports";
 import DonationReqTab from "./Views/AdminPage/Components/DonationRequestTabs";
 import { useSnackbar } from "./CommonComponents/SnackBarContext";
-import { Snackbar as SnackbarMui, SnackbarContent } from '@mui/material';
-import CampaignTab from "./Views/AdminPage/AddCampaign";
-import Footer from "./CommonComponents/Footer";
+import { Snackbar as SnackbarMui, SnackbarContent } from "@mui/material";
 import ReportTab from "./Views/TestsPage/Components/ReportTabs";
+import CampaignTabs from "./Views/AdminPage/Components/CampaignTabs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,9 +29,7 @@ const router = createBrowserRouter(
       <Route path="signup" element={<SignUpPage />} />
       <Route path="userlogin" element={<LoginPage />} />
       <Route path="adminlogin" element={<AdminLogin />} />
-      <Route path="userdashboard" element={<Dashboard />}>
-        
-      </Route>
+      <Route path="userdashboard" element={<Dashboard />}></Route>
 
       <Route path="admindashboard" element={<AdminDashboard />}>
         <Route
@@ -41,25 +37,18 @@ const router = createBrowserRouter(
           loader={UserApprovalLoader}
           element={<UserApprovals />}
         />
-         <Route
+        <Route
           path="newadmins"
           loader={UserApprovalLoader}
           element={<NewAdminSignUps />}
         />
 
-        <Route
-          path="campaign"
-          element={<CampaignTab />}
-        />
+        <Route path="campaign" element={<CampaignTabs />} />
 
-          <Route
-          path="donationrequests"
-          element={<DonationReqTab/>}
-        />
+        <Route path="donationrequests" element={<DonationReqTab />} />
 
         <Route
           path="uploadtests"
-          loader={UserApprovalLoader}
           element={<ReportTab />}
         />
       </Route>
@@ -70,37 +59,33 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  const { open, message, closeSnackbar, icon, color } = useSnackbar();
 
-  const { open, message,  closeSnackbar, icon, color} = useSnackbar();
-
-
-  return( 
-  <>
-  <RouterProvider router={router} />
-
-  <SnackbarMui
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      open={open}
-      autoHideDuration={3000} // Adjust the duration as needed
-      onClose={closeSnackbar}
-    >
-      <SnackbarContent
-        style={{
-          backgroundColor: color, // Customize colors
+  return (
+    <>
+      <RouterProvider router={router} />
+      <SnackbarMui
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
         }}
-        message={
-          <span style={{display:'flex',alignItems:'center',justifyContent:'center',marginLeft:'10px',padding:'7px'}}>
-           {message}            
-          </span>
-        
-        }
-      />
-    </SnackbarMui>
-  </>
-  
+        open={open}
+        autoHideDuration={3000} // Adjust the duration as needed
+        onClose={closeSnackbar}
+      >
+        <SnackbarContent
+          style={{
+            backgroundColor: color, // Customize colors
+          }}
+          message={
+            <span>
+              {icon}
+              {message}
+            </span>
+          }
+        />
+      </SnackbarMui>
+    </>
   );
 }
 

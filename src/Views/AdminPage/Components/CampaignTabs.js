@@ -2,10 +2,9 @@ import React, { useContext, useState} from 'react';
 import { Box,Tab, Tabs, Typography } from '@mui/material';
 import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
-import UploadTest from '../Reports';
-import PendingFilesTab from '../PendingRpeorts';
-import CheckedReportsTab from '../CompletedReports';
-
+import AddCampaign from '../AddCampaign';
+import PendingCampaignTab from '../PendingCampaigns.js';
+import CancelledCampaignTab from '../CancelledCampaigns';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -33,32 +32,32 @@ function TabPanel(props) {
     
 
     return(
-      <div >
+      <div>
         <Tabs
         value={currentTab}
         onChange={handleTabChange}
         aria-label="Multiple Tabs Example"
-        sx={{alignSelf:'flex-start',marginTop:5,}}
+        sx={{alignSelf:'flex-start',marginTop:2}}
       >
-        <Tab label="Upload Tests"  />
-        <Tab label="Checked Tests" />
-        <Tab label="Pending Tests" />
+        <Tab label="Add Campaign" />
+        <Tab label="Pending Campaigns" />
+        <Tab label="Cancelled Campaigns" />
       </Tabs>
       <TabPanel value={currentTab} index={0} >
-        <UploadTest />
+        <AddCampaign />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <CheckedReportsTab />
+        <PendingCampaignTab />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
-        <PendingFilesTab />
+        <CancelledCampaignTab />
       </TabPanel>
     </div>
     )
   }
 
 
-  function ReportTab() {
+  function CampaignTabs() {
     
     const {  darkColor } = useContext(MyContext);
 
@@ -71,7 +70,7 @@ function TabPanel(props) {
   
     return (
       <MainTab
-          title="Reports"
+          title="Campaigns"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
@@ -81,5 +80,5 @@ function TabPanel(props) {
     );
   }
   
-  export default ReportTab;
+  export default CampaignTabs;
   

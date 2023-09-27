@@ -24,8 +24,8 @@ import {
 } from "@mui/material";
 import React, { useState, useContext } from "react";
 import { Outlet } from "react-router-dom";
-import { CustomListLinkButton } from "../../CommonComponents/LinkButton";
-import { MyContext } from "../..";
+import { CustomListLinkButton } from "../../../CommonComponents/LinkButton";
+import { MyContext } from "../../..";
 
 
 
@@ -69,7 +69,7 @@ const state = [
   "Blood Stock",
   "Emergencies",
   "Inbox",
-  "Inventory",
+  "Complains",
   "Reports",
   "Admin Approvals",
   "Requests"
@@ -79,7 +79,7 @@ const state = [
 /*sidebar */
 
 const Sidebar = (props) => {
-  const [selectedItem, setSelectedItem] = useState("Campaign");
+  const [selectedItem, setSelectedItem] = useState("Campaigns");
   const { updateData } = useContext(MyContext);
 
   updateData(props.bordeColor, props.backColor);
@@ -197,27 +197,7 @@ const Sidebar = (props) => {
                 />
               </ListItemBtn>
             </ListItem>
-
-            {/*Blood Stock*/}
-            <ListItem disablePadding>
-              <ListItemBtn 
-                to="bloodstock"
-                selected={selectedItem === state[2]}
-                onClick={() => {
-                  setSelectedItem(state[2]);
-                }}
-                sx={ListButtonProp(props)}
-              >
-                <ListItemIcon>
-                  <Bloodtype sx={IconProp(props)} />
-                </ListItemIcon>
-                <ListItemText
-                  sx={{ display: { xs: "none", md: "block" } }}
-                  primary={state[2]}
-                />
-              </ListItemBtn>
-            </ListItem>
-
+            
             {/*Emergencies*/}
             <ListItem disablePadding>
               <ListItemButton
@@ -300,8 +280,8 @@ const Sidebar = (props) => {
         <Box
           sx={{
             marginLeft: {
-              xs: -3.5,
-              lg: -4,
+              xs: 0,
+              lg: 1,
             },
             width: "100%",
             display: "flex",

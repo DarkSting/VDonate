@@ -16,6 +16,7 @@ import {
   import { Card } from "react-bootstrap";
   import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
+import { useSnackbar } from "../../CommonComponents/SnackBarContext";
 
   
   
@@ -34,6 +35,9 @@ import {
     array,
     mongoID,
   }) => {
+
+    const {openSnackbar, closeSnackbar} = useSnackbar();
+
     const sendApprove = (approvedVal) => {
       const data = {
         approval: approvedVal,
@@ -44,15 +48,26 @@ import {
         .then((r) => {
           setSent(true);
           console.log(userId);
-          const newArray = array.filter((item) => item.id !== userId);
+          const newArray = array.filter((item) => item._id !== id);
           resetArry(newArray);
+          openSnackbar({
+            message: `${name} approved`,
+            color:'green',
+            
+          })
+          
         })
         .catch((err) => {
           setSent(false);
+          openSnackbar({
+            message: `${name} failed to approve`,
+            color:'green',
+            
+          })
         });
     };
   
-    const userId = id;
+    const [userId,setUserID] = useState(id);
     const [isSent, setSent] = useState(false);
   
     return (
