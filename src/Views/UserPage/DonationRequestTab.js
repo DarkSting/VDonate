@@ -142,7 +142,7 @@ export default function DonationRequestTab(props) {
         })
         .catch((err) => {
           console.log(err);
-          setsccMSG("could");
+          setsccMSG(err.response.data.msg);
           setSeverity("error");
           setsccColor("#F24C3D");
         });

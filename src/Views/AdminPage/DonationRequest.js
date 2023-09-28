@@ -9,8 +9,7 @@ import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 
 const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity,setRemovedItem})=>{
 
-    const [userId,setID] = useState(Data.User._id);
-    const [requestId,setRequestID] = useState(Data.request._id);
+ 
 
     const {openSnackbar, closeSnackbar} = useSnackbar();
 
@@ -21,7 +20,7 @@ const RequestCard = ({Data,itemArray,setArray,setOpen,setText,setSeverity,setRem
         setText('Loading...');
         setSeverity('warning');
         setOpen(true);
-        Axios.post('donation/acceptdonationrequest',{donorID:userId, requestID:requestId}).then(r=>{
+        Axios.post('donation/acceptdonationrequest',{donorID:Data.User._id, requestID:Data.request._id}).then(r=>{
             console.log(itemArray);
             let newarray = itemArray.filter((item)=>
                 item.request._id !==Data.request._id);

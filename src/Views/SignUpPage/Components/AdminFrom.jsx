@@ -152,11 +152,28 @@ export default function Form({ fontColor }) {
           handleClick(SlideTransition);
         })
         .catch((err) => {
-          console.log(err);
-          setsccMSG(err.response.data.msg);
+
+          const er = err.response.data
+          console.log(er);
+          if(er.code==11000 && er.msg?.email ){
+            setsccMSG("Email already exists");
+            setSeverity("error");
+            setsccColor("#F24C3D");
+            handleClick(SlideTransition);
+          }
+          else if(er.code==11000 && er.msg?.licenseNumber){
+            setsccMSG("License number already exists");
+            setSeverity("error");
+            setsccColor("#F24C3D");
+            handleClick(SlideTransition);
+          }
+          else{
+          setsccMSG("Unkown Error");
           setSeverity("error");
           setsccColor("#F24C3D");
           handleClick(SlideTransition);
+          }
+          
         });
     };
 
@@ -192,7 +209,7 @@ export default function Form({ fontColor }) {
 
     if (arr[0] === "") {
       isNameNull = true;
-      setNameErr("name is not provided");
+      setNameErr("username is not provided");
     } else {
       isNameNull = false;
       setNameErr("");
@@ -436,7 +453,7 @@ export default function Form({ fontColor }) {
                     </Typography>
 
                     <TextBox
-                      label="NAME"
+                      label="USERNAME"
                       variant="outlined"
                       onChange={(e) => {
                         setName(e.target.value);

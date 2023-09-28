@@ -38,6 +38,7 @@ import UserComplainTab  from "../ComplainTab";
 import DonationRequestTab from'../DonationRequestTab';
 import SubTab from './SubTabs';
 import CustomMap from "../../Map/DonorMap";
+import BloodBag from "../BloodBag";
 
 
 
@@ -53,8 +54,9 @@ const ListButtonProp =(props)=>{
   '&:hover':{
     backgroundColor:props.backHoverColor,
     color:'white'
-  }
-
+  },
+  borderRadius:'0px 5px 5px 0px'
+  
 
 }
 
@@ -110,18 +112,19 @@ function renderComponent(current,props,array){
       return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<CustomMap />}/>
     case array[5]:
       return <CustomTab title="Complains" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderComplainContent(props)}/>
+    case array[2]:
+      return <CustomTab title="Blood Bag" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<BloodBag />}/>
   }
 
 }
 
-const state = ['Campaign','Find Donors','Blood Stock', 'Emergencies','Inbox','Complains','Reports'];
+const state = ['Campaign','Find Donors','Blood Bag', 'Emergencies','Inbox','Complains','Reports'];
 
 
 {/*sidebar */}
 const Sidebar = (props) => {
 
   const[selectedItem, setSelectedItem] = useState('Campaign');
-  
 
 
   return (
@@ -129,7 +132,7 @@ const Sidebar = (props) => {
     
       <Grid container spacing={2} sx={{height:'93vh'}}>
         <Grid item xs={2} md={3} lg={2}>
-      <Box position="fixed" sx={{ width:'100%', display: 'flex',flexDirection:'row',justifyContent: {sm:'center',lg:'flex-start',md:'flex-start'}}} >
+      <Box position="fixed" sx={{width:'100%', display: 'flex',flexDirection:'row',justifyContent: {sm:'center',lg:'flex-start',md:'flex-start'},marginTop:'50px'}} >
 
         {/*Campaign */}
         <List id="List" sx={{overflowX:'scroll',display:'flex',flexDirection:{

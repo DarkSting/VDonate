@@ -481,7 +481,7 @@ if(!longitude || !latitude ){
                     </Typography>
 
                     <TextBox
-                      label="NAME"
+                      label="USERNAME"
                       variant="outlined"
                       onChange={(e) => {
                         setName(e.target.value);

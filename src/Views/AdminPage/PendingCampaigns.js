@@ -14,6 +14,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Axios from '../../api/axios';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 import { ArrowDownward, ArrowDropDown, ArrowDropDownCircle, ArrowDropUp, ArrowUpward } from '@mui/icons-material';
+import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 
 const CampaignCard = ({ campaign , setArray, setRemovedItem,currentArray}) => {
   const [expanded, setExpanded] = useState(false);
@@ -124,6 +125,8 @@ export default function PendingCampaignTab(){
 
     },[startTime,endTime,removedItem])
 
+    const[loading,setLoading] = useState(false);
+
     return(
         <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -143,9 +146,9 @@ export default function PendingCampaignTab(){
           </DemoContainer>
           </LocalizationProvider>
           <Stack spacing={1} direction='column' sx={{marginTop:'20px'}}>
-            {availablecampains.map((value)=>
+           {availablecampains.length>0?availablecampains.map((value)=>
                 (<CampaignCard key={value._id} campaign={value} setArray={setAvailableCampaigns} setRemovedItem={setRemovedItem} currentArray={availablecampains}/>)
-            )}
+            ):(LoadSubSpinner(loading,setLoading,"No Pending Campaigns"))}
           </Stack>
         </Box>
 
