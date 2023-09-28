@@ -64,6 +64,13 @@ const makeDonationRequest = async(req,res)=>{
     instructions = "Thank you for your generous respond!"
 
     const list = await DonationRequestModel.find({}).sort({refNo:-1});
+
+
+    const foundRequest  = await DonationRequestModel.find({isApproved:false,approvedDate:new Date(0)})
+
+    if(foundRequest.length>0){
+        return res.status(409).json({msg:"A donation request is pending",code:11000})
+    }
     
     if(list.length===0){
         refidid=1;

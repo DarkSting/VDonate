@@ -6,6 +6,7 @@ const { DonationModel } = require('../Models/DonationModel');
 const { ComplainModel } = require('../Models/ComplainModel');
 const {resolver} = require('../Middlewares/IPResolver');
 const { updatePasswordUser } = require('./AdminControllers');
+const { CampaignModel } = require('../Models/CampaignModel');
 
 
 //set the living time of the cookie which will be set in the login
@@ -69,6 +70,49 @@ const updateUserApproval = async(req,res)=>{
     else{
         return res.status(500).json({msg:"couldnt update the password"});
     }
+
+}
+
+//get assigned campaign
+const getCampaigns = async(req,res)=>{
+
+    const{name} = req.query;
+
+    const foundUser = await UserModel.findOne({userName:name})
+
+    console.log(foundUser);
+
+    async function searchAndExtractDocument(searchValue) {
+        try {
+     
+          const document = await CampaignModel.findOne({ donors:new mongoose.Types.ObjectId(searchValue) });
+      
+          if (document) {
+
+            console.log('Document found:', document);
+            return document;
+          } else {
+            console.log('Document not found');
+            return null; 
+        }
+        } catch (error) {
+          console.error('Error searching for document:', error);
+          throw error; 
+        }
+      }
+
+      try{
+
+        const document = await searchAndExtractDocument(foundUser._id);
+        return res.status(200).json({msg:document});
+
+      }catch(error){
+
+        return res.status(200).json({})
+
+      }
+
+
 
 }
 
@@ -368,7 +412,8 @@ module.exports  = {
     loginUser,
     welcomeUser,
     makeComplain,
-    updateUserApproval
+    updateUserApproval,
+    getCampaigns
 
 };
 

@@ -8,7 +8,8 @@ const {
     makeRequest,
     welcomeUser,
     makeComplain,
-    updateUserApproval
+    updateUserApproval,
+    getCampaigns
 } = require('../Controllers/UserControllers.js');
 const{authenticateUser, authenticateUserMiddleware} = require('../Middlewares/authMiddleware.js');
 const { makeDonationRequest, createDonation } = require('../Controllers/DonationController.js');
@@ -16,7 +17,6 @@ const { sendmail } = require('../Controllers/MailControllers.js');
 const { getYetToValidateUsers } = require('../Controllers/AdminControllers.js');
 
 const routes = Router();
-
 
 routes.post('/addUser',addUser);
 routes.post('/updateUser',updateUser);
@@ -29,7 +29,7 @@ routes.post('/makeComplain',makeComplain);
 routes.post('/makeDonationRequest',makeDonationRequest);
 routes.put('/updateUserApproval',updateUserApproval);
 routes.post('/mail',sendmail);
-
+routes.get('/getcampaigns',getCampaigns);
 
 
 module.exports =routes;

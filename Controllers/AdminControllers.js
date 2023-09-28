@@ -86,7 +86,9 @@ const addAdmin = async(req,res)=>{
 
    }
    catch(error){
-    return res.status(500).json({msg:error.message});
+   
+    console.log(error);
+    return res.status(500).json({msg:error.keyValue,code:11000});
    }
     
 
@@ -115,6 +117,9 @@ const loginAdmin = async(req,res)=>{
                 return res.status(500).json({msg:"please complete the registration process"});
             }
             
+        }
+        else{
+            return res.status(500).json({msg:'incorrect credintials'})
         }
 
     }catch(error){
@@ -180,9 +185,9 @@ const updatePasswordAdmin = async(req,res)=>{
 
             //sending the mail
             const mailsent = sendmailInternal(usermail,subject,title,intro,buttontxt,instructions);
-    
+
             //check whether mail is sent or not 
-            if(mailsent){
+            if(!mailsent){
 
                 console.log("mail sent")
                 await AdminModel.findOneAndUpdate({email:usermail},{$set:{password:newpass,isActive:true}}).then(r=>{
