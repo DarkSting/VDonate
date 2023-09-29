@@ -224,6 +224,23 @@ const removeUsersFromCampaign = async (req, res) => {
   }
 };
 
+const updateBloodBag = async(req,res)=>{
+
+  const{user,capacity} = req.body;
+
+  try{
+
+    await BloodBagModel.findOneAndUpdate({donor:user},{capacity:capacity})
+
+    return res.status(200).json({msg:'capacity updated'});
+
+  }catch(error){
+
+    return res.status(500).json({msg:'failed to update blood bag'});
+  }
+
+}
+
 const getCancelledCampaigns = async(req,res)=>{
 
 
@@ -304,5 +321,6 @@ module.exports = {
   createCampaign,
   findPendingCampaigns,
   cancellCampaign,
-  getCancelledCampaigns
+  getCancelledCampaigns,
+  updateBloodBag
 };

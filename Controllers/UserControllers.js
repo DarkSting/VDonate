@@ -7,6 +7,7 @@ const { ComplainModel } = require('../Models/ComplainModel');
 const {resolver} = require('../Middlewares/IPResolver');
 const { updatePasswordUser } = require('./AdminControllers');
 const { CampaignModel } = require('../Models/CampaignModel');
+const BloodBagModel = require('../Models/BloodBagModel');
 
 
 //set the living time of the cookie which will be set in the login
@@ -175,6 +176,31 @@ const addUser = async(req,res)=>{
    
 }
 
+/**
+ GET
+ gets the current user blood bag
+ */
+const getBloodBag = async(req,res)=>{
+
+const{name} = req.query;
+
+const user = await UserModel.findOne({userName:name});
+
+console.log('getting user bloodbag')
+
+const foundBloodBag = await BloodBagModel.findOne({$and:[{donor:user._id},{filled:false}]})
+
+if(foundBloodBag){
+
+    return res.status(200).json({foundBloodBag});
+}
+else{
+
+    return res.status(500).json({msg:"no blood bags available"});
+}
+
+
+}
 
 /*GET
 logges in a user if the user exists
@@ -413,7 +439,8 @@ module.exports  = {
     welcomeUser,
     makeComplain,
     updateUserApproval,
-    getCampaigns
+    getCampaigns,
+    getBloodBag
 
 };
 

@@ -9,12 +9,12 @@ const {
     welcomeUser,
     makeComplain,
     updateUserApproval,
-    getCampaigns
+    getCampaigns,
+    getBloodBag
 } = require('../Controllers/UserControllers.js');
-const{authenticateUser, authenticateUserMiddleware} = require('../Middlewares/authMiddleware.js');
 const { makeDonationRequest, createDonation } = require('../Controllers/DonationController.js');
 const { sendmail } = require('../Controllers/MailControllers.js');
-const { getYetToValidateUsers } = require('../Controllers/AdminControllers.js');
+
 
 const routes = Router();
 
@@ -30,6 +30,7 @@ routes.post('/makeDonationRequest',makeDonationRequest);
 routes.put('/updateUserApproval',updateUserApproval);
 routes.post('/mail',sendmail);
 routes.get('/getcampaigns',getCampaigns);
+routes.get('/getbloodbag',getBloodBag);
 
 
 module.exports =routes;
