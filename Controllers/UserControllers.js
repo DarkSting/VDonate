@@ -8,6 +8,7 @@ const {resolver} = require('../Middlewares/IPResolver');
 const { updatePasswordUser } = require('./AdminControllers');
 const { CampaignModel } = require('../Models/CampaignModel');
 const BloodBagModel = require('../Models/BloodBagModel');
+const { MessageModel } = require('../Models/UserMessageModel');
 
 
 //set the living time of the cookie which will be set in the login
@@ -46,6 +47,51 @@ const welcomeUser = (req,res)=>{
         res.status(404).json({msg:"token not found",code:500});
     }
    
+}
+
+//sends a message
+const sendMessage = async(req,res)=>{
+
+    const{user,description,receiver} = req.body
+
+    console.log(`${description} ${receiver}`)
+    try{
+        
+        const newMessage = new MessageModel({
+
+            description:description,
+            sender:user.userName,
+            senderID:user._id,
+            receiver:receiver
+        })
+
+       await newMessage.save()
+        return res.status(200).json({msg:'message sent'})
+
+
+    }catch(error){
+
+        return res.status(500).json(error);
+    }
+
+}
+
+const getMessages= async(req,res)=>{
+
+
+    const{user} = req.body
+
+    const foundMessages = await MessageModel.find({senderID:new mongoose.Types.ObjectId(user)})
+
+    if(foundMessages.length>0){
+
+        return res.status(200).json({foundMessages})
+
+    }else{
+
+        return res.status(500).json({msg:'no messages found'})
+    }
+
 }
 
 const updateUserApproval = async(req,res)=>{
@@ -440,7 +486,9 @@ module.exports  = {
     makeComplain,
     updateUserApproval,
     getCampaigns,
-    getBloodBag
+    getBloodBag,
+    getMessages,
+    sendMessage
 
 };
 
