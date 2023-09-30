@@ -86,4 +86,14 @@ const checkDataAvailability = (isLoading,text,setIsLoading,buttonStatus,navigate
 
     }
 
+    export function NoData(text){
+
+    
+        return <>
+          <Typography variant="h4" sx={{backgroundColor:"#F5F5F5",padding:'20px',borderRadius:'10px',textAlign:'center',alignItems:'center',marginTop:'50px'}}>{text}</Typography>
+        </>;
+      
+
+    }
+
     export default checkDataAvailability;

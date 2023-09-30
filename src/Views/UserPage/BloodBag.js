@@ -21,7 +21,7 @@ useEffect(()=>{
     setBloodBag(r.data.foundBloodBag)
     openSnackbar({
       message:'Blood Bag Loaded',
-      color:'black'
+      color:'green'
     })
 
 
@@ -99,7 +99,7 @@ useEffect(()=>{
         <b>Donation Type :</b> {bloodBag?.donationType}
         </Typography>
         <Typography variant="h5">
-        <b>Date Created :</b> {bloodBag?.dateCreated}
+        <b>Date Created :</b> {new Date(bloodBag?.dateCreated).toLocaleString()}
         </Typography>
         <Button
           variant="contained"

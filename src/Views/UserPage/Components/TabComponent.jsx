@@ -14,7 +14,7 @@ export default function Tab(props){
  
       <>
    
-                <Box sx={{backgroundColor:lightColor,borderBottom:'3px solid '+props.titleBackColor, width:'90%'}}>
+                <Box sx={{backgroundColor:lightColor,borderBottom:'3px solid '+props.titleBackColor, width:'95%',borderRadius:'8px'}}>
                 <Typography variant={props.fontSize} sx={{padding:'10px',color:props.fontColor}}>{props.title}</Typography>
                 
                 

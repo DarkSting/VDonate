@@ -31,14 +31,15 @@ import {
   Grid,
   Switch,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomTab from './TabComponent'; 
-import UsersContent from '../UserContent';
+import UsersContent from '../UserCampaigns';
 import UserComplainTab  from "../ComplainTab";
 import DonationRequestTab from'../DonationRequestTab';
 import SubTab from './SubTabs';
 import CustomMap from "../../Map/DonorMap";
 import BloodBag from "../BloodBag";
+import MessageList from "../Message";
 
 
 
@@ -81,7 +82,7 @@ const ListText = styled(ListItemText)(({theme})=>({
 }));
 
 {/*add here other contents to be rendered inside a function */}
-function renderTabsContent(props){
+function RenderTabsContent({props}){
 
   const tabarr = [<UsersContent/>,<DonationRequestTab hover={props.backHoverColor} color={props.backColor}/>];
   const selectedItemsarr = ["Pending Campaigns", "Donation Request"];
@@ -90,13 +91,15 @@ function renderTabsContent(props){
   );
 }
 
-function renderUserContent(){
+function RenderMessageTab({props}){
+  const tabarr = [<MessageList />,<DonationRequestTab hover={props.backHoverColor} color={props.backColor}/>];
+  const selectedItemsarr = ["InBox", "Messages Sent"];
   return(
-    <UsersContent />
+   <SubTab props={props} selectedItems={selectedItemsarr} tabs={tabarr} />
   );
 } 
 
-function renderComplainContent(props){
+function RenderComplainContent({props}){
   return(
     <UserComplainTab hover={props.backHoverColor} color={props.backColor}/>
   );
@@ -107,13 +110,19 @@ function renderComponent(current,props,array){
 
   switch(current){
     case array[0]:
-      return <CustomTab title="Add Campaign" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderTabsContent(props)}/>
+      return <CustomTab title="Add Campaign" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<RenderTabsContent props={props}/>}/>
     case array[1]:
       return <CustomTab title="Find Donors" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<CustomMap />}/>
     case array[5]:
-      return <CustomTab title="Complains" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={renderComplainContent(props)}/>
+      return <CustomTab title="Complains" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<RenderComplainContent props={props} />}/>
     case array[2]:
       return <CustomTab title="Blood Bag" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<BloodBag />}/>
+    case array[4]:
+      return <CustomTab title="Inbox" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<RenderMessageTab props={props}/>}/>
+    case array[6]:
+        return <CustomTab title="Reports" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<></>}/>
+    case array[3]:
+        return <CustomTab title="Emergencies" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<></>}/>
   }
 
 }
@@ -125,7 +134,6 @@ const state = ['Campaign','Find Donors','Blood Bag', 'Emergencies','Inbox','Comp
 const Sidebar = (props) => {
 
   const[selectedItem, setSelectedItem] = useState('Campaign');
-
 
   return (
     
@@ -220,7 +228,14 @@ const Sidebar = (props) => {
         lg:-4,
     
         
-      },width:'100%', display:'flex', justifyContent:'center',alignItems:'center',height:'100%',overflow:'scroll'}}>
+      },
+      marginTop:{
+
+        xs:3.5,
+        lg:4,
+
+      },
+      width:'100%', display:'flex', justifyContent:'center',alignItems:'flex-start',height:'100%',overflow:'scroll'}}>
        {renderComponent(selectedItem,props,state)}
      </Box>
      </Grid>

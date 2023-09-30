@@ -5,6 +5,7 @@ import darkenColor from "../../CommonComponents/ColorDarker.js";
 import axios from "../../api/axios";
 import Spinner from "../../CommonComponents/SpinFunction";
 import { MyContext } from "../..";
+import { useSnackbar } from "../../CommonComponents/SnackBarContext";
 
 export default function UserPage() {
   const [color, setColor] = useState("#1F8A70");
@@ -13,6 +14,7 @@ export default function UserPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { updateUser } = useContext(MyContext);
+  const {openSnackbar, closeSnackbar} = useSnackbar();
 
   let darkColor = color;
 

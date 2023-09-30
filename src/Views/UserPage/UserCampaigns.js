@@ -48,8 +48,8 @@ const CampaignCard = ({ campaign }) => {
     <Card sx={{width:'100%'}}>
       <CardContent >
         <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Location:</b> {campaign.location}</Typography>
-        <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time Begin:</b> {campaign.timeBegin}</Typography>
-        <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time End:</b> {campaign.timeEnd}</Typography>
+        <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time Begin:</b> {new Date(campaign.timeBegin).toLocaleString()}</Typography>
+        <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time End:</b> {new Date(campaign.timeEnd).toLocaleString()}</Typography>
         <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Donors count:</b> {campaign.donors.length}</Typography>
       </CardContent>
       <CardActions>
