@@ -285,12 +285,30 @@ findUsers
 */
 const findAllUsers = async(req,res,next)=>{
 
-    await UserModel.find({}).then(result=>{
-       return res.status(201).json(result);
-    }).catch(error=>{
-       return res.status(500).json(error)
-    });
+    const foundUsers = await UserModel.find({});
 
+    let users = [];
+
+    if(foundUsers){
+
+        for(let current of foundUsers){
+
+            let newOBJ = {}
+            newOBJ.name = current.userName;
+            newOBJ.userUD = current._id;
+            newOBJ.phone = current.phone;
+
+            users.push(newOBJ);
+
+        }
+
+    }
+
+    if(users.length>0){
+        return res.status(200).json({users})
+    }
+   
+return res.status(500).json({msg:'cannot find any users'});
 }
 
 /*POST

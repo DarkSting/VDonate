@@ -38,4 +38,5 @@ routes.get('/getmessages',authenticateUserMiddleware,getMessages);
 routes.post('/sendmessage',authenticateUserMiddleware,sendMessage);
 
 
+
 module.exports =routes;
