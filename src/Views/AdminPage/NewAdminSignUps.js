@@ -35,8 +35,6 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
     
   }) => {
 
-
-
     const {openSnackbar, closeSnackbar} = useSnackbar();
 
     const sendApprove = (approvedVal) => {

@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import fileaxios from '../../api/fileapi';
 import axios from 'axios';
-import { Button, Stack, TextField, Typography,Box, ButtonGroup, Select } from '@mui/material';
+import { Button, Stack, TextField, Typography,Box, ButtonGroup, Select, Autocomplete } from '@mui/material';
 import { MyContext } from '../..';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 import { AddBox, Refresh, Upload } from '@mui/icons-material';
 import nameaxios from '../../api/nameaxios';
+import Axios from '../../api/axios';
 
 //displays content
 function UploadTest() {
@@ -79,15 +80,54 @@ function Content(){
     }
   };
 
+  function validate(){
+
+  }
+
   const{darkColor} = useContext(MyContext);
 
+  const[users,setUsers] = useState([])
+  const[selectedUser,setSelectedUser] = useState(null);
+
+  useEffect(()=>{
+
+    Axios.get('user/findAllUsers').then(r=>{
+
+      setUsers(r.data.users);
+      console.log(r.data.users);
+
+    }).catch(er=>{
+
+      console.log(er);
+    })
+
+  },[])
+
   return(
-
-
 <Stack spacing={1}  >
+
+    {/* File Upload Form */}
+    <Typography variant='h5' sx={{alignSelf:'center',marginBottom:'20px',marginTop:'20px'}}>Insert A Document</Typography>
+  <Autocomplete
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        options={users.map((option) => option.name)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select the user"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+
+            onChange={(e)=>{setSelectedUser(e.target.value); console.log(selectedUser)}}
+          />
+        )}
+      />
     
-     {/* File Upload Form */}
-     <Typography variant='h5' sx={{alignSelf:'center',marginBottom:'20px',marginTop:'20px'}}>Insert A Document</Typography>
+   
      <input
         type="file"
         id="fileInput"
@@ -102,7 +142,6 @@ function Content(){
             Choose a File
           </Button>
           
-        
       </label>
       {selectedFile && (
         <Typography variant="body1" p='5px'><b>Selected file:</b> {selectedFile.name}</Typography>
