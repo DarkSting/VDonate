@@ -3,8 +3,9 @@ import fileaxios from '../../api/fileapi';
 import nameaxios from '../../api/nameaxios';
 import { MyContext } from '../..';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button ,TableHead, Stack} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button ,TableHead, Stack, Autocomplete, TextField} from '@mui/material';
 import { Link } from 'react-router-dom';
+import Axios from '../../api/axios';
 
 const backendUrl = 'http://localhost:8080';
 
@@ -59,13 +60,39 @@ const DownloadLink = ({ file,setFiles,currentArray }) => {
     );
   };
 
-function FileList({ files ,setFiles,currentArray}) {
+function FileList({ files ,setFiles,currentArray,users,setSelectedUser,selectedUser}) {
 
-
-  
 
   return (
+    <div style={{display:'flex',justifyContent:'center', flexDirection:'column'}}>
+        <Autocomplete
+        freeSolo
+        id="free-solo-2-demo"
+        onChange={(e)=>{setSelectedUser(users[e.target.value]?.name?users[e.target.value]:{
+          name: "all",
+          phone:"",
+          userUD:""
+        });
+        console.log(selectedUser)
+        }}
+        disableClearable
+        options={users.map((option) => option.name)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search user"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+
+           sx={{margin:'0px 10px 30px 0px'}}
+          />
+        )}
+      />
+    
     <TableContainer component={Paper}>
+    
       <Table>
       <TableHead>
           <TableRow>
@@ -89,6 +116,7 @@ function FileList({ files ,setFiles,currentArray}) {
         </TableBody>
       </Table>
     </TableContainer>
+    </div>
   );
 }
 
@@ -101,6 +129,27 @@ function PendingFilesTab() {
 
   const {openSnackbar} = useSnackbar();
 
+  const[users,setUsers] = useState([])
+  const[selectedUser,setSelectedUser] = useState({
+  name: "all",
+  phone:"",
+  userUD:""
+  });
+
+  useEffect(()=>{
+
+    Axios.get('user/findAllUsers').then(r=>{
+
+      setUsers(r.data.users);
+      console.log(r.data.users);
+
+    }).catch(er=>{
+
+      console.log(er);
+    })
+
+  },[])
+
   useEffect(() => {
 
     openSnackbar({
@@ -109,7 +158,7 @@ function PendingFilesTab() {
       })
     // Fetch the list of file names from your server
 
-    nameaxios.get(`/getfiles/${name}`)
+    nameaxios.get(`/getfiles/${selectedUser.name}`)
 
       .then((response) => {
         openSnackbar({
@@ -121,6 +170,7 @@ function PendingFilesTab() {
         setFiles(response.data);
       })
       .catch((error) => {
+        setFiles([]);
         openSnackbar({
             message: 'Files Loading Failed',
             color:'red'
@@ -128,12 +178,12 @@ function PendingFilesTab() {
         console.error(error);
       });
 
-  }, []);
+  }, [selectedUser]);
 
   return (
     <div>
-      <h1>File Management</h1>
-      <FileList files={files} setFiles={setFiles} currentArray={files} />
+      <h2>Pending Files</h2>
+      <FileList files={files} setFiles={setFiles} selectedUser={selectedUser} currentArray={files} users={users} setSelectedUser={setSelectedUser}/>
     </div>
   );
 }

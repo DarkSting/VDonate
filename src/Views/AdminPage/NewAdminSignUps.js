@@ -17,6 +17,7 @@ import {
   import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
 import { useSnackbar } from "../../CommonComponents/SnackBarContext";
+import Axios from "../../api/axios";
 
   
   
@@ -64,6 +65,32 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
         });
     };
   
+    const handleReject = () =>{
+
+      Axios.put('admin/rejectadmin',{
+        userID:mongoID
+      }).then(r=>{
+
+        openSnackbar({
+          message: `Request rejected ${name}`,
+          color:'green',
+          
+        })
+        const newArray = array.filter((item) => item._id !== mongoID);
+        resetArry(newArray);
+      
+
+      }).catch(error=>{
+        
+        openSnackbar({
+          message: `Failed to reject ${name}`,
+          color:'red',
+          
+        })
+      })
+
+    }
+    
 
   
     return (
@@ -98,13 +125,7 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
               variant="contained"
               size="small"
               onClick={() => {
-                openSnackbar({
-                  message: `${name} request deleted`,
-                  color:'green',
-                  
-                })
-                const newArray = array.filter((item) => item._id !== mongoID);
-                resetArry(newArray);
+                handleReject()
               }}
             >
               Reject

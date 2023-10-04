@@ -69,10 +69,10 @@ const state = [
   "Blood Stock",
   "Emergencies",
   "Inbox",
-  "Complains",
+  "Complaints",
   "Reports",
   "Admin Approvals",
-  "Requests"
+  "Donation Requests"
 
 ];
 
@@ -238,7 +238,7 @@ const Sidebar = (props) => {
 
             {/*Complains*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn to="complaints"
                 selected={selectedItem === state[5]}
                 onClick={() => {
                   setSelectedItem(state[5]);
@@ -252,11 +252,11 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[5]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
             {/*Reports*/}
             <ListItem disablePadding>
-              <ListItemButton to="uploadtests"
+              <ListItemBtn to="uploadtests"
                 selected={selectedItem === state[6]}
                 onClick={() => {
                   setSelectedItem(state[6]);
@@ -270,7 +270,7 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[6]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
           </List>
         </Box>

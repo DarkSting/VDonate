@@ -51,7 +51,7 @@ function Content(){
       console.log(formData);
 
 
-      nameaxios.post('sendfilename',{filename:filename,userid:name}
+      nameaxios.post('sendfilename',{filename:filename,userid:selectedUser.name}
       ).then(r=>{
         fileaxios.post('/upload', formData)
         .then(response => {
@@ -80,14 +80,15 @@ function Content(){
     }
   };
 
-  function validate(){
-
-  }
 
   const{darkColor} = useContext(MyContext);
 
   const[users,setUsers] = useState([])
-  const[selectedUser,setSelectedUser] = useState(null);
+  const[selectedUser,setSelectedUser] = useState({
+  name: "",
+  phone:"",
+  userUD:""
+  });
 
   useEffect(()=>{
 
@@ -103,15 +104,27 @@ function Content(){
 
   },[])
 
+
   return(
 <Stack spacing={1}  >
 
     {/* File Upload Form */}
-    <Typography variant='h5' sx={{alignSelf:'center',marginBottom:'20px',marginTop:'20px'}}>Insert A Document</Typography>
+    <h2>Insert A Document</h2>
   <Autocomplete
         freeSolo
         id="free-solo-2-demo"
         disableClearable
+        onChange={(e)=>{setSelectedUser(users[e.target.value]?.name?users[e.target.value]:{
+          name: "all",
+          phone:"",
+          userUD:""
+        })
+        console.log(users[e.target.value]?.name?users[e.target.value]:{
+          name: "all",
+          phone:"",
+          userUD:""
+        })
+      }}
         options={users.map((option) => option.name)}
         renderInput={(params) => (
           <TextField
@@ -122,7 +135,7 @@ function Content(){
               type: 'search',
             }}
 
-            onChange={(e)=>{setSelectedUser(e.target.value); console.log(selectedUser)}}
+            
           />
         )}
       />

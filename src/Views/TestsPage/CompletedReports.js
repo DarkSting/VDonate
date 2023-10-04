@@ -3,13 +3,16 @@ import {Card ,
 CardContent ,
 Typography,
 Box,
-Stack} from '@mui/material';
+Stack,
+Autocomplete,
+TextField} from '@mui/material';
 
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 import NotAvailableContent from '../../CommonComponents/ContentNotAvailableText';
 import nameaxios from '../../api/nameaxios';
 import { MyContext } from '../..';
+import Axios from '../../api/axios';
 
 const FileCard = ({ file}) => {
 
@@ -34,11 +37,17 @@ export default function CheckedReportsTab(){
    
     const {openSnackbar, closeSnackbar} = useSnackbar();
 
-    const{name} = useContext(MyContext);
+    const[users,setUsers] = useState([])
+    const[selectedUser,setSelectedUser] = useState({
+    name: "all",
+    phone:"",
+    userUD:""
+    });
+
 
     useEffect(()=>{
 
-        nameaxios.get(`/getcheckedfiles/${name}`).then(r=>{
+        nameaxios.get(`/getcheckedfiles/${selectedUser.name}`).then(r=>{
             console.log(r);
             openSnackbar({
                 message: 'Data Loaded',
@@ -57,6 +66,22 @@ export default function CheckedReportsTab(){
               })
         })
 
+    },[selectedUser])
+
+    
+  
+    useEffect(()=>{
+  
+      Axios.get('user/findAllUsers').then(r=>{
+  
+        setUsers(r.data.users);
+        console.log(r.data.users);
+  
+      }).catch(er=>{
+  
+        console.log(er);
+      })
+  
     },[])
 
    
@@ -64,6 +89,32 @@ export default function CheckedReportsTab(){
 
     return(
         <Box>
+          <h2>Checked Files</h2>
+           <Autocomplete
+        freeSolo
+        id="free-solo-2-demo"
+        onChange={(e)=>{setSelectedUser(users[e.target.value]?.name?users[e.target.value]:{
+          name: "all",
+          phone:"",
+          userUD:""
+        });
+        console.log(selectedUser)
+        }}
+        disableClearable
+        options={users.map((option) => option.name)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search user"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+
+           sx={{margin:'0px 10px 5px 0px'}}
+          />
+        )}
+      />
         {
         !isLoaded?LoadSubSpinner(isLoaded, setLoaded, "No Files Found") :
           (<Stack spacing={1} direction='column' sx={{marginTop:'20px'}}>
