@@ -92,6 +92,10 @@ app.post('/sendfilename',(req, res) => {
 
     const{filename,userid} = req.body;
 
+    if(!userid){
+      return res.status(500).json({msg:"please insert a user to upload the file"})
+    }
+
     if(filename.trim().length>0){
       const time = new Date();
       time.setMilliseconds(0);
@@ -143,9 +147,10 @@ app.get('/getfiles/:name',async(req,res)=>{
 
     try{
 
-        let filesfound = []
 
-        if( req.params?.name){
+        console.log(req.params.name)
+        let filesfound = []
+        if( req.params.name !=='all'){
           const username = req.params.name;
         const filesfound = await fileModel.find({$and:[{userName:username},{checked:false}]})
         if (filesfound.length === 0) {
@@ -153,6 +158,14 @@ app.get('/getfiles/:name',async(req,res)=>{
         }
        
         
+        return res.status(200).json(filesfound);
+      }
+      else{
+        const filesfound = await fileModel.find({checked:false})
+        if (filesfound.length === 0) {
+          return res.status(404).json({ error: 'User not found or no files available.' });
+        }
+
         return res.status(200).json(filesfound);
       }
   
@@ -189,11 +202,12 @@ app.post('/checkfile',async(req,res)=>{
 app.get('/getcheckedfiles/:name',async(req,res)=>{
 
 
+  console.log('getting checked files')
   try{
  
     let filesfound = []
 
-    if( req.params?.name){
+    if( req.params?.name!=='all'){
       const username = req.params.name;
     const filesfound = await fileModel.find({$and:[{userName:username},{checked:true}]})
     if (filesfound.length === 0) {
@@ -201,6 +215,14 @@ app.get('/getcheckedfiles/:name',async(req,res)=>{
     }
    
     
+    return res.status(200).json(filesfound);
+  }
+  else{
+    const filesfound = await fileModel.find({checked:true})
+    if (filesfound.length === 0) {
+      return res.status(404).json({ error: 'User not found or no files available.' });
+    }
+
     return res.status(200).json(filesfound);
   }
 
