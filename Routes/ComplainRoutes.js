@@ -12,7 +12,7 @@ const routes = Router();
 
 routes.post('/addCampaign',addComplain);
 routes.post('/updateCampaign',updateComplain);
-routes.get('/findAllCampaigns',findAllComplains);
-routes.get('/findCampaign',findComplain);
+routes.get('/findallcomplaints',findAllComplains);
+routes.get('/findcomplaint',findComplain);
 
 module.exports = routes;

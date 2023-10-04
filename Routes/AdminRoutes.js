@@ -10,7 +10,8 @@ const {
     welcomeAdmin,
     getNewlySignedAdmins,
     updatePasswordAdmin,
-    updatePasswordUser
+    updatePasswordUser,
+    rejectAdminSignUp
 } = require('../Controllers/AdminControllers.js');
 const { authenticateUser } = require('../Middlewares/authMiddleware.js');
 
@@ -28,6 +29,7 @@ routes.get('/validateUsers',getYetToValidateUsers);
 routes.get('/getnewadmins',getNewlySignedAdmins);
 routes.post('/updatepassword',updatePasswordAdmin);
 routes.post('/updatepassworduser',updatePasswordUser)
+routes.put('/rejectadmin',rejectAdminSignUp);
 
 
 module.exports =routes;

@@ -24,7 +24,13 @@ const welcomeAdmin = (req,res)=>{
          else{
       
               AdminModel.findOne({_id:decoded.id}).then(r=>{
-                return res.status(200).json({name:r.userName});
+
+                if(r.isActive){
+                    return res.status(200).json({name:r.userName});
+                }
+
+                return res.status(500).json({name:r.userName})
+               
                 
              }).catch(er=>{
                 return res.status(404).json({msg:"user not found",code:500});
@@ -332,7 +338,7 @@ const updatePasswordUser= async(objectId,password)=>{
 
 const getNewlySignedAdmins = async(req,res)=>{
 
-    const foundAdmins = await AdminModel.find({isActive:false});
+    const foundAdmins = await AdminModel.find({$and:[{isActive:false},{age:{$gt:18}}]});
 
     if(foundAdmins.length>0){
         return res.status(200).json(foundAdmins);
@@ -342,6 +348,26 @@ const getNewlySignedAdmins = async(req,res)=>{
     }
 
 }
+
+const rejectAdminSignUp = async(req,res)=>{
+
+    const{userID} = req.body;
+
+    try{
+
+        console.log(userID);
+        const foundAdmins = await AdminModel.findOneAndUpdate({_id:userID},{age:0});
+
+        return res.status(200).json({msg:'rejected'});
+
+    }catch(error){
+
+        return res.status(500).json(error.message)
+
+    } 
+
+}
+
 
 const getYetToValidateUsers= (req,res)=>{
 
@@ -511,7 +537,8 @@ module.exports  = {
     updatePasswordAdmin,
     welcomeAdmin,
     getNewlySignedAdmins,
-    updatePasswordUser
+    updatePasswordUser,
+    rejectAdminSignUp
 
 };
 

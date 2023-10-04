@@ -14,9 +14,10 @@ const {
     sendMessage,
     getMessages
 } = require('../Controllers/UserControllers.js');
-const { makeDonationRequest, createDonation } = require('../Controllers/DonationController.js');
+const { makeDonationRequest } = require('../Controllers/DonationController.js');
 const { sendmail } = require('../Controllers/MailControllers.js');
 const { authenticateUserMiddleware } = require('../Middlewares/authMiddleware.js');
+
 
 
 const routes = Router();
@@ -36,7 +37,5 @@ routes.get('/getcampaigns',getCampaigns);
 routes.get('/getbloodbag',getBloodBag);
 routes.get('/getmessages',authenticateUserMiddleware,getMessages);
 routes.post('/sendmessage',authenticateUserMiddleware,sendMessage);
-
-
 
 module.exports =routes;

@@ -83,6 +83,11 @@ const UserSchema = new mongoose.Schema({
         }
         ,default:'N-'
       }
+      ,
+      isActive:{
+        type:Boolean,
+        default:false
+      }
       
 
 });
