@@ -1,55 +1,54 @@
-const mongoose = require("mongoose");
+const mongoose =require('mongoose');
 
 const DonationRequestSchema = new mongoose.Schema({
-  donationType: {
-    type: String,
-    required: [true, "donation type required"],
-    enum: ["Plasma", "Plattlates", "WholeBlood", "PowerRed"],
-  },
+    
+  donationType:{
+        type:String,
+        required:[true,"donation type required"],
+        enum:["Plasma","Plattlates","WholeBlood","PowerRed"]
+    }, 
 
-  refNo: {
-    type: Number,
-    unique: true,
-    required: true,
-  },
+    refNo:{
+      type:Number,
+      unique:true,
+      required:true
+    },
+   
+    User:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'UserModel',
+      required:[true,"User reference required"]
+    },
 
-  User: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "UserModel",
-    required: [true, "User reference required"],
-  },
+      isApproved:{
+        type:Boolean,
+        default:false,
+      },
+     
+      approvedBy:{
+        type:String,
+        ref:'AdminModel'
+      },
 
-  isApproved: {
-    type: Boolean,
-    default: false,
-  },
-
-  approvedBy: {
-    type: String,
-    ref: "AdminModel",
-  },
-
-  isAssigned:{
-    type:Boolean,
-    default:false
-  }
-,
-  description: {
-    type: String,
-    default: "",
-  },
-
-  approvedDate: {
-    type: Date,
-  },
+     description:{
+      type:String,
+      default:""
+     },
+     isAssigned:{
+      type:Boolean,
+      default:false
+    },
+     approvedDate:{
+      type:Date,
+      
+     }
+    
 });
 
-const DonationRequestModel = mongoose.model(
-  "DonationRequestModel",
-  DonationRequestSchema
-);
+const DonationRequestModel = mongoose.model('DonationRequestModel',DonationRequestSchema);
 
-module.exports = {
-  DonationRequestModel,
-  DonationRequestSchema,
+module.exports ={
+    
+    DonationRequestModel,
+    DonationRequestSchema
 };

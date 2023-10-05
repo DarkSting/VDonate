@@ -25,84 +25,78 @@ const addCampaign = async (req, res) => {
   }
 };
 
-const createCampaign = async(req,res)=>{
+const createCampaign = async (req, res) => {
+  const { startTime, endTime, location, staff, donors, organizedBy } = req.body;
 
-    const{startTime,endTime,location,staff,donors,organizedBy} = req.body;
+  console.log("campaign creating");
 
-    console.log("campaign creating");
+  const foundCampaign = await CampaignModel.findOne({
+    $and: [
+      { timeBegin: { $gte: new Date(startTime) } },
+      { timeBegin: { $lte: new Date(endTime) } },
+    ],  
+  });
 
-    const foundCampaign = await CampaignModel.findOne({$and:[{timeBegin:{$gte:startTime}},{timeBegin:{$lte:endTime}}]});
+  let foundDonors = donors;
 
-    let foundDonors = donors;
+  if (!foundCampaign) {
+    let assignedBloodBags = [];
 
-    if(!foundCampaign){
+    //creating blood bags for each user
+    for (let currentDonor of foundDonors) {
+      const foundRequest = await DonationRequestModel.findOne({
+        User: currentDonor._id,
+      });
 
-      let assignedBloodBags = [];
+      let newBloodBag = new BloodBagModel({
+        dateCreated: Date(),
+        donor: currentDonor._id,
+        capacity: 0,
+        bloodType: currentDonor.bloodType,
+        donationType: foundRequest.donationType,
+        presevativesAdded: "",
+      });
 
-      //creating blood bags for each user
-      for(let currentDonor of foundDonors){
+      assignedBloodBags.push(newBloodBag);
 
-        const foundRequest = await DonationRequestModel.findOne({User:currentDonor._id})
-
-        let newBloodBag = new BloodBagModel({
-            dateCreated:Date(),
-            donor:currentDonor._id,
-            capacity:0,
-            bloodType:currentDonor.bloodType,
-            donationType:foundRequest.donationType,
-            presevativesAdded:""
-        });
-
-
-        assignedBloodBags.push(newBloodBag);
-
-        try{
-          await newBloodBag.save()
-          //await DonationRequestModel.updateOne({_id:foundRequest._id},{isAssigned:true})
-        }
-        catch(error){
-          return res.status(500).json({msg:error.message})
-        }
-        
+      try {
+        await newBloodBag.save();
+        //await DonationRequestModel.updateOne({_id:foundRequest._id},{isAssigned:true})
+      } catch (error) {
+        return res.status(500).json({ msg: error.message });
       }
+    }
 
-      const newBloodConatiner = new BloodContainerModel({
-      bloodBags:assignedBloodBags
+    const newBloodConatiner = new BloodContainerModel({
+      bloodBags: assignedBloodBags,
+    });
+
+    try {
+      await newBloodConatiner.save();
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+
+    const newCampaign = new CampaignModel({
+      location: location,
+      timeBegin: startTime,
+      timeEnd: endTime,
+      donors: foundDonors,
+      bloodContainer: newBloodConatiner,
+    });
+
+    newCampaign
+      .save()
+      .then((r) => {
+        return res.status(201).json({ msg: "campaign created" });
       })
-
-      try{
-        await newBloodConatiner.save();
-      }
-      catch(error){
-          return res.status(500).json({msg:error.message})
-      } 
-
-
-        const newCampaign = new CampaignModel({
-          location:location,
-          timeBegin:startTime,
-          timeEnd:endTime,
-          donors:foundDonors,
-          bloodContainer:newBloodConatiner
-        
-        })
-
-        newCampaign.save().then(r=>{
-
-          return res.status(201).json({msg:"campaign created"});
-
-        }).catch(error=>{
-
-          return res.status(500).json({msg:"campaign created"});
-
-        });
-
-    }
-    else{
-      return res.status(409).json({msg:"a campaign is already assigned"})
-    }
-
-}
+      .catch((error) => {
+        return res.status(500).json({ msg: "campaign created" });
+      });
+  } else {
+    return res.status(409).json({ msg: "a campaign is already assigned" });
+  }
+};
 
 const findAllCampaign = async (req, res, next) => {
   await CampaignModel.find({})
@@ -115,60 +109,66 @@ const findAllCampaign = async (req, res, next) => {
 };
 
 const findPendingCampaigns = async (req, res) => {
-  
   const { startTime, endTime } = req.query;
 
   let foundCampaigns = [];
 
-
-  const st = !startTime? new Date() : new Date(startTime)
-  const et = !endTime? new Date() : new Date(endTime)
+  const st = !startTime ? new Date() : new Date(startTime);
+  const et = !endTime ? new Date() : new Date(endTime);
 
   console.log(st);
   console.log(et);
 
-  if(startTime && endTime ){
+  if (startTime && endTime) {
+    try {
+      foundCampaigns = await CampaignModel.find({
+        $and: [
+          { timeBegin: { $gte: st } },
+          { timeEnd: { $lte: et } },
+          { isCompleted: false },
+          {isCancelled:false}
+        ],
+      });
 
-    try{
-
-      foundCampaigns = await CampaignModel.find({$and:[{timeBegin:{$gte:st}},{timeEnd:{$lte:et}},{isCompleted:false}]});
-
-    
-
-      console.log(foundCampaigns);
-    
-      
-    }
-    catch(error){
-      console.log(error.message);
-    }
-    
-
-  }
-  else{
-    foundCampaigns = await CampaignModel.find({isCompleted:false});
+    } catch (error) {
   
+    }
+  } else {
+    foundCampaigns = await CampaignModel.find({ isCompleted: false });
   }
 
   return res.status(200).json(foundCampaigns);
-
 };
 
 // returns the container
-const getBloodContainer = async(campaign) =>{
-
+const getBloodContainer = async (campaign) => {
   const containerID = campaign.bloodContainer;
 
-  const foundContainer = await BloodContainerModel.findOne({_id:containerID});
+  const foundContainer = await BloodContainerModel.findOne({
+    _id: containerID,
+  });
 
-  if(foundContainer){
-    
+  if (foundContainer) {
     return foundContainer;
   }
 
   return null;
-}
+};
 
+//cancell campaign
+const cancellCampaign = async (req, res) => {
+  
+  const { campaignID } = req.body;
+
+  await CampaignModel.findOneAndUpdate(
+    { _id: campaignID },
+    { isCancelled: true }
+  );
+
+
+  res.status(200).json({ msg: "campaign cancelled" });
+
+};
 
 //add donors to the campaign
 const findDonorInCampaign = async (req, res, next) => {
@@ -223,6 +223,33 @@ const removeUsersFromCampaign = async (req, res) => {
     return res.status(404).json({ msg: "couldnt find provided campaign id" });
   }
 };
+
+const updateBloodBag = async(req,res)=>{
+
+  const{user,capacity} = req.body;
+
+  try{
+
+    await BloodBagModel.findOneAndUpdate({donor:user},{capacity:capacity})
+
+    return res.status(200).json({msg:'capacity updated'});
+
+  }catch(error){
+
+    return res.status(500).json({msg:'failed to update blood bag'});
+  }
+
+}
+
+const getCancelledCampaigns = async(req,res)=>{
+
+
+  const foundCampaigns = await CampaignModel.find({isCancelled:true});
+
+
+  return res.status(200).json({foundCampaigns})
+
+}
 
 const updateCampaign = async (req, res, next) => {
   const {
@@ -292,5 +319,8 @@ module.exports = {
   findDonorInCampaign,
   removeUsersFromCampaign,
   createCampaign,
-  findPendingCampaigns
+  findPendingCampaigns,
+  cancellCampaign,
+  getCancelledCampaigns,
+  updateBloodBag
 };
