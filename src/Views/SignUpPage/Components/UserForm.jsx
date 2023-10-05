@@ -26,6 +26,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
 import googleUrl from 'axios';
+import Footer from "../../../CommonComponents/Footer";
 const TextBox = styled(TextField)({
   width: "100%",
   "& .MuiOutlinedInput-root": {
@@ -111,12 +112,12 @@ function SlideTransition(props) {
 
 const AdminButton = styled(CustomLinkButton)({
   "&:hover": {
-    backgroundColor: "blue", // Change to desired hover color
-    color: "white", // Change to desired hover text color
+    backgroundColor: "blue", 
+    color: "white", 
   },
 
-  borderColor: "blue", // Change to desired hover border color
-  borderWidth: 1, // Change to desired hover border width
+  borderColor: "blue",
+  borderWidth: 1, 
   borderStyle: "solid",
   color: "blue",
 });
@@ -480,7 +481,7 @@ if(!longitude || !latitude ){
                     </Typography>
 
                     <TextBox
-                      label="NAME"
+                      label="USERNAME"
                       variant="outlined"
                       onChange={(e) => {
                         setName(e.target.value);
@@ -651,6 +652,7 @@ if(!longitude || !latitude ){
             {sccMSG}
           </Alert>
         </Snackbar>
+        <Footer backColor={fontColor} marginTop='100px'/>
       </div>
     </>
   );

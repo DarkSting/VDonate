@@ -27,6 +27,7 @@ import { Stack } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router-dom";
 import Axios from '../../../api/axios'
+import UserProfile from "../Profile";
 
 
 
@@ -223,6 +224,14 @@ const Navbar = (props) => {
     navigate('/userlogin');
   }
 
+  const [profileopen, setProfileOpen] = useState(false);
+
+  function openProfile(){
+
+    setProfileOpen(true);
+
+  }
+
 
   return (
 
@@ -290,14 +299,6 @@ const Navbar = (props) => {
             sx ={{}}
       >
 
-        <MenuItem onClick={handleClose}  onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{width:'200px','&:hover':{backgroundColor:props.color,color:'white'}}}>
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText>
-              Settings
-            </ListItemText>
-        </MenuItem>
         <MenuItem onClick={handleClickOpen} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
             <DarkMode />
@@ -306,7 +307,7 @@ const Navbar = (props) => {
               Theme
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleClickOpen} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+        <MenuItem onClick={openProfile} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
             <Person />
           </ListItemIcon>
@@ -332,6 +333,7 @@ const Navbar = (props) => {
   
       </StyledToolbar>
     </NavBar>
+    <UserProfile open={profileopen} setOpen={setProfileOpen} />
     <Dialog
         open={opendialog}
         onClose={handleClose}

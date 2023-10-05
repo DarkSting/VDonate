@@ -1,11 +1,10 @@
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Navbar from "./Components/Navbar";
+import Sidebar from "./Components/Sidebar";
 import { useContext, useEffect, useState } from "react";
 import darkenColor from "../../CommonComponents/ColorDarker.js";
 import axios from "../../api/axios";
 import Spinner from "../../CommonComponents/SpinFunction";
-import { NavLink, Outlet } from "react-router-dom";
-import { MyContext } from "../..";
+import { MyContext } from "../../index";
 
 export default function UserPage() {
   const [color, setColor] = useState("#1F8A70");
@@ -13,7 +12,7 @@ export default function UserPage() {
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const {updateUser} = useContext(MyContext);
+  const { updateUser,updateUserID } = useContext(MyContext);
 
   let darkColor = color;
 
@@ -23,8 +22,9 @@ export default function UserPage() {
       .then((response) => {
         setUserState(true);
         setUser(response.data.name);
-        updateUser(response.data.name);
         setIsLoading(true);
+        updateUser(response.data.name);
+        updateUserID(response.data.id)
       })
       .catch((error) => {
         setUserState(false);

@@ -13,17 +13,16 @@ import {
     LoadSubSpinner,
   } from "../../CommonComponents/SpinFunction";
 
-  import { Card } from "react-bootstrap";
+  import { Card } from "@mui/material";
   import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
+import { useSnackbar } from "../../CommonComponents/SnackBarContext";
 
   
   
     /**card object */
 
   const CardObject = ({
-    state,
-    color,
     name,
     phone,
     id,
@@ -32,8 +31,12 @@ import {
     email,
     resetArry,
     array,
-    mongoID,
+    mongoID
+    
   }) => {
+
+    const {openSnackbar, closeSnackbar} = useSnackbar();
+
     const sendApprove = (approvedVal) => {
       const data = {
         approval: approvedVal,
@@ -42,22 +45,30 @@ import {
       axios
         .post("admin/updatepassword", data)
         .then((r) => {
-          setSent(true);
-          console.log(userId);
-          const newArray = array.filter((item) => item.id !== userId);
+
+          const newArray = array.filter((item) => item._id !== mongoID);
           resetArry(newArray);
+          openSnackbar({
+            message: `${name} approved`,
+            color:'green',
+            
+          })
+          
         })
         .catch((err) => {
-          setSent(false);
+          openSnackbar({
+            message: `${name} failed to approve`,
+            color:'red',
+            
+          })
         });
     };
   
-    const userId = id;
-    const [isSent, setSent] = useState(false);
+
   
     return (
-      <Card>
-        <CardContent sx={{ backgroundColor: "#F5F5F5", borderRadius: "3px" }}>
+      <Card >
+        <CardContent sx={{ backgroundColor: "white", borderRadius: "3px" }}>
           <Typography variant="h5" component="div">
             Name : {name}
           </Typography>
@@ -67,31 +78,70 @@ import {
           <Typography variant="body1">Lisence Number : {lisence}</Typography>
           <Typography variant="body1">Email : {email}</Typography>
         </CardContent>
-        <CardActions sx={{ display: "flex", justifyContent: "center" }}>
-          {!isSent ? (
-            LoadSubSpinner(isSent, setSent, "red")
-          ) : (
+        <CardActions sx={{ display: "flex", justifyContent: "center",backgroundColor: "#F5F5F5" }}>
+         
             <Button
-              variant="outlined"
+              variant="contained"
               size="small"
               onClick={() => {
-                sendApprove(true);
+                openSnackbar({
+                  message: `${name} approving`,
+                  color:'black',
+                  
+                })
+                sendApprove(true)
               }}
             >
               Approve
             </Button>
-          )}
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => {
+                openSnackbar({
+                  message: `${name} request deleted`,
+                  color:'green',
+                  
+                })
+                const newArray = array.filter((item) => item._id !== mongoID);
+                resetArry(newArray);
+              }}
+            >
+              Reject
+            </Button>
+          
         </CardActions>
       </Card>
     );
   };
   
   
-  
+  const LoadApprovals = ({approvals,setApprovals}) => {
+    return (
+      <Stack spacing={1} sx={{ width: "50%", marginTop: "30px" }}>
+        {approvals.map((value) => (
+          <CardObject
+            width="100%"
+            state={value.isActive}
+            name={value.userName}
+            phone={value.phone}
+            id={value.id}
+            role={value.role}
+            mongoID={value._id}
+            email={value.email}
+            lisence={value.licenseNumber}
+            resetArry={setApprovals}
+            array={approvals}
+          />
+        ))}
+      </Stack>
+    );
+  };
   
     /**getting approvals from the backend */
   
   export default function NewAdminSignUps() {
+    
     useEffect(() => {
       axios
         .get("/admin/getnewadmins")
@@ -108,46 +158,24 @@ import {
   
     console.log(approvals);
   
-    const loadApprovals = () => {
-      return (
-        <Stack spacing={1} sx={{ width: "50%", marginTop: "10px" }}>
-          {approvals.map((value) => (
-            <CardObject
-              width="100%"
-              state={value.isActive}
-              name={value.userName}
-              phone={value.phone}
-              id={value.id}
-              role={value.role}
-              mongoID={value._id}
-              email={value.email}
-              lisence={value.licenseNumber}
-              resetArry={setApprovals}
-              array={approvals}
-            />
-          ))}
-        </Stack>
-      );
-    };
-  
-    
       /**use context */
-    
     const {  darkColor } = useContext(MyContext);
   
     return (
       <>
-        {approvals.length === 0 ? (
-          LoadSubSpinner(isLoaded, setLoaded, "No Approvals Yet")
-        ) : (
+
           <Tab
             title="Admin Signup Approvals"
             fontSize="h4"
             fontColor="white"
             titleBackColor={darkColor}
-            renderContent={loadApprovals()}
+            renderContent={approvals.length === 0 ? (
+              LoadSubSpinner(isLoaded, setLoaded, "No Approvals Yet")
+            ) : ( <LoadApprovals setApprovals={setApprovals} approvals={approvals} />)
+             
+            }
           ></Tab>
-        )}
+       
       </>
     );
   }

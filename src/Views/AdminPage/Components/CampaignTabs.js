@@ -3,7 +3,8 @@ import { Box,Tab, Tabs, Typography } from '@mui/material';
 import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
 import AddCampaign from '../AddCampaign';
-import PendingCampaignTab from '../PendingCampaigns';
+import PendingCampaignTab from '../PendingCampaigns.js';
+import CancelledCampaignTab from '../CancelledCampaigns';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -49,7 +50,7 @@ function TabPanel(props) {
         <PendingCampaignTab />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
-        
+        <CancelledCampaignTab />
       </TabPanel>
     </div>
     )

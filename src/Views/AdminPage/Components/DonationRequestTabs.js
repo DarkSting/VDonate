@@ -38,13 +38,13 @@ function TabPanel(props) {
         value={currentTab}
         onChange={handleTabChange}
         aria-label="Multiple Tabs Example"
-        sx={{alignSelf:'flex-start',marginTop:2}}
+        sx={{alignSelf:'flex-start',marginTop:3}}
       >
         <Tab label="Pending Requests" />
         <Tab label="Approved Requests" />
         <Tab label="Rejected Requests" />
       </Tabs>
-      <TabPanel value={currentTab} index={0}>
+      <TabPanel value={currentTab} index={0} >
         <DonationRequest />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>

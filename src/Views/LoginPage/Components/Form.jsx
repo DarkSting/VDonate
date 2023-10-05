@@ -23,6 +23,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {  useNavigate } from "react-router-dom";
 import axios from "../../../api/axios";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
+import Footer from "../../../CommonComponents/Footer";
 
 const TextBox = styled(TextField)({
   width: "100%",
@@ -108,12 +109,12 @@ function SlideTransition(props) {
 
 const UserButton = styled(CustomLinkButton)({
     "&:hover": {
-      backgroundColor: "#0C356A", // Change to desired hover color
-      color: "white", // Change to desired hover text color
+      backgroundColor: "#0C356A", 
+      color: "white", 
     },
 
-    borderColor: "#0C356A", // Change to desired hover border color
-    borderWidth: 1, // Change to desired hover border width
+    borderColor: "#0C356A", 
+    borderWidth: 1, 
     borderStyle: "solid",
     color: "#0C356A",
   });
@@ -211,6 +212,7 @@ export default function Form() {
 
   const valueList = [name, password];
 
+  
  
 
   return (
@@ -363,6 +365,7 @@ export default function Form() {
                   }}
                 >
                   <Button
+                    
                     size="Large"
                     sx={btnprop}
                     onClick={() => {
@@ -404,6 +407,7 @@ export default function Form() {
             {sccMSG}
           </Alert>
         </Snackbar>
+        <Footer backColor="#0C356A" marginTop='100px' />
       </div>
     </>
   );

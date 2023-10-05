@@ -2,9 +2,7 @@ import React, { useContext, useState} from 'react';
 import { Box,Tab, Tabs, Typography } from '@mui/material';
 import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
-import UploadTest from '../Reports';
-import PendingFilesTab from '../PendingRpeorts';
-import CheckedReportsTab from '../CompletedReports';
+import MessageList from '../Messages';
 
 
 function TabPanel(props) {
@@ -33,32 +31,28 @@ function TabPanel(props) {
     
 
     return(
-      <div >
+      <div>
         <Tabs
         value={currentTab}
         onChange={handleTabChange}
         aria-label="Multiple Tabs Example"
-        sx={{alignSelf:'flex-start',marginTop:5,}}
+        sx={{alignSelf:'flex-start',marginTop:3}}
       >
-        <Tab label="Upload Tests"  />
-        <Tab label="Checked Tests" />
-        <Tab label="Pending Tests" />
+        <Tab label="New Messages" />
+        <Tab label="Messages Sent" />
       </Tabs>
       <TabPanel value={currentTab} index={0} >
-        <UploadTest />
+        <MessageList />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <CheckedReportsTab />
-      </TabPanel>
-      <TabPanel value={currentTab} index={2}>
-        <PendingFilesTab />
+
       </TabPanel>
     </div>
     )
   }
 
 
-  function ReportTab() {
+  function MessageTabs() {
     
     const {  darkColor } = useContext(MyContext);
 
@@ -71,7 +65,7 @@ function TabPanel(props) {
   
     return (
       <MainTab
-          title="Reports"
+          title="Requests"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
@@ -81,5 +75,5 @@ function TabPanel(props) {
     );
   }
   
-  export default ReportTab;
+  export default MessageTabs;
   

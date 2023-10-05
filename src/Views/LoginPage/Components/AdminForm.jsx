@@ -33,6 +33,7 @@ import { Password } from "@mui/icons-material";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "../../../api/axios";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
+import Footer from "../../../CommonComponents/Footer";
 
 const TextBox = styled(TextField)({
   width: "100%",
@@ -132,7 +133,7 @@ export default function AdminLoginForm() {
           setsccMSG("Login succeed");
           setSeverity("success");
           setsccColor("#03C988");
-          navigate("/admindashboard");
+          navigate("/admindashboard/campaign");
         })
         .catch((err) => {
           console.log(err);
@@ -151,7 +152,7 @@ export default function AdminLoginForm() {
     }
 
     if (arr[1] === "") {
-      setPasswordErr("Email is not provided");
+      setPasswordErr("Password is not provided");
       isPasswordNull = true;
     } else {
       setPasswordErr("");
@@ -408,6 +409,7 @@ export default function AdminLoginForm() {
             {sccMSG}
           </Alert>
         </Snackbar>
+        <Footer backColor="#9681EB" marginTop='100px'/>
       </div>
     </>
   );

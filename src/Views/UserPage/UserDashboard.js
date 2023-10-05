@@ -1,15 +1,20 @@
 import Navbar from "./Components/Navbar";
 import Sidebar from "./Components/Sidebar";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import darkenColor from "../../CommonComponents/ColorDarker.js";
 import axios from "../../api/axios";
 import Spinner from "../../CommonComponents/SpinFunction";
+import { MyContext } from "../..";
+import { useSnackbar } from "../../CommonComponents/SnackBarContext";
 
 export default function UserPage() {
   const [color, setColor] = useState("#1F8A70");
   const [foundUser, setUserState] = useState(false);
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { updateUser,updateUserID ,userID} = useContext(MyContext);
+  const {openSnackbar, closeSnackbar} = useSnackbar();
 
   let darkColor = color;
 
@@ -18,7 +23,9 @@ export default function UserPage() {
       .get("/user/userDashBoard")
       .then((response) => {
         setUserState(true);
+        updateUser(response.data.name);
         setUser(response.data.name);
+        updateUserID(response.data.id)
         setIsLoading(true);
       })
       .catch((error) => {

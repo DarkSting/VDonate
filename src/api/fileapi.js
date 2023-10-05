@@ -6,7 +6,7 @@ const fileaxios = axios.create({
     headers: {
         'Content-Type':'multipart/form-data',
       },
-      withCredentials:true
+
 })
 
 export default fileaxios;

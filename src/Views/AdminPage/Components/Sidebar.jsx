@@ -24,8 +24,8 @@ import {
 } from "@mui/material";
 import React, { useState, useContext } from "react";
 import { Outlet } from "react-router-dom";
-import { CustomListLinkButton } from "../../CommonComponents/LinkButton";
-import { MyContext } from "../..";
+import { CustomListLinkButton } from "../../../CommonComponents/LinkButton";
+import { MyContext } from "../../..";
 
 
 
@@ -69,18 +69,17 @@ const state = [
   "Blood Stock",
   "Emergencies",
   "Inbox",
-  "Complains",
+  "Complaints",
   "Reports",
   "Admin Approvals",
-  "Requests"
+  "Donation Requests"
 
 ];
 
-
-  /*sidebar */
+/*sidebar */
 
 const Sidebar = (props) => {
-  const [selectedItem, setSelectedItem] = useState("Campaign");
+  const [selectedItem, setSelectedItem] = useState("Campaigns");
   const { updateData } = useContext(MyContext);
 
   updateData(props.bordeColor, props.backColor);
@@ -159,8 +158,7 @@ const Sidebar = (props) => {
                 />
               </ListItemBtn>
             </ListItem>
-            
-            {/*Donation requests */}
+
             <ListItem disablePadding>
               <ListItemBtn
                 to="donationrequests"
@@ -180,7 +178,7 @@ const Sidebar = (props) => {
               </ListItemBtn>
             </ListItem>
 
-            {/*Campaigns*/}
+            {/*Pending Campaigns*/}
             <ListItem disablePadding>
               <ListItemBtn
                 to="campaign"
@@ -199,7 +197,7 @@ const Sidebar = (props) => {
                 />
               </ListItemBtn>
             </ListItem>
-
+            
             {/*Emergencies*/}
             <ListItem disablePadding>
               <ListItemButton
@@ -221,7 +219,7 @@ const Sidebar = (props) => {
 
             {/*Inbox*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn to="inbox"
                 selected={selectedItem === state[4]}
                 onClick={() => {
                   setSelectedItem(state[4]);
@@ -235,12 +233,12 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[4]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
 
             {/*Complains*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn to="complaints"
                 selected={selectedItem === state[5]}
                 onClick={() => {
                   setSelectedItem(state[5]);
@@ -254,12 +252,11 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[5]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
-            
             {/*Reports*/}
             <ListItem disablePadding>
-              <ListItemButton to="uploadtests"
+              <ListItemBtn to="uploadtests"
                 selected={selectedItem === state[6]}
                 onClick={() => {
                   setSelectedItem(state[6]);
@@ -273,7 +270,7 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[6]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
           </List>
         </Box>
@@ -286,7 +283,7 @@ const Sidebar = (props) => {
               xs: 0,
               lg: 1,
             },
-            width: "95%",
+            width: "100%",
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",

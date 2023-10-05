@@ -13,44 +13,77 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Axios from '../../api/axios';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
-import { ArrowDropDown, ArrowDropDownCircle, ArrowDropUp, ArrowUpward } from '@mui/icons-material';
+import { ArrowDownward, ArrowDropDown, ArrowDropDownCircle, ArrowDropUp, ArrowUpward } from '@mui/icons-material';
+import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 
-const CampaignCard = ({ campaign }) => {
+const CampaignCard = ({ campaign , setArray, setRemovedItem,currentArray}) => {
   const [expanded, setExpanded] = useState(false);
+  const [cardId,setCardID] = useState(campaign._id);
+
+  const {openSnackbar, closeSnackbar} = useSnackbar();
 
   const toggleExpansion = () => {
     setExpanded(!expanded);
   };
 
+  function removeCard(){
+
+    
+    Axios.put('/campaign/cancellcampaign',{campaignID:cardId}).then(r=>{
+
+        const newArray = currentArray.filter((item)=>cardId!==item._id)
+        setRemovedItem(cardId);
+        setArray(newArray);
+        openSnackbar({
+            message: `${cardId} Campaign Cancelled`,
+            color:'#000000',
+        
+    })
+
+    }).catch(error=>{
+
+        openSnackbar({
+            message: `${cardId} Cannot Cancel the campaign`,
+            color:'red',
+        
+    })
+
+    })
+    
+
+  }
+
   return (
     <Card>
       <CardContent>
-        <Typography variant="body2">Location: {campaign.location}</Typography>
-        <Typography variant="body2">Time Begin: {campaign.timeBegin}</Typography>
-        <Typography variant="body2">Time End: {campaign.timeEnd}</Typography>
-        <Typography variant="body2">Blood Container Capacity: {campaign.capacity}</Typography>
+        <Typography variant="body1">Location: {campaign.location}</Typography>
+        <Typography variant="body1">Time Begin: {campaign.timeBegin}</Typography>
+        <Typography variant="body1">Time End: {campaign.timeEnd}</Typography>
+        <Typography variant="body1">Donors count: {campaign.donors.length}</Typography>
+        <Typography variant="body1">Blood Container Capacity: {campaign.capacity}</Typography>
       </CardContent>
       <CardActions>
+      <Button
+          size="small"
+          variant='contained'
+          onClick={toggleExpansion}
+          style={{ marginLeft: 'auto' }}
+          endIcon={(!   expanded?<ArrowDownward />:<ArrowUpward />)}
+        >
+          {expanded ? 'Collapse' : 'Expand'}
+        </Button>
         <Button
           size="small"
           color="secondary"
           variant='contained'
           onClick={() => {
-            // Handle cancel button click
+                removeCard()
+
           }}
           style={{ marginLeft: 'auto' }}
 
         >
           Cancell
-        </Button>
-        <Button
-          size="small"
-          variant='contained'
-          onClick={toggleExpansion}
-          style={{ marginLeft: 'auto' }}
-          endIcon={(expanded?<ArrowDropDownCircle />:<ArrowUpward />)}
-        >
-          {expanded ? 'Collapse' : 'Expand'}
         </Button>
       </CardActions>
       {/* <CardExpansion expanded={expanded}>
@@ -67,6 +100,7 @@ export default function PendingCampaignTab(){
     const[availablecampains,setAvailableCampaigns] = useState([]);
     const [startTime,setStartTime] = useState(null);
     const [endTime,setEndTime] = useState(null);
+    const [removedItem,setRemovedItem] = useState('');
    
     const {openSnackbar, closeSnackbar} = useSnackbar();
 
@@ -89,10 +123,9 @@ export default function PendingCampaignTab(){
               })
         })
 
-    },[startTime,endTime])
+    },[startTime,endTime,removedItem])
 
-   
-
+    const[loading,setLoading] = useState(false);
 
     return(
         <Box>
@@ -113,9 +146,9 @@ export default function PendingCampaignTab(){
           </DemoContainer>
           </LocalizationProvider>
           <Stack spacing={1} direction='column' sx={{marginTop:'20px'}}>
-            {availablecampains.map((value)=>
-                (<CampaignCard key={value._id} campaign={value}/>)
-            )}
+           {availablecampains.length>0?availablecampains.map((value)=>
+                (<CampaignCard key={value._id} campaign={value} setArray={setAvailableCampaigns} setRemovedItem={setRemovedItem} currentArray={availablecampains}/>)
+            ):(LoadSubSpinner(loading,setLoading,"No Pending Campaigns"))}
           </Stack>
         </Box>
 

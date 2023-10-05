@@ -21,6 +21,9 @@ import { useSnackbar } from "./CommonComponents/SnackBarContext";
 import { Snackbar as SnackbarMui, SnackbarContent } from "@mui/material";
 import ReportTab from "./Views/TestsPage/Components/ReportTabs";
 import CampaignTabs from "./Views/AdminPage/Components/CampaignTabs";
+import ComplaintList from "./Views/AdminPage/Complains";
+import MessageList from "./Views/AdminPage/Messages";
+import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,11 +48,12 @@ const router = createBrowserRouter(
 
         <Route path="campaign" element={<CampaignTabs />} />
 
+        <Route path="complaints" element={<ComplaintList />} />
         <Route path="donationrequests" element={<DonationReqTab />} />
+        <Route path="inbox" element={<MessageTabs/>} />
 
         <Route
           path="uploadtests"
-          loader={UserApprovalLoader}
           element={<ReportTab />}
         />
       </Route>
