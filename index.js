@@ -33,6 +33,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
        
       const customFilename = _filename ||'folder';
+      req.body.customeFilenName = customFilename+path.extname(file.originalname);
       console.log(customFilename + path.extname(file.originalname));
       cb(null, customFilename + path.extname(file.originalname));
     },
@@ -45,6 +46,7 @@ const fileFilter = (req, file, cb) => {
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf'];
     
     if (allowedMimeTypes.includes(file.mimetype)) {
+      req.body.mime = file.mimetype
       cb(null, true);
     } else {
       cb(new Error('Only images (JPEG/PNG) and PDF files are allowed'), false);
@@ -62,8 +64,10 @@ app.post('/upload', upload.single('file'),(req, res) => {
 
     const newFile = new fileModel({
 
-      fileName:_filename,
+      fileName:req.body.customeFilenName,
       userName: _userName
+      ,
+      mimeType:req.body.mime
 
     })
 
@@ -87,6 +91,10 @@ app.post('/upload', upload.single('file'),(req, res) => {
 app.post('/sendfilename',(req, res) => {
 
     const{filename,userid} = req.body;
+
+    if(!userid){
+      return res.status(500).json({msg:"please insert a user to upload the file"})
+    }
 
     if(filename.trim().length>0){
       const time = new Date();
@@ -115,37 +123,114 @@ app.post('/sendfilename',(req, res) => {
 
   })
 
-  //download
-app.get('/download/:filename',async(req,res)=>{
+
+    //download files from the server
+  app.get('/download/:filename', (req, res) => {
+
+    console.log("downloading");
+
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'uploads', filename);
+  
+    res.download(filePath, (err) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('File download failed');
+      }
+    });
+
+  });
+  
+
+  //send the list files available to the user
+app.get('/getfiles/:name',async(req,res)=>{
 
     try{
 
-        console.log("file is going to download");
-        const filename = req.params.filename;
-        const filepath = path.join('uploads',filename);
 
-        const fileExists = await fs.access(filepath).then((result) => {
-            return true;
-        }).catch((err) => {
-            return false;
-        });
-
-        if(!fileExists){
-            return res.status(404).json({msg:"file not found"});
+        console.log(req.params.name)
+        let filesfound = []
+        if( req.params.name !=='all'){
+          const username = req.params.name;
+        const filesfound = await fileModel.find({$and:[{userName:username},{checked:false}]})
+        if (filesfound.length === 0) {
+          return res.status(404).json({ error: 'User not found or no files available.' });
+        }
+       
+        
+        return res.status(200).json(filesfound);
+      }
+      else{
+        const filesfound = await fileModel.find({checked:false})
+        if (filesfound.length === 0) {
+          return res.status(404).json({ error: 'User not found or no files available.' });
         }
 
-        res.download(filepath,filename,(error) =>{
-
-          
-            if(error){
-                console.log(error);
-                return res.status(500).json({msg:"server error occured when downloading"});
-            }
-        })
-
+        return res.status(200).json(filesfound);
+      }
+  
+     
     }catch(error){
-
+      return res.status(500).json({msg:"file loading failed"});
     }
+
+})
+
+app.post('/checkfile',async(req,res)=>{
+
+  const{username,filename} = req.query;
+
+  console.log("checking file")
+
+  try{      
+    
+    await fileModel.findOneAndUpdate({$and:[{userName:username},{fileName:filename}]},{$set:{checked:true}})
+  
+
+    return res.status(200).json({msg:"fileupdated"});
+  
+ 
+}catch(error){
+
+  return res.status(500).json({msg:"file updating failed"});
+}
+
+
+  
+})
+
+app.get('/getcheckedfiles/:name',async(req,res)=>{
+
+
+  console.log('getting checked files')
+  try{
+ 
+    let filesfound = []
+
+    if( req.params?.name!=='all'){
+      const username = req.params.name;
+    const filesfound = await fileModel.find({$and:[{userName:username},{checked:true}]})
+    if (filesfound.length === 0) {
+      return res.status(404).json({ error: 'User not found or no files available.' });
+    }
+   
+    
+    return res.status(200).json(filesfound);
+  }
+  else{
+    const filesfound = await fileModel.find({checked:true})
+    if (filesfound.length === 0) {
+      return res.status(404).json({ error: 'User not found or no files available.' });
+    }
+
+    return res.status(200).json(filesfound);
+  }
+
+ 
+}catch(error){
+  return res.status(500).json({msg:"file loading failed"});
+}
+
 
 })
 
@@ -153,9 +238,13 @@ mongoose.connect(process.env.MONGO_URI,{
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(res=>console.log("DB connected"))
+.then(res=>{console.log("DB connected")
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+})
 .catch(err=>console.log(err));
   
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
+ 

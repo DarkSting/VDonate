@@ -7,7 +7,7 @@ const fileSchema = new mongoose.Schema({
         require:[true,"latitude required"]
     },
     checked:{
-        type:String,
+        type:Boolean,
         default:false
     },
     createdDate:{
@@ -15,6 +15,9 @@ const fileSchema = new mongoose.Schema({
         default:Date.now
     },
     userName:{
+        type:String
+    },
+    mimeType:{
         type:String
     }
 
