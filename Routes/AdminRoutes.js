@@ -12,7 +12,8 @@ const {
     updatePasswordAdmin,
     updatePasswordUser,
     rejectAdminSignUp,
-    getMessages
+    getMessages,
+    sendMessage
 } = require('../Controllers/AdminControllers.js');
 const { authenticateUser, authenticateAdminMiddleware } = require('../Middlewares/authMiddleware.js');
 
@@ -32,6 +33,7 @@ routes.post('/updatepassword',updatePasswordAdmin);
 routes.post('/updatepassworduser',updatePasswordUser)
 routes.put('/rejectadmin',rejectAdminSignUp);
 routes.get('/getmessages',authenticateAdminMiddleware, getMessages);
+routes.post('/sendmessage',sendMessage);
 
 
 module.exports =routes;

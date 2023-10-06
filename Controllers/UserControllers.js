@@ -91,9 +91,8 @@ const getMessages= async(req,res)=>{
 
     try{
 
-        console.log(user);
         const foundMessages = await MessageModel.find({receiverID:user})
-    
+
         if(foundMessages.length>0){
     
             return res.status(200).json({foundMessages})
@@ -121,7 +120,7 @@ const getSentMessages = async(req,res)=>{
     try{
 
         const foundMessages = await MessageModel.find({senderID:new mongoose.Types.ObjectId(user)})
-
+        console.log(user)
         if(foundMessages.length>0){
     
             return res.status(200).json({foundMessages})
@@ -203,9 +202,6 @@ const getCampaigns = async(req,res)=>{
         return res.status(200).json({})
 
       }
-
-
-
 }
 
 
@@ -342,6 +338,9 @@ const findAllUsers = async(req,res,next)=>{
             newOBJ.name = current.userName;
             newOBJ.userUD = current._id;
             newOBJ.phone = current.phone;
+            newOBJ.email = current.email;
+            newOBJ.nic = current.nic;
+            newOBJ.bloodType = current.bloodType;
 
             users.push(newOBJ);
 

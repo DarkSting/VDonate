@@ -26,6 +26,7 @@ const addCampaign = async (req, res) => {
 };
 
 const createCampaign = async (req, res) => {
+
   const { startTime, endTime, location, staff, donors, organizedBy } = req.body;
 
   console.log("campaign creating");
@@ -44,9 +45,9 @@ const createCampaign = async (req, res) => {
 
     //creating blood bags for each user
     for (let currentDonor of foundDonors) {
-      const foundRequest = await DonationRequestModel.findOne({
+      const foundRequest = await DonationRequestModel.findOneAndUpdate({$and:[{
         User: currentDonor._id,
-      });
+      },{isAssigned:false}]},{isAssigned:true});
 
       let newBloodBag = new BloodBagModel({
         dateCreated: Date(),
@@ -160,13 +161,36 @@ const cancellCampaign = async (req, res) => {
   
   const { campaignID } = req.body;
 
+  try{
+
+  const foundCampaign = await CampaignModel.findOne({_id:campaignID});
+
+  if(foundCampaign){
+
+    const foundBloodContainer = await BloodContainerModel.findOne({_id:foundCampaign.bloodContainer})
+
+    for(let currentbloodbag of foundBloodContainer.bloodBags){
+
+      const foundBloodBag = await BloodBagModel.findOneAndUpdate({_id:currentbloodbag},{filled:true});
+      
+      console.log(foundBloodBag);
+      
+    }
+
+  }
+
   await CampaignModel.findOneAndUpdate(
     { _id: campaignID },
     { isCancelled: true }
   );
 
-
   res.status(200).json({ msg: "campaign cancelled" });
+
+}
+catch(error){
+
+  return res.status(500).json({msg:"cannot cancel the campaign"})
+}
 
 };
 

@@ -307,7 +307,7 @@ const getApprovedRequests = async(req,res)=>{
 
     const time = new Date(0);
 
-    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:true},{approvedDate:{$gt:time}}]});
+    const foundrequests = await DonationRequestModel.find({$and:[{isApproved:true},{approvedDate:{$gt:time}},{isAssigned:false}]});
 
     let requestsArrays = [];
 

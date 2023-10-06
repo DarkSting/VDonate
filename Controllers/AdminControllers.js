@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const {sendmailInternal} = require('./MailControllers');
 const jwt = require('jsonwebtoken');
 const { createToken } = require('../Middlewares/authMiddleware');
+const { MessageModel } = require('../Models/UserMessageModel');
+const { default: mongoose } = require('mongoose');
 
 
 //check the the admin login
@@ -45,6 +47,38 @@ const welcomeAdmin = (req,res)=>{
        return res.status(404).json({msg:"token not found",code:500});
     }
    
+}
+
+const sendMessage = async(req,res)=>{
+
+    const{user,description,receiver} = req.body
+
+  
+    try{
+
+        const foundUser = await AdminModel.findOne({userName:user});
+
+        const foundReceiver = await UserModel.findOne({userName:receiver});
+        
+        const newMessage = new MessageModel({
+
+            description:description,
+            sender:foundUser.userName,
+            senderID:foundUser._id,
+            receiver:foundReceiver.userName,
+            receiverID:foundReceiver._id
+        })
+
+        await newMessage.save()
+        return res.status(200).json({msg:'message sent'})
+
+
+    }catch(error){
+
+        console.log(error)
+        return res.status(500).json(error);
+    }
+
 }
 
 //adding a user model to the database
@@ -557,6 +591,7 @@ module.exports  = {
     getNewlySignedAdmins,
     updatePasswordUser,
     rejectAdminSignUp,
-    getMessages
+    getMessages,
+    sendMessage
 
 };
