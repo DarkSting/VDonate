@@ -246,21 +246,6 @@ const NavComponent = ({setLoggedOut,props})=>{
           </Search>
         </LogoBox>
 
-        {/*button holder*/}
-       <ButtonBox direction="row" props={props} >
-            <NavButton onClick={()=>{navigate('/')}} sx={{'&:hover':{backgroundColor:props.hoverColor}}}>
-              Home
-            </NavButton>
-            <NavButton sx={{'&:hover':{backgroundColor:props.hoverColor}}}>
-              About
-            </NavButton>
-            <NavButton sx={{'&:hover':{backgroundColor:props.hoverColor}}}>
-              Contact
-            </NavButton>
-            <NavButton sx={{'&:hover':{backgroundColor:props.hoverColor}}}> 
-              Why give Blood  
-            </NavButton>
-       </ButtonBox>
        <Stack direction="row" sx={{justifyContent:'space-between',alignItems:'center'}}>
        <Typography variant="body1" sx={{marginRight:'10px'}}>{props.name}</Typography>
        {/*dropdown menu*/}

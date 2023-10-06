@@ -64,14 +64,14 @@ const ListItemBtn = styled(CustomListLinkButton)(({ theme }) => ({}));
 /*sidebar options */
 
 const state = [
-  "User Approvals",
+  "Donors",
   "Campaigns",
   "Blood Stock",
   "Emergencies",
   "Inbox",
   "Complaints",
   "Reports",
-  "Admin Approvals",
+  "Admins",
   "Donation Requests"
 
 ];

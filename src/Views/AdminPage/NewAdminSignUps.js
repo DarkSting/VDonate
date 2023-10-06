@@ -165,7 +165,7 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
       <>
 
           <Tab
-            title="Admin Signup Approvals"
+            title="Admins"
             fontSize="h4"
             fontColor="white"
             titleBackColor={darkColor}

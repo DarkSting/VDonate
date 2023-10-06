@@ -7,7 +7,7 @@ import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 const RequestCard = ({Data,index})=>{
 
     return(
-        <Card key={index} elevation={1} sx={{marginTop:2}}>
+        <Card key={index} elevation={1} sx={{marginTop:2}} variant='outlined'>
                     <CardContent>
                         <div>
                             <Typography variant="h5">User Information</Typography> 

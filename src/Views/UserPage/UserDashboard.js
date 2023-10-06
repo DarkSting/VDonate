@@ -26,6 +26,7 @@ export default function UserPage() {
         updateUser(response.data.name);
         setUser(response.data.name);
         updateUserID(response.data.id)
+        console.log(userID)
         setIsLoading(true);
       })
       .catch((error) => {

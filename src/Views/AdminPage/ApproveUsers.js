@@ -140,18 +140,11 @@ export default function UserApprovals() {
   return (
     <>
 
-        <Tab
-          title="User SignUp Approvals"
-          fontSize="h4"
-          fontColor="white"
-          titleBackColor={darkColor}
-          renderContent={approvals.length > 0 ? (
+       {approvals.length > 0 ? (
             <LoadApprovals />
           ) :(
             LoadSubSpinner(isLoaded, setLoaded,"No User Signups Yet")
           ) }
-        ></Tab>
-      {}
     </>
   );
 }

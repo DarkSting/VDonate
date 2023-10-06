@@ -21,13 +21,14 @@ import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 import { NoData } from '../../CommonComponents/SpinFunction';
 import { MyContext } from '../..';
 
-const MessageCard = ({ username, message, sendDate, onDelete }) => {
+const MessageCard = ({ username, message, sendDate, onDelete,receiver }) => {
   return (
     <Card variant="outlined" style={{ marginBottom: '16px' }}>
       <CardContent>
-        <Typography variant="h6">{username}</Typography>
-        <Typography variant="body1">{message}</Typography>
-        <Typography variant="caption">{sendDate}</Typography>
+        <Typography variant="h6">Sender :{username}</Typography>
+        <Typography variant="body1" m={3}>Description :{message}</Typography>
+        <Typography variant="caption">Date Sent :{sendDate}</Typography>
+
       </CardContent>
       <CardActions>
         <IconButton onClick={onDelete} color="secondary" aria-label="Delete message">
@@ -41,14 +42,15 @@ const MessageCard = ({ username, message, sendDate, onDelete }) => {
 const MessageList = () => {
 
     const {openSnackbar, closeSnackbar} = useSnackbar();
+    const{name,userID} = useContext(MyContext);
 
-  const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([]);
 
   useEffect(()=>{
 
-    Axios.get('user/getmessages').then(r=>{
-
+    Axios.get(`user/getmessages?user=${userID}`).then(r=>{
         setMessages(r.data.foundMessages)
+        console.log(r.data.foundMessages)
         openSnackbar({
             message: `Messages Loaded`,
             color:'green',
@@ -74,7 +76,7 @@ const MessageList = () => {
   const [admins,setAdmins] = useState([]);
   const[selectedAdmin,setSelectedAdmin] = useState(null);
 
-  const{name,userID} = useContext(MyContext);
+
 
   const handleDelete = (index) => {
     const newMessages = [...messages];

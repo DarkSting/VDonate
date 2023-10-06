@@ -23,7 +23,8 @@ import { MyContext } from '../..';
 
 const MessageCard = ({ username, message, sendDate, onDelete }) => {
   return (
-    <Card variant="outlined" style={{ marginBottom: '16px' }}>
+    <div>
+    <Card variant="outlined" style={{ marginBottom: '16px',flex:1}}>
       <CardContent>
         <Typography variant="h6">{username}</Typography>
         <Typography variant="body1">{message}</Typography>
@@ -35,6 +36,7 @@ const MessageCard = ({ username, message, sendDate, onDelete }) => {
         </IconButton>
       </CardActions>
     </Card>
+    </div>
   );
 };
 
@@ -109,7 +111,7 @@ const MessageList = () => {
       color:'black',
   
 })
-    Axios.post('user/sendmessage',{user:name,description:description,receiver:selectedUser}).then(r=>{
+    Axios.post('admin/sendmessage',{user:name,description:description,receiver:selectedUser}).then(r=>{
 
         console.log(r)
         openSnackbar({

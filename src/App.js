@@ -24,6 +24,7 @@ import CampaignTabs from "./Views/AdminPage/Components/CampaignTabs";
 import ComplaintList from "./Views/AdminPage/Complains";
 import MessageList from "./Views/AdminPage/Messages";
 import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
+import DonorsTabs from "./Views/AdminPage/Components/DonorsTabs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,7 +39,7 @@ const router = createBrowserRouter(
         <Route
           path="approvedonor"
           loader={UserApprovalLoader}
-          element={<UserApprovals />}
+          element={<DonorsTabs />}
         />
         <Route
           path="newadmins"

@@ -4,6 +4,8 @@ import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
 import MessageList from '../Messages';
 import SentMessageList from '../SentMessages';
+import UserApprovals from '../ApproveUsers';
+import DonorList from '../DonorList';
 
 
 function TabPanel(props) {
@@ -40,24 +42,22 @@ function TabPanel(props) {
         aria-label="Multiple Tabs Example"
         sx={{alignSelf:'flex-start',marginTop:3}}
       >
-        <Tab label="New Messages" />
-        <Tab label="Messages Sent" />
+        <Tab label="Donor Approvals" />
+        <Tab label="Donors" />
       </Tabs>
       <TabPanel value={currentTab} index={0} >
-
-
-        <MessageList  />
+      <UserApprovals />
      
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <SentMessageList />
+      <DonorList />
       </TabPanel>
     </div>
     )
   }
 
 
-  function MessageTabs() {
+  function DonorsTabs() {
     
     const {  darkColor } = useContext(MyContext);
 
@@ -70,7 +70,7 @@ function TabPanel(props) {
   
     return (
       <MainTab
-          title="Requests"
+          title="Donors"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
@@ -80,5 +80,5 @@ function TabPanel(props) {
     );
   }
   
-  export default MessageTabs;
+  export default DonorsTabs;
   
