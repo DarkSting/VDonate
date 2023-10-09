@@ -13,7 +13,8 @@ const {
     getBloodBag,
     sendMessage,
     getMessages,
-    getSentMessages
+    getSentMessages,
+    deleteUser
 } = require('../Controllers/UserControllers.js');
 const { makeDonationRequest } = require('../Controllers/DonationController.js');
 const { sendmail } = require('../Controllers/MailControllers.js');
@@ -39,5 +40,6 @@ routes.get('/getbloodbag',getBloodBag);
 routes.get('/getmessages',getMessages);
 routes.get('/getsentmessages',getSentMessages);
 routes.post('/sendmessage',sendMessage);
+routes.delete('/deleteuser',deleteUser);
 
 module.exports =routes;

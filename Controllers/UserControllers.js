@@ -91,7 +91,7 @@ const getMessages= async(req,res)=>{
 
     try{
 
-        const foundMessages = await MessageModel.find({receiverID:user})
+        const foundMessages = await MessageModel.find({receiverID:user}).sort({createdAt:-1});
 
         if(foundMessages.length>0){
     
@@ -176,7 +176,7 @@ const getCampaigns = async(req,res)=>{
     async function searchAndExtractDocument(searchValue) {
         try {
      
-          const document = await CampaignModel.findOne({ donors:new mongoose.Types.ObjectId(searchValue) });
+          const document = await CampaignModel.findOne({$and:[ {donors:new mongoose.Types.ObjectId(searchValue)},{isCancelled:false}] });
       
           if (document) {
 
@@ -320,13 +320,30 @@ const loginUser = async(req,res)=>{
     
 }
 
+const deleteUser = async(req,res)=>{
+
+    const{user} = req.query;
+
+    console.log(user);
+
+    const deletedUser = await UserModel.findOneAndDelete({_id:user});
+
+    if(deletedUser){
+        return res.status(200).json({msg:'user deleted successfully'})
+    }
+    else{
+        return res.status(500).json({msg:'failed to delete the user'})
+    }
+
+}
+
 
 /*GET
 findUsers
 */
 const findAllUsers = async(req,res,next)=>{
 
-    const foundUsers = await UserModel.find({});
+    const foundUsers = await UserModel.find({isValidated:true});
 
     let users = [];
 
@@ -554,7 +571,8 @@ module.exports  = {
     getBloodBag,
     getMessages,
     sendMessage,
-    getSentMessages
+    getSentMessages,
+    deleteUser
 
 };
 

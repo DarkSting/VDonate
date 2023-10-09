@@ -1,9 +1,8 @@
-const {DonationModel} = require('../Models/DonationModel');
+const { DonationModel } = require('../Models/DonationModel');
 const { DonationRequestModel } = require('../Models/DonationRequestModel');
 const { UserModel } = require('../Models/UserModel');
 const { sendmailInternal } = require('./MailControllers');
 const jwt = require('jsonwebtoken');
-
 
 //adding a user model to the database
 const addDonation = async(req,res)=>{
@@ -125,21 +124,34 @@ const makeDonationRequest = async(req,res)=>{
  
     }
     else{
+
         res.status(404).json({msg:"token not found",code:500});
+
     }
 }
 
 const findAllDonations = async(req,res,next)=>{
 
-    await DonationModel.find({}).then(result=>{
-      
-        return res.status(201).json(result);
+    const{user} = req.query;
 
-    }).atch(error=>{
-       
-        return res.status(500).json(error);
+    
+    try{
+
+        console.log(user);
         
-    });
+        const foundDonations = await DonationRequestModel.find({User:user});
+
+        return res.status(200).json(foundDonations);
+
+    }catch(error){
+
+        return res.status(500).json(error);
+    }
+   
+      
+        
+
+    
 
 
 }
@@ -288,7 +300,6 @@ const findDonation = async(req,res,next)=>{
     const{
         Date,
         refNo
- 
     } = req.body
 
 
