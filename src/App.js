@@ -25,6 +25,7 @@ import ComplaintList from "./Views/AdminPage/Complains";
 import MessageList from "./Views/AdminPage/Messages";
 import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
 import DonorsTabs from "./Views/AdminPage/Components/DonorsTabs";
+import CustomMap from "./Views/Map/DonorMap";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -69,7 +70,8 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      {/* <RouterProvider router={router} /> */}
+      <CustomMap />
       <SnackbarMui
         anchorOrigin={{
           vertical: "bottom",

@@ -568,7 +568,7 @@ if(!longitude || !latitude ){
                           setYear(e.target.value);
                         }}
                       >
-                        {" "}
+                        {""}
                       </TextBox>
                       <TextBox
                         label="Month"
@@ -614,7 +614,6 @@ if(!longitude || !latitude ){
                     size="Large"
                     sx={btnprop}
                     onClick={() => {
-                      getLocation();
                       handleSignUp(valueList);
                       handleClick(SlideTransition);
                     }}

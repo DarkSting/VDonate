@@ -1,8 +1,9 @@
 import {
     useJsApiLoader,
     GoogleMap,
-    Marker,
+    InfoWindow,
     Autocomplete,
+    Marker,
     DirectionsRenderer,
   } from '@react-google-maps/api'
   import { useRef, useState } from 'react'
@@ -128,9 +129,10 @@ useEffect(() => {
           
           onLoad={map => setMap(map)}
         >
+ 
+          <Marker position={{lat: 6.927079, lng: 79.861244}} title='colombo'/>
 
-          <></>
- {/* <Marker position={center} title={}></Marker> */}
+          <Marker position={{lat: 6.927079, lng: 79.861244}} title='colombo'/>
             
         {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />

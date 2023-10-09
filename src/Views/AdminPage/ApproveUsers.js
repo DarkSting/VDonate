@@ -4,6 +4,7 @@ import {
   Typography,
   Button,
   Stack,
+  Card
 
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
@@ -11,9 +12,10 @@ import axios from "../../api/axios";
 import{
   LoadSubSpinner,
 } from "../../CommonComponents/SpinFunction";
-import { Card } from "react-bootstrap";
 import Tab from "../../CommonComponents/TabComponent";
 import { MyContext } from "../..";
+import { useSnackbar } from "../../CommonComponents/SnackBarContext";
+import Axios from "../../api/axios";
 
 
 
@@ -30,6 +32,8 @@ const CardObject = ({
   array,
   mongoID,
 }) => {
+
+  //sending approve
   const sendApprove = (approvedVal) => {
     const data = {
       approval: approvedVal,
@@ -40,13 +44,47 @@ const CardObject = ({
       .then((r) => {
         setSent(true);
         console.log(userId);
+        openSnackbar({
+          message: `${name} is approved`,
+          color:'green',
+
+      
+        })  
         const newArray = array.filter((item) => item.id !== userId);
         resetArry(newArray);
       })
       .catch((err) => {
         setSent(false);
+        openSnackbar({
+          message: `Failed to approve ${name}`,
+          color:'red',
+
+      
+        })  
       });
   };
+
+  const deleteRequest =()=>{
+
+    Axios.delete(`user/deleteuser?user=${mongoID}`).then(r=>{
+
+      openSnackbar({
+        message: `${name} deleted successfully`,
+        color:'green',
+      })  
+
+      }).catch(er=>{
+
+        openSnackbar({
+          message: `Failed to reject ${name}`,
+          color:'red',
+        })
+
+      })
+
+  }
+
+  const {openSnackbar, closeSnackbar} = useSnackbar();
 
   const [userId,setUserID] = useState('')
   const [objectID,setObjectID] = useState('')
@@ -54,15 +92,15 @@ const CardObject = ({
 
   useEffect(()=>{
 
-setUserID(id);
-setObjectID(mongoID);
+  setUserID(id);
+  setObjectID(mongoID);
 
 
   },[])
 
   return (
     <Card>
-      <CardContent sx={{ backgroundColor: "#F5F5F5", borderRadius: "3px" }}>
+      <CardContent sx={{ backgroundColor: "white", borderRadius: "3px" }}>
         <Typography variant="h5" component="div">
           {name}
         </Typography>
@@ -70,20 +108,40 @@ setObjectID(mongoID);
         <Typography variant="body1"><b>User phone :</b>{phone}</Typography>
         <Typography variant="body1"><b>User mail :</b>{email}</Typography>
       </CardContent>
-      <CardActions sx={{ display: "flex", justifyContent: "center" }}>
-        {!isSent ? (
-          LoadSubSpinner(isSent, setSent, "red")
-        ) : (
+      <CardActions sx={{ display: "flex", justifyContent: "center",backgroundColor: "#F5F5F5"  }}>
+         
           <Button
-            variant="outlined"
+            variant="contained"
             size="small"
             onClick={() => {
               sendApprove(true);
             }}
+
+            sx={{
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
           >
             Approve
           </Button>
-        )}
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              deleteRequest();
+            }}
+            
+            sx={{
+              backgroundColor:'red',
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
+          >
+            Reject
+          </Button>
+        
       </CardActions>
     </Card>
   );
@@ -113,7 +171,7 @@ export default function UserApprovals() {
 
   const LoadApprovals = () => {
     return (
-      <Stack spacing={1} sx={{ width: "50%", marginTop: "10px" }}>
+      <Stack spacing={1} sx={{ width: "100%", marginTop: "10px" }}>
         {approvals.map((value) => (
           <CardObject
             width="100%"
@@ -138,14 +196,14 @@ export default function UserApprovals() {
   const { color, darkColor } = useContext(MyContext);
 
   return (
-    <>
+    <div>
 
        {approvals.length > 0 ? (
             <LoadApprovals />
           ) :(
             LoadSubSpinner(isLoaded, setLoaded,"No User Signups Yet")
           ) }
-    </>
+    </div>
   );
 }
 
@@ -153,7 +211,8 @@ export default function UserApprovals() {
   /**loader function to get data */
 
 export function UserApprovalLoader() {
+ 
   var result = null;
-
   return result;
+
 }

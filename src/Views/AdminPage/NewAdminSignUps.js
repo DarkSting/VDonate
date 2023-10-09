@@ -17,6 +17,7 @@ import {
   import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
 import { useSnackbar } from "../../CommonComponents/SnackBarContext";
+import Axios from "../../api/axios";
 
   
   
@@ -64,6 +65,32 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
         });
     };
   
+    const deleteRequest =()=>{
+
+      Axios.delete(`admin/deleteuser?user=${mongoID}`).then(r=>{
+  
+        openSnackbar({
+          message: `${name} deleted successfully`,
+          color:'green',
+  
+      
+        })
+        
+        const newArray = array.filter((item) => item._id !== mongoID);
+        resetArry(newArray);
+  
+        }).catch(er=>{
+  
+          openSnackbar({
+            message: `Failed to reject ${name}`,
+            color:'red',
+  
+        
+          })
+  
+        })
+  
+    }
 
   
     return (
@@ -91,6 +118,13 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
                 })
                 sendApprove(true)
               }}
+
+            sx={{
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
+
             >
               Approve
             </Button>
@@ -103,9 +137,17 @@ import { useSnackbar } from "../../CommonComponents/SnackBarContext";
                   color:'green',
                   
                 })
-                const newArray = array.filter((item) => item._id !== mongoID);
-                resetArry(newArray);
+               
+                deleteRequest();
               }}
+
+              
+            sx={{backgroundColor:'red',
+
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
             >
               Reject
             </Button>
