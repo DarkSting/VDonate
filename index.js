@@ -147,7 +147,6 @@ app.get('/getfiles/:name',async(req,res)=>{
 
     try{
 
-
         console.log(req.params.name)
         let filesfound = []
         if( req.params.name !=='all'){
@@ -157,16 +156,18 @@ app.get('/getfiles/:name',async(req,res)=>{
           return res.status(404).json({ error: 'User not found or no files available.' });
         }
        
-        
         return res.status(200).json(filesfound);
+
       }
       else{
+
         const filesfound = await fileModel.find({checked:false})
         if (filesfound.length === 0) {
           return res.status(404).json({ error: 'User not found or no files available.' });
         }
 
         return res.status(200).json(filesfound);
+
       }
   
      
@@ -175,6 +176,46 @@ app.get('/getfiles/:name',async(req,res)=>{
     }
 
 })
+
+
+app.get('/getusercheckedfiles/:name',async(req,res)=>{
+
+  try{
+
+      console.log(req.params.name)
+      let filesfound = []
+      if( req.params.name !=='all'){
+        const username = req.params.name;
+      const filesfound = await fileModel.find({$and:[{userName:username},{checked:true}]})
+      if (filesfound.length === 0) {
+        return res.status(404).json({ error: 'User not found or no files available.' });
+      }
+     
+      return res.status(200).json(filesfound);
+
+    }
+    else{
+
+      const filesfound = await fileModel.find({checked:false})
+      if (filesfound.length === 0) {
+        return res.status(404).json({ error: 'User not found or no files available.' });
+      }
+
+      return res.status(200).json(filesfound);
+      
+    }
+
+   
+  }
+  catch(error){
+
+    return res.status(500).json({msg:"file loading failed"});
+
+  }
+
+
+})
+
 
 app.post('/checkfile',async(req,res)=>{
 
