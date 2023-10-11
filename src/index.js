@@ -26,6 +26,7 @@ const ContextProvider = ({ children }) => {
   const updateUserID = (userID)=>{
     setUserID(userID);
   }
+  
   // Provide the value and functions through the context
   const contextValue = {
     color,
@@ -48,11 +49,9 @@ const ContextProvider = ({ children }) => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
     <ContextProvider>
       <SnackbarProvider >
-      <App />
+        <App />
       </SnackbarProvider>
     </ContextProvider>
-  </React.StrictMode>
 );

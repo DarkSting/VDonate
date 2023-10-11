@@ -35,6 +35,8 @@ export default function UserPage() {
 
   darkColor = darkenColor(darkColor, 40);
 
+
+
   return (
     <>
       {!foundUser ? (

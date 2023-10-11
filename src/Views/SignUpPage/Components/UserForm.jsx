@@ -16,7 +16,7 @@ import {
 import logo from "../../../CommonComponents/images/logo.png";
 import "./text.css";
 import frmBack from "../../../CommonComponents/images/formbackimage.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Axios from "../../../api/axios";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
@@ -25,8 +25,18 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
-import googleUrl from 'axios';
+import googleUrl from "axios";
 import Footer from "../../../CommonComponents/Footer";
+import './alert.css'
+import { ErrorOutline, LocationCity } from "@mui/icons-material";
+import {
+  useJsApiLoader,
+  GoogleMap,
+  Marker,
+  Autocomplete,
+  InfoWindow,
+  DirectionsRenderer,
+} from '@react-google-maps/api'
 const TextBox = styled(TextField)({
   width: "100%",
   "& .MuiOutlinedInput-root": {
@@ -112,12 +122,12 @@ function SlideTransition(props) {
 
 const AdminButton = styled(CustomLinkButton)({
   "&:hover": {
-    backgroundColor: "blue", 
-    color: "white", 
+    backgroundColor: "blue",
+    color: "white",
   },
 
   borderColor: "blue",
-  borderWidth: 1, 
+  borderWidth: 1,
   borderStyle: "solid",
   color: "blue",
 });
@@ -132,55 +142,48 @@ export default function Form({ fontColor }) {
     ? { vertical: "bottom", horizontal: "center" } // for small screens
     : { vertical: "bottom", horizontal: "left" };
 
-const handleSignUp = (arr)=>{
-    const apiKey = 'AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY';
+  const handleSignUp = (arr) => {
+    const apiKey = "AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY";
     console.log(latitude);
     console.log(longitude);
 
-const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
-googleUrl.get(apiUrl)
-  .then((response) => {
-    if (response.data.status === 'OK') {
-      const addressComponents = response.data.results[0].address_components;
-      let city = '';
+    googleUrl
+      .get(apiUrl)
+      .then((response) => {
+        if (response.data.status === "OK") {
+          const addressComponents = response.data.results[0].address_components;
+          let city = "";
+          handleLogin(arr);
+          console.log(response.data);
+          for (const component of addressComponents) {
+            if (component.types.includes("locality")) {
+              city = component.long_name;
+              console.log(city);
+              break; // Stop searching once the city is found
+            }
+          }
 
-      console.log(response.data);
-      for (const component of addressComponents) {
-        
-        if (component.types.includes('locality')) {
-          city = component.long_name;
-          console.log(city);
-          break; // Stop searching once the city is found
+          
+
+        } else {
+          console.log("Error: Unable to retrieve location information");
         }
-      }
-      
-      handleLogin(arr);
-
-
-    } else {
-      console.log('Error: Unable to retrieve location information');
-    }
-  })
-  .catch((error) => {
-    console.log(`Error: ${error.message}`);
-  });
-
-  }
-
-
+      })
+      .catch((error) => {
+        console.log(`Error: ${error.message}`);
+      });
+  };
 
   const handleLogin = (arr) => {
-
-if(!longitude || !latitude ){
-
-  setsccMSG("Fail to set the location cannot proceed the sign up")
-  return ;
-}
+    if (!longitude || !latitude) {
+      setsccMSG("Fail to set the location cannot proceed the sign up");
+      return;
+    }
 
     let convertedDOB = ConvertToDOB(year, month, day);
     const post = async (arr, yr) => {
-
       const data = {
         name: arr[0].toLowerCase(),
         age: yr,
@@ -190,7 +193,7 @@ if(!longitude || !latitude ){
         phone: arr[4],
         password: arr[5],
         latitude: latitude,
-        longitude : longitude
+        longitude: longitude,
       };
 
       await Axios.post("user/addUser", data, {
@@ -200,18 +203,19 @@ if(!longitude || !latitude ){
       })
         .then((res) => {
           console.log(res);
-      
+
           setSeverity("success");
           setsccColor("#03C988");
           setsccMSG("Sign Up Success");
         })
         .catch((err) => {
           console.log(err);
-      
+
           setSeverity("error");
           setsccColor("#F24C3D");
           setsccMSG("Sign Up Failed");
         });
+
     };
 
     function calculateAge(dateOfBirth) {
@@ -278,8 +282,9 @@ if(!longitude || !latitude ){
       setAgeErr("");
     }
 
+    console.log(`email ${isEmailNull} nic${isNICNull} name${isNameNull} phone${isPhoneNull} age${age} dob:${dob}`)
+
     if (
-      !isAddresNull &&
       !isEmailNull &&
       !isNICNull &&
       !isNameNull &&
@@ -325,6 +330,7 @@ if(!longitude || !latitude ){
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [error, setError] = useState(null);
+  const [isBlocked, setIsBlocked] = useState(false);
 
   const [state, setState] = useState({
     open: false,
@@ -338,9 +344,16 @@ if(!longitude || !latitude ){
     });
   };
 
-  //getting the location
-  const getLocation = ()=>{
+  useEffect(() => {
 
+    if (!latitude && !isBlocked) {
+      getLocation();
+    }
+
+  }, [latitude, isBlocked]);
+
+  //getting the location
+  const getLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         function (position) {
@@ -350,15 +363,13 @@ if(!longitude || !latitude ){
         },
         function (error) {
           setError("Error getting location: " + error.message);
+          setIsBlocked(true);
         }
       );
     } else {
-      
       setError("Geolocation is not supported by this browser.");
-  
     }
-  
-  }
+  };
 
   const handleClose = () => {
     setState({
@@ -367,7 +378,7 @@ if(!longitude || !latitude ){
     });
   };
 
-  const valueList = [name, email, nic, gender, phonenum,latitude,longitude];
+  const valueList = [name, email, nic, gender, phonenum, latitude, longitude];
 
   const ConvertToDOB = (yy, mm, dd) => {
     let y = yy.trim();
@@ -376,6 +387,41 @@ if(!longitude || !latitude ){
 
     return y + "-" + m + "-" + dd;
   };
+
+
+  const openLocationSettings = () => {
+
+    const browserUrls = {
+      chrome: 'chrome://settings/content/location',
+      firefox: 'about:preferences#privacy',
+      safari: 'preferences://Privacy',
+      edge: 'edge://settings/content/location',
+      brave: 'brave://settings/content/siteDetails?site=https%3A%2F%2Fexample.com',
+    };
+
+    const browser = getBrowserName();
+
+    if (browserUrls[browser]) {
+      window.location.href = browserUrls[browser];
+    } else {
+
+      console.log('Browser not supported');
+    }
+  };
+
+
+  const getBrowserName = () => {
+    const userAgent = navigator.userAgent;
+    if (userAgent.includes('Chrome')) return 'chrome';
+    if (userAgent.includes('Firefox')) return 'firefox';
+    if (userAgent.includes('Safari')) return 'safari';
+    if (userAgent.includes('Edg')) return 'edge';
+    if (userAgent.includes('Brave')) return 'brave';
+    return 'unknown'; 
+  };
+
+
+
 
   return (
     <>
@@ -568,7 +614,7 @@ if(!longitude || !latitude ){
                           setYear(e.target.value);
                         }}
                       >
-                        {""}
+                        {" "}
                       </TextBox>
                       <TextBox
                         label="Month"
@@ -614,12 +660,22 @@ if(!longitude || !latitude ){
                     size="Large"
                     sx={btnprop}
                     onClick={() => {
+                      getLocation();
                       handleSignUp(valueList);
                       handleClick(SlideTransition);
                     }}
                   >
                     Sign In
                   </Button>
+
+                  {
+                    isBlocked&& (
+                      <div className="alert-bar">
+                        <Typography variant="body1">Your location permission is blocked. Enable it to use this feature.</Typography>
+                        <ErrorOutline sx={{fontSize:'30px',marginLeft:'5px'}} />
+                      </div>
+                    )
+                  }
                 </CardActions>
               </Card>
             </Box>
@@ -651,7 +707,7 @@ if(!longitude || !latitude ){
             {sccMSG}
           </Alert>
         </Snackbar>
-        <Footer backColor={fontColor} marginTop='100px'/>
+        <Footer backColor={fontColor} marginTop="100px" />
       </div>
     </>
   );

@@ -34,7 +34,9 @@ const router = createBrowserRouter(
       <Route path="signup" element={<SignUpPage />} />
       <Route path="userlogin" element={<LoginPage />} />
       <Route path="adminlogin" element={<AdminLogin />} />
-      <Route path="userdashboard" element={<Dashboard />}></Route>
+      <Route path="userdashboard" element={<Dashboard />}>
+        
+      </Route>
 
       <Route path="admindashboard" element={<AdminDashboard />}>
         <Route
@@ -70,8 +72,8 @@ function App() {
 
   return (
     <>
-      {/* <RouterProvider router={router} /> */}
-      <CustomMap />
+      <RouterProvider router={router} />
+
       <SnackbarMui
         anchorOrigin={{
           vertical: "bottom",

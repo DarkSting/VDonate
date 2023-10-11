@@ -8,7 +8,7 @@ const checkDataAvailability = (isLoading,text,setIsLoading,buttonStatus,navigate
         
           setTimeout(() => {
             setIsLoading(true);
-          }, 5000);
+          }, 5000);//delay
         
        
           return(
