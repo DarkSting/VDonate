@@ -138,6 +138,49 @@ const getSentMessages = async(req,res)=>{
     
 }
 
+const getUserLocations = async(req,res)=>{
+
+    const{bloodType} = req.query;
+
+    let foundUsers = [];
+
+    if(bloodType==='N-'){
+
+        foundUsers=await UserModel.find({});
+
+    }
+    else{
+        foundUsers=await UserModel.find({bloodType:bloodType.trim()});
+    }
+    
+
+    let usersLocation = [];
+
+    if(foundUsers){
+
+        for(let currentUser of foundUsers){
+
+            let newOBJ = {};
+            newOBJ.name = currentUser.userName;
+            newOBJ.phone = currentUser.phone;
+            newOBJ.location = currentUser.location;
+            newOBJ.age = currentUser.age;
+
+            usersLocation.push(newOBJ);
+
+        }
+
+
+        return res.status(200).json(usersLocation);
+
+    }
+    else{
+
+        return res.status(200).json({msg:"no users found"})
+    }
+
+}
+
 const updateUserApproval = async(req,res)=>{
 
     const{approval,objectId} = req.body;
@@ -572,7 +615,8 @@ module.exports  = {
     getMessages,
     sendMessage,
     getSentMessages,
-    deleteUser
+    deleteUser,
+    getUserLocations
 
 };
 

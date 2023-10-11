@@ -14,7 +14,8 @@ const {
     sendMessage,
     getMessages,
     getSentMessages,
-    deleteUser
+    deleteUser,
+    getUserLocations
 } = require('../Controllers/UserControllers.js');
 const { makeDonationRequest } = require('../Controllers/DonationController.js');
 const { sendmail } = require('../Controllers/MailControllers.js');
@@ -41,5 +42,6 @@ routes.get('/getmessages',getMessages);
 routes.get('/getsentmessages',getSentMessages);
 routes.post('/sendmessage',sendMessage);
 routes.delete('/deleteuser',deleteUser);
+routes.get('/getdonorslocation',getUserLocations)
 
 module.exports =routes;
