@@ -12,11 +12,12 @@ import {
   Button,
   CardMedia,
   CardContent,
+  CircularProgress,
 } from "@mui/material";
 import logo from "../../../CommonComponents/images/logo.png";
 import "./text.css";
 import frmBack from "../../../CommonComponents/images/formbackimage.jpg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Axios from "../../../api/axios";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
@@ -37,6 +38,7 @@ import {
   InfoWindow,
   DirectionsRenderer,
 } from '@react-google-maps/api'
+import CustomAutoComplete from "../../Map/AutoComplete";
 const TextBox = styled(TextField)({
   width: "100%",
   "& .MuiOutlinedInput-root": {
@@ -132,6 +134,9 @@ const AdminButton = styled(CustomLinkButton)({
   color: "blue",
 });
 
+const libraries = ['places'];
+
+
 export default function Form({ fontColor }) {
   textprop.color = fontColor;
 
@@ -142,39 +147,57 @@ export default function Form({ fontColor }) {
     ? { vertical: "bottom", horizontal: "center" } // for small screens
     : { vertical: "bottom", horizontal: "left" };
 
-  const handleSignUp = (arr) => {
-    const apiKey = "AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY";
-    console.log(latitude);
-    console.log(longitude);
+    const [forceRerender, setForceRerender] = useState(false);
+    const [address, setAddress] = useState('');
+    const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
+       
+    /** @type React.MutableRefObject<HTMLInputElement> */
+       const destiantionRef = useRef()
+  
+    useEffect(() => {
+    
+    setForceRerender(!forceRerender);
+  
+    }, []);
+  
+  
+    const onPlaceChanged = () => {
+  
+      setAddress(destiantionRef)
+      console.log(destiantionRef.current.children[0]);
 
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-
-    googleUrl
-      .get(apiUrl)
-      .then((response) => {
-        if (response.data.status === "OK") {
-          const addressComponents = response.data.results[0].address_components;
-          let city = "";
-          handleLogin(arr);
-          console.log(response.data);
-          for (const component of addressComponents) {
-            if (component.types.includes("locality")) {
-              city = component.long_name;
-              console.log(city);
-              break; // Stop searching once the city is found
-            }
+      if (address) {
+        // Use the Geocoding Service to retrieve coordinates
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: address }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            setAddress(results[0].formatted_address);
+            setCoordinates({
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng(),
+            });
+            console.log(coordinates)
+          } else {
+            console.error('Geocode was not successful for the following reason: ', status);
+            
           }
+        });
+      }
+    
 
-          
-
-        } else {
-          console.log("Error: Unable to retrieve location information");
-        }
-      })
-      .catch((error) => {
-        console.log(`Error: ${error.message}`);
-      });
-  };
+    };
+    
+  
+ 
+    
+    
+      const { isLoaded } = useJsApiLoader({
+          googleMapsApiKey: "AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY",
+          libraries:libraries,
+        })
+    
+    
+ 
 
   const handleLogin = (arr) => {
     if (!longitude || !latitude) {
@@ -421,7 +444,29 @@ export default function Form({ fontColor }) {
   };
 
 
+ 
 
+  const textBoxStyle = {
+    width: "100%",
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "11009E",
+      },
+      "&:hover fieldset": {
+        borderColor: "#4942E4",
+      },
+  
+      "&.Mui-focused fieldset": {
+        borderColor: "#11009E",
+      },
+    },
+    "& label": {
+      color: "#11009E",
+    },
+    "& label.Mui-focused": {
+      color: "#11009E",
+    },
+  }
 
   return (
     <>
@@ -606,6 +651,25 @@ export default function Form({ fontColor }) {
                       </Typography>
                     )}
 
+  
+                     {isLoaded?
+                     <Autocomplete onPlaceChanged={onPlaceChanged}>
+                            <TextField fullWidth
+                              type='text'
+                              label="Destination"
+                              ref={destiantionRef}
+                              sx={textBoxStyle}
+                              onChange={(e)=>{
+                                
+                                console.log(e.target.value);
+                                setAddress(e.target.value)
+
+                              }
+                              }
+                            />
+                          </Autocomplete>
+                       :<CircularProgress sx={{color:'Blue'}}  />}
+                        
                     <Stack direction="row" spacing={2}>
                       <TextBox
                         label="Year"
@@ -660,8 +724,7 @@ export default function Form({ fontColor }) {
                     size="Large"
                     sx={btnprop}
                     onClick={() => {
-                      getLocation();
-                      handleSignUp(valueList);
+                      handleLogin(valueList);
                       handleClick(SlideTransition);
                     }}
                   >

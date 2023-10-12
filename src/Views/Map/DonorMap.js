@@ -18,8 +18,6 @@ const libraries = ['places'];
 
 const RenderMarkers = ()=>{
 
-
-
 return(
 <>
 <Marker position={{lat: 6.927079, lng: 79.861244}} title='colombo'/>
@@ -151,8 +149,6 @@ return (
 
     <Marker position={{lat:6.8833 , lng:79.85 }}  />
   
-        
-    
          
           
       {directionsResponse && (
