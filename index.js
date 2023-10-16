@@ -27,8 +27,10 @@ app.use("/donation", require("./Routes/DonationRoutes.js"));
 app.use("/complain", ComplainRoutes);
 app.use("/campaign", require('./Routes/CampaignRoutes.js'));
 app.get("/getCookie", (req, res) => {
+
   res.cookie("jwt", false);
   res.status(200).json("you got cookies");
+  
 });
 
 //database connection

@@ -27,16 +27,21 @@ const welcomeUser = (req,res)=>{
      jwt.verify(token,process.env.SECRET,(err,decoded)=>{
  
          if(err){
+
              console.log(err.message);
              res.status(500).json("invalid token");
+
          }
          else{
       
               UserModel.findOne({_id:decoded.id}).then(r=>{
-                res.status(200).json({name:r.userName,id:r._id});
+
+                res.status(200).json({name:r.userName,id:r._id,location:r.location});
                
              }).catch(er=>{
+
                 res.status(404).json({msg:"user not found",code:500});
+
              })
              
          }
@@ -267,7 +272,8 @@ const addUser = async(req,res)=>{
         bloodType,
         password,
         latitude,
-        longitude
+        longitude,
+        address
 
     
     } = req.body
@@ -287,8 +293,8 @@ const addUser = async(req,res)=>{
 
         location:{
             latitude:latitude,
-            longitude:longitude
-
+            longitude:longitude,
+            name:address
         }
         
     })

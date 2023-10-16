@@ -9,6 +9,10 @@ const locationSchema = new mongoose.Schema({
     longitude:{
         type:String,
         require:[true,"longitude required"]
+    },
+    name:{
+        type:String,
+        required:[true,"name not provided"]
     }
 })
 
