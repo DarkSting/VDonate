@@ -148,8 +148,31 @@ export default function Form({ fontColor }) {
     : { vertical: "bottom", horizontal: "left" };
 
     const [forceRerender, setForceRerender] = useState(false);
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState("");
     const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
+    const [count, setCount] = useState(0)
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [nic, setNIC] = useState("");
+    const [nameErr, setNameErr] = useState("");
+    const [phoneErr, setPhoneErr] = useState("");
+    const [sccColor, setsccColor] = useState("");
+    const [nicErr, setNICErr] = useState("");
+    const [ageErr, setAgeErr] = useState(0);
+    const [dob, setDOB] = useState("");
+    const [emailErr, setEmailErr] = useState("");
+    const [phonenum, setPhone] = useState("");
+    const [gender, setGender] = useState(false);
+    const [year, setYear] = useState("");
+    const [month, setMonth] = useState("");
+    const [day, setDay] = useState("");
+    const [sccMSG, setsccMSG] = useState("");
+    const [severity, setSeverity] = useState("");
+    const [latitude, setLatitude] = useState(null);
+    const [longitude, setLongitude] = useState(null);
+    const [error, setError] = useState(null);
+    const [isBlocked, setIsBlocked] = useState(false);
        
     /** @type React.MutableRefObject<HTMLInputElement> */
        const destiantionRef = useRef()
@@ -162,27 +185,28 @@ export default function Form({ fontColor }) {
   
   
     const onPlaceChanged = () => {
-  
-      setAddress(destiantionRef)
-      console.log(destiantionRef.current.children[0]);
+      
 
-      if (address) {
-        // Use the Geocoding Service to retrieve coordinates
+      let loc = destiantionRef.current.children[1].children[0].value;
+
         const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ address: address }, (results, status) => {
+        geocoder.geocode({ address: loc }, (results, status) => {
           if (status === 'OK' && results[0]) {
             setAddress(results[0].formatted_address);
-            setCoordinates({
-              lat: results[0].geometry.location.lat(),
-              lng: results[0].geometry.location.lng(),
-            });
-            console.log(coordinates)
+            console.log(results[0].formatted_address)
+    
+            setLatitude(results[0].geometry.location.lat())
+            setLongitude(results[0].geometry.location.lng())
+
+            console.log(`${results[0].geometry.location.lat()} ${results[0].geometry.location.lng()}`)
+            
+            
           } else {
             console.error('Geocode was not successful for the following reason: ', status);
             
           }
         });
-      }
+   
     
 
     };
@@ -200,6 +224,9 @@ export default function Form({ fontColor }) {
  
 
   const handleLogin = (arr) => {
+
+    console.log(`${latitude} ${longitude}`)
+
     if (!longitude || !latitude) {
       setsccMSG("Fail to set the location cannot proceed the sign up");
       return;
@@ -217,6 +244,7 @@ export default function Form({ fontColor }) {
         password: arr[5],
         latitude: latitude,
         longitude: longitude,
+        address:address
       };
 
       await Axios.post("user/addUser", data, {
@@ -333,27 +361,7 @@ export default function Form({ fontColor }) {
     isPhoneNull,
     isDOBvalid = false;
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [nic, setNIC] = useState("");
-  const [nameErr, setNameErr] = useState("");
-  const [phoneErr, setPhoneErr] = useState("");
-  const [sccColor, setsccColor] = useState("");
-  const [nicErr, setNICErr] = useState("");
-  const [ageErr, setAgeErr] = useState(0);
-  const [dob, setDOB] = useState("");
-  const [emailErr, setEmailErr] = useState("");
-  const [phonenum, setPhone] = useState("");
-  const [gender, setGender] = useState(false);
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
-  const [sccMSG, setsccMSG] = useState("");
-  const [severity, setSeverity] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [error, setError] = useState(null);
-  const [isBlocked, setIsBlocked] = useState(false);
+  
 
   const [state, setState] = useState({
     open: false,
@@ -381,8 +389,7 @@ export default function Form({ fontColor }) {
       navigator.geolocation.getCurrentPosition(
         function (position) {
           const { latitude, longitude } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
+   
         },
         function (error) {
           setError("Error getting location: " + error.message);
@@ -651,23 +658,18 @@ export default function Form({ fontColor }) {
                       </Typography>
                     )}
 
-  
                      {isLoaded?
-                     <Autocomplete onPlaceChanged={onPlaceChanged}>
+            
+                     <Autocomplete onPlaceChanged={onPlaceChanged} >
                             <TextField fullWidth
+                              ref={destiantionRef}
                               type='text'
                               label="Destination"
-                              ref={destiantionRef}
                               sx={textBoxStyle}
-                              onChange={(e)=>{
-                                
-                                console.log(e.target.value);
-                                setAddress(e.target.value)
-
-                              }
-                              }
+                          
                             />
-                          </Autocomplete>
+                      </Autocomplete>
+                 
                        :<CircularProgress sx={{color:'Blue'}}  />}
                         
                     <Stack direction="row" spacing={2}>
