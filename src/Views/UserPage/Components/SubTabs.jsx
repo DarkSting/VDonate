@@ -27,7 +27,8 @@ const ListButtonProp =(props)=>{
     md: '100px',
     lg:'200px'
    }
-   
+   ,
+   textWrap:'no-wrap'
    }
 }
 

@@ -1,0 +1,61 @@
+.image-slider-container {
+  width: 100%;
+  height: 600px; /* Set a fixed height for the container */
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-slide {
+  text-align: center;
+  max-height: 400px; /* Set a maximum height as needed */
+  background-size: cover;
+}
+
+.image-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Use 'cover' to make images cover the container */
+  object-position: top;
+ /* Use 'contain' to fit images without stretching */
+}
+
+.number-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 10px;
+  border-radius: 0; /* No border-radius */
+  text-align: left;
+  align-content: center; /* Center the text within the overlay */
+  font-size: 18px;
+  z-index: 10;
+}
+
+.overlay-content{
+  position: absolute;
+  left: 5%;
+  top:5%;
+  text-align: center;
+
+}
+
+.boxes-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0px;
+}
+
+.box {
+  flex: 1;
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+
+}

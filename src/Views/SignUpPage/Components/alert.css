@@ -1,0 +1,27 @@
+.alert-bar {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f4433699; /* Red background color */
+    color: #fff; /* White text color */
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Adjust the z-index as needed */
+  }
+  
+  .alert-bar a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #2196F3; /* Blue background color for the link */
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .alert-bar a:hover {
+    background-color: #0b6bb3; /* Darker blue on hover */
+  }

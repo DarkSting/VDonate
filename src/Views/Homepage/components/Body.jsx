@@ -95,15 +95,7 @@ const ImgSlider = ()=>{
    
   return(
     <>
-        <ImageBox elevation={3} >
-                <IconButton>
-                    <ArrowLeft />
-                </IconButton>
-                <Image src={img} alt="people"/>
-                <IconButton sx={{color:'#222222'}}>
-                    <ArrowRight sx={{color:'#222222'}} />
-                </IconButton> 
-        </ImageBox>            
+          
             <Grid container spacing={1 } sx={{marginTop:5}}>
              <Grid item xs={12} lg={4} sx={gridItem} >
                 <Card width="400px" height="200px" contheight="100px" topic="Donate Plasma" content={desc1} image={plasmaimg}></Card>       

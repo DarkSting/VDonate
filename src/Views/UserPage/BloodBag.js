@@ -37,7 +37,7 @@ useEffect(()=>{
 
 },[])
 
-  const [capacity, setCapacity] = useState(300); // Initialize capacity to 0
+  const [capacity, setCapacity] = useState(0); // Initialize capacity to 0
   const [bloodBag,setBloodBag] = useState(null);
 
   const handleCapacityChange = (event) => {

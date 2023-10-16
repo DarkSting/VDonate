@@ -26,6 +26,7 @@ import {
   Autocomplete as AutoText,
 } from '@react-google-maps/api'
 import { useRef } from 'react';
+import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 
 
 const libraries = ['places'];
@@ -156,7 +157,7 @@ function CardForm(){
   if(!isLoaded){
 
     return(
-      <CircularProgress />
+      LoadSubSpinner(isLoaded, ()=>{}, "Cannot Load Campaign Card")
     );
 
   }
@@ -164,7 +165,6 @@ function CardForm(){
   
     return (
       
-  
       <Card sx={{width:'100%', flex:1}}>
         <CardContent>
           <div style={{ display: 'flex' }}>

@@ -40,6 +40,9 @@ import SubTab from './SubTabs';
 import CustomMap from "../../Map/DonorMap";
 import BloodBag from "../BloodBag";
 import MessageList from "../Message";
+import SentMessageList from "../SentMessage";
+import UserReportList from "../TestedReports";
+import SentDontationRequestList from "../SentDonationRequests";
 
 
 
@@ -84,15 +87,15 @@ const ListText = styled(ListItemText)(({theme})=>({
 {/*add here other contents to be rendered inside a function */}
 function RenderTabsContent({props}){
 
-  const tabarr = [<UsersContent/>,<DonationRequestTab hover={props.backHoverColor} color={props.backColor}/>];
-  const selectedItemsarr = ["Pending Campaigns", "Donation Request"];
+  const tabarr = [<UsersContent/>,<DonationRequestTab hover={props.backHoverColor} color={props.backColor}/>,<SentDontationRequestList />];
+  const selectedItemsarr = ["Pending Campaigns", "Donation Request", "Sent Donation Requests"];
   return(
    <SubTab props={props} selectedItems={selectedItemsarr} tabs={tabarr} />
   );
 }
 
 function RenderMessageTab({props}){
-  const tabarr = [<MessageList />,<DonationRequestTab hover={props.backHoverColor} color={props.backColor}/>];
+  const tabarr = [<MessageList />,<SentMessageList/>];
   const selectedItemsarr = ["InBox", "Messages Sent"];
   return(
    <SubTab props={props} selectedItems={selectedItemsarr} tabs={tabarr} />
@@ -104,6 +107,8 @@ function RenderComplainContent({props}){
     <UserComplainTab hover={props.backHoverColor} color={props.backColor}/>
   );
 }
+
+
 
 {/*sidebar options */}
 function renderComponent(current,props,array){
@@ -120,7 +125,7 @@ function renderComponent(current,props,array){
     case array[4]:
       return <CustomTab title="Inbox" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<RenderMessageTab props={props}/>}/>
     case array[6]:
-        return <CustomTab title="Reports" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<></>}/>
+        return <CustomTab title="Reports" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<UserReportList />}/>
     case array[3]:
         return <CustomTab title="Emergencies" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<></>}/>
   }

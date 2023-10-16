@@ -6,7 +6,7 @@ import { MyContext } from "../..";
 import { useSnackbar } from "../../CommonComponents/SnackBarContext";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { SubSpinner } from "../../CommonComponents/LoadingSpinner";
-import { LoadSubSpinner } from "../../CommonComponents/SpinFunction";
+import { LoadSubSpinner, NoData } from "../../CommonComponents/SpinFunction";
 
 
 const CampaignCard = ({ campaign }) => {
@@ -120,7 +120,7 @@ export default function Users() {
 
   return(
 
-  !campaign?LoadSubSpinner(campaign,(value)=>{},"No Pending Campaigns"):(<CampaignCard campaign={campaign} />)
+  !campaign?NoData("No Pending Campaigns"):(<CampaignCard campaign={campaign} />)
 
   );
 }

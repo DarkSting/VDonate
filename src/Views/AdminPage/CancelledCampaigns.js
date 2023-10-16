@@ -14,7 +14,7 @@ const CampaignCard = ({ campaign}) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card>
+    <Card variant='outlined'>
       <CardContent>
         <Typography variant="body1">Location: {campaign.location}</Typography>
         <Typography variant="body1">Time Begin: {campaign.timeBegin}</Typography>

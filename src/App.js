@@ -22,6 +22,10 @@ import { Snackbar as SnackbarMui, SnackbarContent } from "@mui/material";
 import ReportTab from "./Views/TestsPage/Components/ReportTabs";
 import CampaignTabs from "./Views/AdminPage/Components/CampaignTabs";
 import ComplaintList from "./Views/AdminPage/Complains";
+import MessageList from "./Views/AdminPage/Messages";
+import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
+import DonorsTabs from "./Views/AdminPage/Components/DonorsTabs";
+import CustomMap from "./Views/Map/DonorMap";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,13 +34,15 @@ const router = createBrowserRouter(
       <Route path="signup" element={<SignUpPage />} />
       <Route path="userlogin" element={<LoginPage />} />
       <Route path="adminlogin" element={<AdminLogin />} />
-      <Route path="userdashboard" element={<Dashboard />}></Route>
+      <Route path="userdashboard" element={<Dashboard />}>
+        
+      </Route>
 
       <Route path="admindashboard" element={<AdminDashboard />}>
         <Route
           path="approvedonor"
           loader={UserApprovalLoader}
-          element={<UserApprovals />}
+          element={<DonorsTabs />}
         />
         <Route
           path="newadmins"
@@ -48,6 +54,7 @@ const router = createBrowserRouter(
 
         <Route path="complaints" element={<ComplaintList />} />
         <Route path="donationrequests" element={<DonationReqTab />} />
+        <Route path="inbox" element={<MessageTabs/>} />
 
         <Route
           path="uploadtests"
@@ -66,6 +73,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+
       <SnackbarMui
         anchorOrigin={{
           vertical: "bottom",

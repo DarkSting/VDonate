@@ -11,7 +11,7 @@ const CardList = ({ Data}) => {
         <div>
             {Data.map((card, index) => (
                 
-                card.User===null? <></> : (<Card  elevation={1} key={index} sx={{marginTop:2}}>
+                card.User===null? <></> : (<Card  elevation={1} variant='outlined' key={index} sx={{marginTop:2}}> 
                     <CardContent>
                         <div>
                             <Typography variant="h5">User Information</Typography> 

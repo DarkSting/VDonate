@@ -1,6 +1,6 @@
 import React from 'react';
 import './Spinner.css'
-import { Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 const LoadingSpinner = () => {
     return (
@@ -19,7 +19,7 @@ const LoadingSpinner = () => {
     return (
         
       <div className="sub-spinner-body">
-        <div className="small-spinner" ></div>
+          <CircularProgress />
       </div>
     );
   };

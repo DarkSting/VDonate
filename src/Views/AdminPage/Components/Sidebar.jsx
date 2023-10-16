@@ -64,14 +64,14 @@ const ListItemBtn = styled(CustomListLinkButton)(({ theme }) => ({}));
 /*sidebar options */
 
 const state = [
-  "User Approvals",
+  "Donors",
   "Campaigns",
   "Blood Stock",
   "Emergencies",
   "Inbox",
   "Complaints",
   "Reports",
-  "Admin Approvals",
+  "Admins",
   "Donation Requests"
 
 ];
@@ -219,7 +219,7 @@ const Sidebar = (props) => {
 
             {/*Inbox*/}
             <ListItem disablePadding>
-              <ListItemButton
+              <ListItemBtn to="inbox"
                 selected={selectedItem === state[4]}
                 onClick={() => {
                   setSelectedItem(state[4]);
@@ -233,7 +233,7 @@ const Sidebar = (props) => {
                   sx={{ display: { xs: "none", md: "block" } }}
                   primary={state[4]}
                 />
-              </ListItemButton>
+              </ListItemBtn>
             </ListItem>
 
             {/*Complains*/}

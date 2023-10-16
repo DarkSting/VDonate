@@ -12,7 +12,7 @@ export default function UserPage() {
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { updateUser } = useContext(MyContext);
+  const { updateUser,updateUserID } = useContext(MyContext);
 
   let darkColor = color;
 
@@ -24,6 +24,7 @@ export default function UserPage() {
         setUser(response.data.name);
         setIsLoading(true);
         updateUser(response.data.name);
+        updateUserID(response.data.id)
       })
       .catch((error) => {
         setUserState(false);
@@ -33,6 +34,8 @@ export default function UserPage() {
   }, []);
 
   darkColor = darkenColor(darkColor, 40);
+
+
 
   return (
     <>

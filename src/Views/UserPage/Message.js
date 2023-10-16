@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -12,20 +12,23 @@ import {
   Box,
   FormControl,
   Select,
+  Autocomplete,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Add } from '@mui/icons-material';
 import Axios from '../../api/axios';
 import { useSnackbar } from '../../CommonComponents/SnackBarContext';
 import { NoData } from '../../CommonComponents/SpinFunction';
+import { MyContext } from '../..';
 
-const MessageCard = ({ username, message, sendDate, onDelete }) => {
+const MessageCard = ({ username, message, sendDate, onDelete,receiver }) => {
   return (
     <Card variant="outlined" style={{ marginBottom: '16px' }}>
       <CardContent>
-        <Typography variant="h6">{username}</Typography>
-        <Typography variant="body1">{message}</Typography>
-        <Typography variant="caption">{sendDate}</Typography>
+        <Typography variant="h6">Sender :{username}</Typography>
+        <Typography variant="body1" m={3}>Description :{message}</Typography>
+        <Typography variant="caption">Date Sent :{sendDate}</Typography>
+
       </CardContent>
       <CardActions>
         <IconButton onClick={onDelete} color="secondary" aria-label="Delete message">
@@ -39,26 +42,15 @@ const MessageCard = ({ username, message, sendDate, onDelete }) => {
 const MessageList = () => {
 
     const {openSnackbar, closeSnackbar} = useSnackbar();
+    const{name,userID} = useContext(MyContext);
 
-  const [messages, setMessages] = useState([
-    {
-      username: 'User1',
-      message: 'Hello there!',
-      sendDate: '2023-09-30 10:00 AM',
-    },
-    {
-      username: 'User2',
-      message: 'Hi! How are you?',
-      sendDate: '2023-09-30 10:15 AM',
-    },
-    // Add more messages as needed
-  ]);
+    const [messages, setMessages] = useState([]);
 
   useEffect(()=>{
 
-    Axios.get('user/getmessages').then(r=>{
-
-        console.log(r)
+    Axios.get(`user/getmessages?user=${userID}`).then(r=>{
+        setMessages(r.data.foundMessages)
+        console.log(r.data.foundMessages)
         openSnackbar({
             message: `Messages Loaded`,
             color:'green',
@@ -81,6 +73,10 @@ const MessageList = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [receiver, setReceiver] = useState('');
   const [description, setDescription] = useState('');
+  const [admins,setAdmins] = useState([]);
+  const[selectedAdmin,setSelectedAdmin] = useState(null);
+
+
 
   const handleDelete = (index) => {
     const newMessages = [...messages];
@@ -106,12 +102,16 @@ const MessageList = () => {
 
   const handleSend = () => {
 
-
-    Axios.post('user/sendmessage',{description,receiver}).then(r=>{
+    openSnackbar({
+      message: `Message sending`,
+      color:'black',
+  
+})
+    Axios.post('user/sendmessage',{user:name,description:description,receiver:selectedAdmin}).then(r=>{
 
         console.log(r)
         openSnackbar({
-            message: `Messages sent`,
+            message: `Message sent`,
             color:'green',
         
     })
@@ -128,6 +128,39 @@ const MessageList = () => {
     })
   };
 
+  useEffect(()=>{
+
+    Axios.get('admin/findAllAdmins').then(r=>{
+
+      console.log(r)
+      setAdmins(r.data)
+      openSnackbar({
+          message: `Admins Loaded`,
+          color:'green',
+      
+  })
+  
+  
+  }).catch(er=>{
+  
+      console.log(er)
+      openSnackbar({
+          message: `Couldnt Load Admins`,
+          color:'red',
+      
+  })
+
+  })
+
+  },[])
+
+  const handleAutocompleteChange = (event, newValue) => {
+
+    setSelectedAdmin(newValue);
+    console.log(selectedAdmin)
+
+  };
+
   return (
     <div style={{backgroundColor:'white',padding:'20px',width:'100%'}}>
        <div style={{  position: 'fixed',
@@ -137,15 +170,15 @@ const MessageList = () => {
           flexDirection: 'column',
           alignItems: 'flex-end',}}>
         <Button variant="contained" color="primary" onClick={handleCreateMessage} endIcon={<Add />}>
-          Create Message
+          Send Message
         </Button>
       </div>
       {messages.length>0?messages.map((message, index) => (
         <MessageCard
           key={index}
-          username={message.username}
-          message={message.message}
-          sendDate={message.sendDate}
+          username={message.sender}
+          message={message.description}
+          sendDate={new Date(message.dateCreated).toLocaleString()}
           onDelete={() => handleDelete(index)}
         />
       )):NoData("No Messages Yet")}
@@ -163,21 +196,26 @@ const MessageList = () => {
         }}
       >
         <Box p={2}>
-          <Typography variant="h6">Create Message</Typography>
-          <FormControl fullWidth style={{ marginTop: '8px' }}>
-            <Select
-              value={receiver}
-              onChange={(e) => setReceiver(e.target.value)}
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Select Receiver
-              </MenuItem>
-              <MenuItem value="User1">User1</MenuItem>
-              <MenuItem value="User2">User2</MenuItem>
-              {/* Add more receivers as needed */}
-            </Select>
-          </FormControl>
+          <Typography variant="h6">Message Box</Typography>
+          <Autocomplete
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        onChange={handleAutocompleteChange}
+        options={admins.map((option) => option.userName)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select the user"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+
+            
+          />
+        )}
+      />
           <TextField
             fullWidth
             multiline

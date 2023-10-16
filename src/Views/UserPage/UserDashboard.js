@@ -13,7 +13,7 @@ export default function UserPage() {
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { updateUser } = useContext(MyContext);
+  const { updateUser,updateUserID ,userID,setLocation,userlocation} = useContext(MyContext);
   const {openSnackbar, closeSnackbar} = useSnackbar();
 
   let darkColor = color;
@@ -22,10 +22,15 @@ export default function UserPage() {
     axios
       .get("/user/userDashBoard")
       .then((response) => {
+
+        localStorage.setItem('userInfo', JSON.stringify(response));
         setUserState(true);
         updateUser(response.data.name);
         setUser(response.data.name);
+        updateUserID(response.data.id)
+        console.log(userID)
         setIsLoading(true);
+        
       })
       .catch((error) => {
         setUserState(false);

@@ -13,7 +13,7 @@ import {
   CardMedia,
   CardContent,
 } from "@mui/material";
-import react, { useState } from "react";
+import react, { useContext, useState } from "react";
 import frmBack from "../../CommonComponents/images/Man shouting on woman working on laptop.jpg";
 import Axios from "../../api/axios";
 import Alert from "@mui/material/Alert";
@@ -21,6 +21,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { MyContext } from "../..";
 
 {
   /*styles*/
@@ -92,6 +93,8 @@ export default function UserComplainTab(props) {
   const [sccColor, setsccColor] = useState("");
   const [descErr, setDescErr] = useState("");
 
+  const{name,userID} = useContext(MyContext);
+
   const [state, setState] = useState({
     open: false,
     Transition: Slide,
@@ -116,6 +119,7 @@ export default function UserComplainTab(props) {
     const post = async (arr) => {
       const data = {
         description: arr[0],
+        User:userID
       };
 
       await Axios.post("/user/makeComplain", data)
@@ -202,12 +206,14 @@ export default function UserComplainTab(props) {
           }}
         >
           <Button
+            
             size="Large"
             sx={btnprop(props)}
             onClick={() => {
               handleSignUp(valueList);
               handleClick(SlideTransition);
             }}
+
           >
             Send Complain
           </Button>

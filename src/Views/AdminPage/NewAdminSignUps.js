@@ -13,7 +13,7 @@ import {
     LoadSubSpinner,
   } from "../../CommonComponents/SpinFunction";
 
-  import { Card } from "react-bootstrap";
+  import { Card } from "@mui/material";
   import Tab from "../../CommonComponents/TabComponent";
   import { MyContext } from "../..";
 import { useSnackbar } from "../../CommonComponents/SnackBarContext";
@@ -65,37 +65,37 @@ import Axios from "../../api/axios";
         });
     };
   
-    const handleReject = () =>{
+    const deleteRequest =()=>{
 
-      Axios.put('admin/rejectadmin',{
-        userID:mongoID
-      }).then(r=>{
-
+      Axios.delete(`admin/deleteuser?user=${mongoID}`).then(r=>{
+  
         openSnackbar({
-          message: `Request rejected ${name}`,
+          message: `${name} deleted successfully`,
           color:'green',
-          
+  
+      
         })
+        
         const newArray = array.filter((item) => item._id !== mongoID);
         resetArry(newArray);
-      
-
-      }).catch(error=>{
+  
+        }).catch(er=>{
+  
+          openSnackbar({
+            message: `Failed to reject ${name}`,
+            color:'red',
+  
         
-        openSnackbar({
-          message: `Failed to reject ${name}`,
-          color:'red',
-          
+          })
+  
         })
-      })
-
+  
     }
-    
 
   
     return (
-      <Card>
-        <CardContent sx={{ backgroundColor: "#F5F5F5", borderRadius: "3px" }}>
+      <Card >
+        <CardContent sx={{ backgroundColor: "white", borderRadius: "3px" }}>
           <Typography variant="h5" component="div">
             Name : {name}
           </Typography>
@@ -118,6 +118,13 @@ import Axios from "../../api/axios";
                 })
                 sendApprove(true)
               }}
+
+            sx={{
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
+
             >
               Approve
             </Button>
@@ -125,8 +132,22 @@ import Axios from "../../api/axios";
               variant="contained"
               size="small"
               onClick={() => {
-                handleReject()
+                openSnackbar({
+                  message: `${name} request deleted`,
+                  color:'green',
+                  
+                })
+               
+                deleteRequest();
               }}
+
+              
+            sx={{backgroundColor:'red',
+
+              '&:hover':{
+                backgroundColor:'green'
+              }
+            }}
             >
               Reject
             </Button>
@@ -139,7 +160,7 @@ import Axios from "../../api/axios";
   
   const LoadApprovals = ({approvals,setApprovals}) => {
     return (
-      <Stack spacing={1} sx={{ width: "50%", marginTop: "10px" }}>
+      <Stack spacing={1} sx={{ width: "50%", marginTop: "30px" }}>
         {approvals.map((value) => (
           <CardObject
             width="100%"
@@ -186,7 +207,7 @@ import Axios from "../../api/axios";
       <>
 
           <Tab
-            title="Admin Signup Approvals"
+            title="Admins"
             fontSize="h4"
             fontColor="white"
             titleBackColor={darkColor}
