@@ -141,6 +141,19 @@ const findPendingCampaigns = async (req, res) => {
   return res.status(200).json(foundCampaigns);
 };
 
+const findCompletedActions = async(req,res)=>{
+
+  console.log("getting homepage info")
+
+  const foundCampaign = await CampaignModel.find({isCompleted:true});
+  const onGoingCampaigns = await CampaignModel.find({isCompleted:true});
+  const foundTotalDonations = await BloodBagModel.find({filled:true});
+
+  return res.status(200).json({completedCampaigns:foundCampaign,onGoingCampaigns:onGoingCampaigns,totalDonations:foundTotalDonations})
+  
+
+}
+
 // returns the container
 const getBloodContainer = async (campaign) => {
   const containerID = campaign.bloodContainer;
@@ -346,5 +359,6 @@ module.exports = {
   findPendingCampaigns,
   cancellCampaign,
   getCancelledCampaigns,
-  updateBloodBag
+  updateBloodBag,
+  findCompletedActions
 };
