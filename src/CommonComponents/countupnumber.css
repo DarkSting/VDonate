@@ -1,0 +1,19 @@
+.animated-number {
+    font-size: 48px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffffff; /* Change the color as needed */
+    animation: countup 3s ease-in-out; /* Adjust the duration as needed */
+  }
+  
+  @keyframes countup {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

@@ -13,6 +13,7 @@ import mapimg from '../images/map.jpg';
 import Description from './TwoSideDescBox';
 import donateimg from '../images/donating.jpg'
 import './text.css'
+import FeaturesList from './services';
 
 const ImageBox = styled(Paper)({
 
@@ -95,16 +96,11 @@ const ImgSlider = ()=>{
    
   return(
     <>
-        <ImageBox elevation={3} >
-                <IconButton>
-                    <ArrowLeft />
-                </IconButton>
-                <Image src={img} alt="people"/>
-                <IconButton sx={{color:'#222222'}}>
-                    <ArrowRight sx={{color:'#222222'}} />
-                </IconButton> 
-        </ImageBox>            
-            <Grid container spacing={1 } sx={{marginTop:5}}>
+
+            <Box sx={{borderRadius:'10px',margin:'40px 0px',textAlign:'center'}}>
+            <Typography variant='h2' sx={{color:'#7D7C7C'}}>As VDONATE we provide</Typography>
+            <FeaturesList />
+            <Grid container spacing={1} sx={{marginTop:5}}>
              <Grid item xs={12} lg={4} sx={gridItem} >
                 <Card width="400px" height="200px" contheight="100px" topic="Donate Plasma" content={desc1} image={plasmaimg}></Card>       
              </Grid>
@@ -115,7 +111,7 @@ const ImgSlider = ()=>{
              <Card width="400px" height="200px" contheight="100px" topic="Track Location" content={desc3} image={mapimg}></Card>
              </Grid>
             </Grid>
-        
+            </Box>      
         <Description image={mapimg} height={'300px'} topic={'Why Cancer Patients Need Blood?'}  content={cont}
         topicColor={'#4F200D'} padding={3} textImage={"linear-gradient(100deg, #FFf6db, #ffffff)"}  textColor={'#4F200D' }
         btntxt={'Learn More'}
@@ -125,6 +121,7 @@ const ImgSlider = ()=>{
         topicColor={'#fff'} padding={3} textImage={"linear-gradient(100deg, #D3756B, #F0997D)"}  textColor={'white'}
          btnclr={'white'} btntxtclr={'black'} btntxt={'Donate'}/>
             
+        
     
     </>);
 

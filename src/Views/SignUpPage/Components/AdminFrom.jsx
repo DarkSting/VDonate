@@ -27,7 +27,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
 import { FormControl } from "react-bootstrap";
 import Footer from "../../../CommonComponents/Footer";
@@ -118,6 +118,8 @@ function SlideTransition(props) {
 export default function Form({ fontColor }) {
   textprop.color = fontColor;
 
+  let navigate = useNavigate();
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -126,6 +128,7 @@ export default function Form({ fontColor }) {
     : { vertical: "bottom", horizontal: "left" };
 
   const handleSignUp = (arr) => {
+    
     let convertedDOB = ConvertToDOB(year, month, day);
     const post = async (arr, yr) => {
       const data = {
@@ -149,10 +152,12 @@ export default function Form({ fontColor }) {
           setsccMSG("Sign Up Success");
           setSeverity("success");
           setsccColor("#03C988");
+          navigate("/adminlogin");
           handleClick(SlideTransition);
         })
         .catch((err) => {
 
+          
           const er = err.response.data
           console.log(er);
           if(er.code==11000 && er.msg?.email ){

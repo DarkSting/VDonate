@@ -23,12 +23,12 @@ const ContextProvider = ({ children }) => {
 
     if(localStorage.getItem('userInfo')){
       const {data} = JSON.parse(localStorage.getItem('userInfo'))
-      setName(data.name)
-      updateUserID(data.id)
+     setName(data?.name)
+      updateUserID(data?.id)
       console.log(data)
       const lc = {
-        lat:data.location.latitude,
-        lng:data.location.longitude
+        lat:data?.location.latitude,
+        lng:data?.location.longitude
       }
       setUserLocation(lc)
   

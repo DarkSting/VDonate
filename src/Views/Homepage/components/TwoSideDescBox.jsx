@@ -72,7 +72,7 @@ export default function DescBox(props){
 
     return(
         <>
-            <Grid container spacing={0.4} sx={{marginTop:3,flexDirection:props.direction,  padding:2}}>
+            <Grid container  sx={{marginTop:3,flexDirection:props.direction,  padding:2}}>
                 <Grid item xs={12} lg={3} sx={gridItem} >
                     <CardBox sx={{ height:props.height,width:'auto',backgroundColor:"#fff" ,boxShadow:'none'}}>
                         <CardMedia sx={{height:'100%', alignItems:'center', display:'flex',overflow:'hidden'}}>
