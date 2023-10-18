@@ -40,8 +40,11 @@ function CardForm(){
     const [startTime,setStartTime] = useState(null);
     const [endTime,setEndTime] = useState(null);
     const {darkColor} = useContext(MyContext);
-    const [staff,setStaff] = useState([]);
-
+    const [staff,setStaff] = useState([{
+      name:"test",
+      role:"doctor"
+    }]);
+    
     const { isLoaded } = useJsApiLoader({
       googleMapsApiKey: "AIzaSyDKv4-KCDZuUgtvKNHq-DKKlFRiFhzpvdY",
       libraries:libraries,
@@ -81,6 +84,8 @@ function CardForm(){
     })
 
     },[])
+
+   
   
     const handleSelectItem = (item) => {
       const newSelectedItems = [...selectedItems, item];
@@ -97,6 +102,38 @@ function CardForm(){
       })
 
     };
+
+    useEffect(()=>{
+
+      Axios.get(`campaign/getstaffanddonors?startTime=${startTime}&endTime=${endTime}`).then(r=>{
+        //setAvailableItems(r.data.requestsArrays);
+        let tempArray = [];
+      
+        console.log(r.data)
+
+        setStaff(r.data.staff);
+
+        openSnackbar({
+          message: 'Staff Loaded',
+          color:'green',
+          
+        })
+      
+
+    }).catch(error=>{
+
+      openSnackbar({
+        message: 'Loading Error',
+        color:'red',
+        
+      })
+
+        console.log(error);
+
+    })
+
+    },[startTime,endTime])
+
   
     const handleDeselectItem = (item) => {
       const newSelectedItems = selectedItems.filter((i) => i !== item);
@@ -124,6 +161,7 @@ function CardForm(){
           message: 'Creating Campaign...',
           color:'#000000',
         })
+        
         Axios.post('/campaign/addCampaign',{
           startTime:startTime,
           endTime:endTime,
@@ -214,8 +252,8 @@ function CardForm(){
           <Autocomplete
         multiple
         id="tags-outlined"
-        options={[{title:"Staff details",role:"(Blood Bank Officer)"}]}
-        getOptionLabel={(option) => option.title+" | "+option.role}
+        options={staff}
+        getOptionLabel={(option) => option.name+" | "+option.role}
         filterSelectedOptions
         renderInput={(params) => (
           <TextField

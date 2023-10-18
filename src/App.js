@@ -26,6 +26,7 @@ import MessageList from "./Views/AdminPage/Messages";
 import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
 import DonorsTabs from "./Views/AdminPage/Components/DonorsTabs";
 import CustomMap from "./Views/Map/DonorMap";
+import ContactPage from "./Views/ContactPage/ContactPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,7 +35,9 @@ const router = createBrowserRouter(
       <Route path="signup" element={<SignUpPage />} />
       <Route path="userlogin" element={<LoginPage />} />
       <Route path="adminlogin" element={<AdminLogin />} />
+      <Route path="contact" element={<ContactPage />}/>
       <Route path="userdashboard" element={<Dashboard />}>
+        
         
       </Route>
 
@@ -54,7 +57,7 @@ const router = createBrowserRouter(
 
         <Route path="complaints" element={<ComplaintList />} />
         <Route path="donationrequests" element={<DonationReqTab />} />
-        <Route path="inbox" element={<MessageTabs/>} />
+        <Route path="inbox" element={<MessageTabs />} />
 
         <Route
           path="uploadtests"
