@@ -1,3 +1,4 @@
+const { AdminModel } = require("../Models/AdminModel");
 const BloodBagModel = require("../Models/BloodBagModel");
 const BloodContainerModel = require("../Models/BloodContainerModel");
 const { CampaignModel } = require("../Models/CampaignModel");
@@ -110,6 +111,7 @@ const findAllCampaign = async (req, res, next) => {
 };
 
 const findPendingCampaigns = async (req, res) => {
+ 
   const { startTime, endTime } = req.query;
 
   let foundCampaigns = [];
@@ -140,6 +142,81 @@ const findPendingCampaigns = async (req, res) => {
 
   return res.status(200).json(foundCampaigns);
 };
+
+const findStaffAndDonors = async(req,res)=>{
+
+  const { startTime, endTime } = req.query;
+
+  let foundStaff = [{
+    name:"",
+    role:""
+  }];
+  let foundDonors = [{
+    name:"",
+    email:""
+  }];
+
+  const st = !startTime ? new Date() : new Date(startTime);
+  const et = !endTime ? new Date() : new Date(endTime);
+
+  console.log(st);
+  console.log(et);
+
+  let foundCampaigns = [];
+
+
+  if (startTime && endTime) {
+
+    try {
+
+      foundCampaigns = await CampaignModel.find({
+        $and: [
+          { timeBegin: { $gte: st } },
+          { timeEnd: { $lte: et } },
+          { isCompleted: true },
+        ]
+      });
+
+      for(let currentCamp of foundCampaigns){
+
+        for(let staffid of currentCamp.StaffGroup){
+
+          let foundStaff = await AdminModel.findOne({_id:staffid})
+          let obj = {}
+          obj.name = foundStaff.userName
+          obj.role = foundStaff.role
+
+          foundStaff.push(obj)
+
+        }
+
+        for(let donorID of currentCamp.donors){
+          let foundDonor = await UserModel.findOne({_id:donorID})
+          let obj = {}
+          obj.name = foundDonor.userName
+          obj.email = foundDonor.email
+
+          foundDonor.push(obj)
+
+        }
+
+      }
+
+      return res.status(200).json({staff:foundStaff,donors:foundDonors})
+     
+    }
+     catch(error) {
+
+      return res.status(200).json(error)
+
+    }
+
+  }
+
+
+  return res.status(200).json(foundCampaigns);
+
+}
 
 const findCompletedActions = async(req,res)=>{
 
@@ -194,7 +271,7 @@ const cancellCampaign = async (req, res) => {
 
   await CampaignModel.findOneAndUpdate(
     { _id: campaignID },
-    { isCancelled: true }
+    { isCancelled: true,isCompleted:true }
   );
 
   res.status(200).json({ msg: "campaign cancelled" });
@@ -360,5 +437,6 @@ module.exports = {
   cancellCampaign,
   getCancelledCampaigns,
   updateBloodBag,
-  findCompletedActions
+  findCompletedActions,
+  findStaffAndDonors
 };

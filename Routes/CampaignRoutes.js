@@ -7,6 +7,7 @@ const {
     getCancelledCampaigns,
     updateBloodBag,
     findCompletedActions,
+    findStaffAndDonors,
   } = require("../Controllers/CampaignControllers");
   
   const { Router } = require("express");
@@ -22,5 +23,6 @@ const { authenticateUser, authenticateUserMiddleware } = require("../Middlewares
   routes.get('/getcancellcampaigns',getCancelledCampaigns);
   routes.get('/gethomepageinfo',findCompletedActions);
   routes.put("/updatebloodbag",authenticateUserMiddleware, updateBloodBag);
+  routes.get("/getstaffanddonors",findStaffAndDonors);
   
   module.exports = routes;
