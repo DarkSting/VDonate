@@ -28,9 +28,7 @@ import {
 import { useRef } from 'react';
 import { LoadSubSpinner } from '../../CommonComponents/SpinFunction';
 
-
 const libraries = ['places'];
-
 
 function CardForm(){
 
@@ -39,6 +37,7 @@ function CardForm(){
     const {openSnackbar, closeSnackbar} = useSnackbar();
     const [startTime,setStartTime] = useState(null);
     const [endTime,setEndTime] = useState(null);
+    const [selectedStaff,setSelectedStaff] = useState([]);
     const {darkColor} = useContext(MyContext);
     const [staff,setStaff] = useState([{
       name:"test",
@@ -146,13 +145,15 @@ function CardForm(){
 
     const validateForm = () => {
       console.log(startTime)
-      return  staff !== null &&
+      return  selectedStaff.length > 0 &&
         originRef !== null &&
         selectedItems.length > 0 &&
         startTime !== null &&
         endTime !== null;
     };
 
+
+    
     const handleSubmit = () => {
       if (validateForm()) {
         // Handle form submission
@@ -161,12 +162,22 @@ function CardForm(){
           message: 'Creating Campaign...',
           color:'#000000',
         })
-        
+
+        let filteredArray = []
+
+        for(let current of selectedStaff){
+
+          filteredArray.push(current.id)
+          console.log(filteredArray);
+
+        }
         Axios.post('/campaign/addCampaign',{
           startTime:startTime,
           endTime:endTime,
           location:originRef.current.children[0].children[0].value,
-          donors:selectedItems
+          donors:selectedItems,
+          staff:filteredArray
+
         }).then(value=>{
                 openSnackbar({
                   message: 'Campaign Created!',
@@ -255,6 +266,10 @@ function CardForm(){
         options={staff}
         getOptionLabel={(option) => option.name+" | "+option.role}
         filterSelectedOptions
+        onChange={(event, selectedOptions) => {
+          setSelectedStaff(selectedOptions)
+          console.log(selectedOptions);
+        }}
         renderInput={(params) => (
           <TextField
             {...params}

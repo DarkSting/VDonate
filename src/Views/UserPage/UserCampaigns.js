@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, CardActions, CardContent, Typography ,Button,Card} from "@mui/material";
+import { Box, CardActions, CardContent, Typography ,Button,Card, List, ListItem, ListItemText} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Axios from "../../api/axios";
 import { MyContext } from "../..";
@@ -11,6 +11,8 @@ import { LoadSubSpinner, NoData } from "../../CommonComponents/SpinFunction";
 
 const CampaignCard = ({ campaign }) => {
   const [expanded, setExpanded] = useState(false);
+  const [staff,setStaff] = useState([]);
+  const [donors,setDonors] = useState([]);
  
   console.log(campaign)
 
@@ -18,6 +20,28 @@ const CampaignCard = ({ campaign }) => {
 
   const toggleExpansion = () => {
     setExpanded(!expanded);
+    if(!expanded){
+      Axios.get(`campaign/getstaffanddonorsexpand?campaignID=${campaign._id}`).then(r=>{
+
+        setStaff(r.data.staff);
+        setDonors(r.data.donors);
+        
+        console.log(r.data.staff)
+
+        
+        
+      }).catch(er=>{
+  
+        console.log(er)
+        openSnackbar({
+          message: `Cannot open`,
+          color:'red',
+      
+  })
+  
+      })
+  
+    }
   };
 
   function removeCard(){
@@ -51,6 +75,24 @@ const CampaignCard = ({ campaign }) => {
         <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time Begin:</b> {new Date(campaign.timeBegin).toLocaleString()}</Typography>
         <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Time End:</b> {new Date(campaign.timeEnd).toLocaleString()}</Typography>
         <Typography variant="h6" sx={{marginBottom:'20px'}}><b>Donors count:</b> {campaign.donors.length}</Typography>
+        <Box>
+        {expanded && (
+          <List>
+            <Typography variant="h6">Staff:</Typography>
+            {staff.map((person, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={person.name} secondary={person.role} />
+              </ListItem>
+            ))}
+            <Typography variant="h6">Donors:</Typography>
+            {donors.map((donor, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={donor.name} />
+              </ListItem>
+            ))}
+          </List>
+        )}
+        </Box>
       </CardContent>
       <CardActions>
       <Button
