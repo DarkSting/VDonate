@@ -79,12 +79,14 @@ const createCampaign = async (req, res) => {
       return res.status(500).json({ msg: error.message });
     }
 
+ 
     const newCampaign = new CampaignModel({
       location: location,
       timeBegin: startTime,
       timeEnd: endTime,
       donors: foundDonors,
       bloodContainer: newBloodConatiner,
+      StaffGroup:staff
     });
 
     newCampaign
@@ -133,70 +135,122 @@ const findPendingCampaigns = async (req, res) => {
         ],
       });
 
-    } catch (error) {
+    }
+     catch (error) {
   
     }
-  } else {
+
+  } 
+  else {
+
     foundCampaigns = await CampaignModel.find({ isCompleted: false });
+
   }
 
+
+
   return res.status(200).json(foundCampaigns);
+
 };
+
+
+const findStaffAndDonorsExpand = async(req,res)=>{
+
+  const {campaignID} = req.query;
+
+  const foundCampaign = await CampaignModel.findOne({_id:campaignID});
+
+  let foundDonors = [];
+  let foundStaff = [];
+
+  for(let currentID of foundCampaign.StaffGroup){
+
+    let foundmodel = await AdminModel.findOne({_id:currentID})
+    let obj = {}
+    obj.name = foundmodel.userName;
+    obj.role = foundmodel.role;
+
+    foundStaff.push(obj)
+  }
+
+  for(let currentID of foundCampaign.donors){
+      
+    let foundmodel = await UserModel.findOne({_id:currentID})
+      let obj = {}
+      obj.name = foundmodel.userName;
+
+      foundDonors.push(obj)
+  }
+
+  return res.status(200).json({donors:foundDonors,staff:foundStaff});
+
+}
 
 const findStaffAndDonors = async(req,res)=>{
 
   const { startTime, endTime } = req.query;
 
   let foundStaff = [{
-    name:"",
-    role:""
+    name:"null",
+    role:"null",
+    id:"null"
   }];
+
   let foundDonors = [{
-    name:"",
-    email:""
+    name:"null",
+    email:"null",
+    id:"null"
   }];
 
-  const st = !startTime ? new Date() : new Date(startTime);
-  const et = !endTime ? new Date() : new Date(endTime);
-
-  console.log(st);
-  console.log(et);
 
   let foundCampaigns = [];
 
+      foundCampaigns = await CampaignModel.find(
+       
+          { isCompleted: false }
+        
+      );
 
-  if (startTime && endTime) {
-
-    try {
-
-      foundCampaigns = await CampaignModel.find({
-        $and: [
-          { timeBegin: { $gte: st } },
-          { timeEnd: { $lte: et } },
-          { isCompleted: true },
-        ]
-      });
+      const stf = await AdminModel.find({});
+      let nonDupIds = [];
 
       for(let currentCamp of foundCampaigns){
 
         for(let staffid of currentCamp.StaffGroup){
 
-          let foundStaff = await AdminModel.findOne({_id:staffid})
-          let obj = {}
-          obj.name = foundStaff.userName
-          obj.role = foundStaff.role
+          let foundstaff = await AdminModel.findOne({_id:staffid})
 
-          foundStaff.push(obj)
+         nonDupIds.push(foundstaff._id);
 
         }
 
         for(let donorID of currentCamp.donors){
-          let foundDonor = await UserModel.findOne({_id:donorID})
+          let founddonor = await UserModel.findOne({_id:donorID})
           let obj = {}
-          obj.name = foundDonor.userName
-          obj.email = foundDonor.email
+          obj.name = founddonor.userName
+          obj.email = founddonor.email
+          obj.id = founddonor._id
 
-          foundDonor.push(obj)
+          foundDonors.push(obj)
+
+        }
+
+      }
+
+      const staffSet = new Set(nonDupIds);
+  
+
+      for(let x of stf){
+
+        if(!staffSet.has(x._id)){
+          
+          let obj = {}
+          obj.name = x.userName
+          obj.email = x.email
+          obj.id = x._id
+          obj.role = x.role
+
+          foundStaff.push(obj)
 
         }
 
@@ -204,19 +258,8 @@ const findStaffAndDonors = async(req,res)=>{
 
       return res.status(200).json({staff:foundStaff,donors:foundDonors})
      
-    }
-     catch(error) {
-
-      return res.status(200).json(error)
-
-    }
-
-  }
-
-
-  return res.status(200).json(foundCampaigns);
-
 }
+
 
 const findCompletedActions = async(req,res)=>{
 
@@ -438,5 +481,6 @@ module.exports = {
   getCancelledCampaigns,
   updateBloodBag,
   findCompletedActions,
-  findStaffAndDonors
+  findStaffAndDonors,
+  findStaffAndDonorsExpand
 };

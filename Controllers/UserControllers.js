@@ -148,14 +148,18 @@ const getUserLocations = async(req,res)=>{
     const{bloodType} = req.query;
 
     let foundUsers = [];
+    
+    const t = bloodType;
 
     if(bloodType==='N-'){
 
         foundUsers=await UserModel.find({});
+        console.log("if")
 
     }
     else{
-        foundUsers=await UserModel.find({bloodType:bloodType.trim()});
+        foundUsers=await UserModel.find({bloodType:t});
+        console.log(foundUsers)
     }
     
 
