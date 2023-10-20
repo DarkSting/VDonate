@@ -24,7 +24,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomLinkButton from "../../../CommonComponents/LinkButton";
 import googleUrl from "axios";
 import Footer from "../../../CommonComponents/Footer";
@@ -173,6 +173,7 @@ export default function Form({ fontColor }) {
     const [longitude, setLongitude] = useState(null);
     const [error, setError] = useState(null);
     const [isBlocked, setIsBlocked] = useState(false);
+    let navigate = useNavigate();
        
     /** @type React.MutableRefObject<HTMLInputElement> */
        const destiantionRef = useRef()
@@ -228,7 +229,10 @@ export default function Form({ fontColor }) {
     console.log(`${latitude} ${longitude}`)
 
     if (!longitude || !latitude) {
+      setSeverity("error");
+      setsccColor("#F24C3D");
       setsccMSG("Fail to set the location cannot proceed the sign up");
+      
       return;
     }
 
@@ -258,10 +262,12 @@ export default function Form({ fontColor }) {
           setSeverity("success");
           setsccColor("#03C988");
           setsccMSG("Sign Up Success");
+          navigate(`/success?user=${'user'}`);
+          
         })
         .catch((err) => {
           console.log(err);
-
+          
           setSeverity("error");
           setsccColor("#F24C3D");
           setsccMSG("Sign Up Failed");

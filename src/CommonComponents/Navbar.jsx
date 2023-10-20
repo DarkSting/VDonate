@@ -263,7 +263,7 @@ const Navbar = (props) => {
           </NavButton>
           <NavButton
             onClick={() => {
-              navigate("/testPage");
+              navigate("/contact");
             }}
             sx={{ "&:hover": { backgroundColor: props.hoverColor } }}
           >

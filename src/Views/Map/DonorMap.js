@@ -217,7 +217,7 @@ return (
      
           <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <InputLabel id="demo-simple-select-label">Blood Type</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -225,15 +225,15 @@ return (
               label="Blood Type"
               onChange={handleChangeBloodType}
             >
-              <MenuItem value="A+">A+</MenuItem>
-              <MenuItem value="A-">A-</MenuItem>
-              <MenuItem value="B+">B+</MenuItem>
-              <MenuItem value="B-">B-</MenuItem>
-              <MenuItem value="AB+">AB+</MenuItem>
-              <MenuItem value="AB-">AB-</MenuItem>
-              <MenuItem value="O+">O+</MenuItem>
-              <MenuItem value="O-">O-</MenuItem>
-              <MenuItem value="N-">N-</MenuItem>
+              <MenuItem value={0}>A+</MenuItem>
+              <MenuItem value={1}>A-</MenuItem>
+              <MenuItem value={2}>B+</MenuItem>
+              <MenuItem value={3}>B-</MenuItem>
+              <MenuItem value={4}>AB+</MenuItem>
+              <MenuItem value={5}>AB-</MenuItem>
+              <MenuItem value={6}>O+</MenuItem>
+              <MenuItem value={7}>O-</MenuItem>
+              <MenuItem value={8}>All</MenuItem>
             </Select>
          
           </FormControl>

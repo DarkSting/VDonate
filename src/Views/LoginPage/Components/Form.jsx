@@ -153,7 +153,7 @@ export default function Form() {
 
     if (arr[0] === "") {
       isNameNull = true;
-      setNameErr("name is not provided");
+      setNameErr("Email is not provided");
     } else {
       isNameNull = false;
       setNameErr("");

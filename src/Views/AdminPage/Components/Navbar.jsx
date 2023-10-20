@@ -1,4 +1,4 @@
-import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person} from "@mui/icons-material";
+import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person, Logout} from "@mui/icons-material";
 
 import {
   AppBar,
@@ -271,14 +271,7 @@ const NavComponent = ({setLoggedOut,props})=>{
             sx ={{}}
       >
 
-        <MenuItem onClick={handleClose}  onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{width:'200px','&:hover':{backgroundColor:props.color,color:'white'}}}>
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText>
-              Settings
-            </ListItemText>
-        </MenuItem>
+     
         <MenuItem onClick={handleClickOpen} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
             <DarkMode />
@@ -298,7 +291,7 @@ const NavComponent = ({setLoggedOut,props})=>{
         <Divider />
         <MenuItem onClick={handleOpenLogout} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
-            <Lock  />
+            <Logout  />
           </ListItemIcon>
           <ListItemText>
               Logout
