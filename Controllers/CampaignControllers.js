@@ -1,3 +1,4 @@
+const { AdminModel } = require("../Models/AdminModel");
 const BloodBagModel = require("../Models/BloodBagModel");
 const BloodContainerModel = require("../Models/BloodContainerModel");
 const { CampaignModel } = require("../Models/CampaignModel");
@@ -34,7 +35,7 @@ const createCampaign = async (req, res) => {
     $and: [
       { timeBegin: { $gte: new Date(startTime) } },
       { timeBegin: { $lte: new Date(endTime) } },
-    ],  
+    ],
   });
 
   let foundDonors = donors;
@@ -44,9 +45,17 @@ const createCampaign = async (req, res) => {
 
     //creating blood bags for each user
     for (let currentDonor of foundDonors) {
-      const foundRequest = await DonationRequestModel.findOne({
-        User: currentDonor._id,
-      });
+      const foundRequest = await DonationRequestModel.findOneAndUpdate(
+        {
+          $and: [
+            {
+              User: currentDonor._id,
+            },
+            { isAssigned: false },
+          ],
+        },
+        { isAssigned: true }
+      );
 
       let newBloodBag = new BloodBagModel({
         dateCreated: Date(),
@@ -83,6 +92,7 @@ const createCampaign = async (req, res) => {
       timeEnd: endTime,
       donors: foundDonors,
       bloodContainer: newBloodConatiner,
+      StaffGroup: staff,
     });
 
     newCampaign
@@ -126,18 +136,120 @@ const findPendingCampaigns = async (req, res) => {
           { timeBegin: { $gte: st } },
           { timeEnd: { $lte: et } },
           { isCompleted: false },
-          {isCancelled:false}
+          { isCancelled: false },
         ],
       });
-
-    } catch (error) {
-  
-    }
+    } catch (error) {}
   } else {
     foundCampaigns = await CampaignModel.find({ isCompleted: false });
   }
 
   return res.status(200).json(foundCampaigns);
+};
+
+const findStaffAndDonorsExpand = async (req, res) => {
+  const { campaignID } = req.query;
+
+  const foundCampaign = await CampaignModel.findOne({ _id: campaignID });
+
+  let foundDonors = [];
+  let foundStaff = [];
+
+  for (let currentID of foundCampaign.StaffGroup) {
+    let foundmodel = await AdminModel.findOne({ _id: currentID });
+    let obj = {};
+    obj.name = foundmodel.userName;
+    obj.role = foundmodel.role;
+
+    foundStaff.push(obj);
+  }
+
+  for (let currentID of foundCampaign.donors) {
+    let foundmodel = await UserModel.findOne({ _id: currentID });
+    let obj = {};
+    obj.name = foundmodel.userName;
+
+    foundDonors.push(obj);
+  }
+
+  return res.status(200).json({ donors: foundDonors, staff: foundStaff });
+};
+
+const findStaffAndDonors = async (req, res) => {
+  const { startTime, endTime } = req.query;
+
+  let foundStaff = [
+    {
+      name: "null",
+      role: "null",
+      id: "null",
+    },
+  ];
+
+  let foundDonors = [
+    {
+      name: "null",
+      email: "null",
+      id: "null",
+    },
+  ];
+
+  let foundCampaigns = [];
+
+  foundCampaigns = await CampaignModel.find({ isCompleted: false });
+
+  const stf = await AdminModel.find({});
+  let nonDupIds = [];
+
+  for (let currentCamp of foundCampaigns) {
+    for (let staffid of currentCamp.StaffGroup) {
+      let foundstaff = await AdminModel.findOne({ _id: staffid });
+
+      nonDupIds.push(foundstaff._id);
+    }
+
+    for (let donorID of currentCamp.donors) {
+      let founddonor = await UserModel.findOne({ _id: donorID });
+      let obj = {};
+      obj.name = founddonor.userName;
+      obj.email = founddonor.email;
+      obj.id = founddonor._id;
+
+      foundDonors.push(obj);
+    }
+  }
+
+  const staffSet = new Set(nonDupIds);
+
+  for (let x of stf) {
+    if (!staffSet.has(x._id)) {
+      let obj = {};
+      obj.name = x.userName;
+      obj.email = x.email;
+      obj.id = x._id;
+      obj.role = x.role;
+
+      foundStaff.push(obj);
+    }
+  }
+
+  return res.status(200).json({ staff: foundStaff, donors: foundDonors });
+};
+
+const findCompletedActions = async (req, res) => {
+  console.log("getting homepage info");
+
+  const foundCampaign = await CampaignModel.find({ isCompleted: true });
+  const onGoingCampaigns = await CampaignModel.find({ isCompleted: true });
+  const foundTotalDonations = await BloodBagModel.find({ filled: true });
+
+  return res
+    .status(200)
+    .json({
+      completedCampaigns: foundCampaign,
+      onGoingCampaigns: onGoingCampaigns,
+      totalDonations: foundTotalDonations,
+    });
 };
 
 // returns the container
@@ -157,17 +269,35 @@ const getBloodContainer = async (campaign) => {
 
 //cancell campaign
 const cancellCampaign = async (req, res) => {
-  
   const { campaignID } = req.body;
 
-  await CampaignModel.findOneAndUpdate(
-    { _id: campaignID },
-    { isCancelled: true }
-  );
+  try {
+    const foundCampaign = await CampaignModel.findOne({ _id: campaignID });
 
+    if (foundCampaign) {
+      const foundBloodContainer = await BloodContainerModel.findOne({
+        _id: foundCampaign.bloodContainer,
+      });
 
-  res.status(200).json({ msg: "campaign cancelled" });
+      for (let currentbloodbag of foundBloodContainer.bloodBags) {
+        const foundBloodBag = await BloodBagModel.findOneAndUpdate(
+          { _id: currentbloodbag },
+          { filled: true }
+        );
 
+        console.log(foundBloodBag);
+      }
+    }
+
+    await CampaignModel.findOneAndUpdate(
+      { _id: campaignID },
+      { isCancelled: true, isCompleted: true }
+    );
+
+    res.status(200).json({ msg: "campaign cancelled" });
+  } catch (error) {
+    return res.status(500).json({ msg: "cannot cancel the campaign" });
+  }
 };
 
 //add donors to the campaign
@@ -224,32 +354,26 @@ const removeUsersFromCampaign = async (req, res) => {
   }
 };
 
-const updateBloodBag = async(req,res)=>{
+const updateBloodBag = async (req, res) => {
+  const { user, capacity } = req.body;
 
-  const{user,capacity} = req.body;
+  try {
+    await BloodBagModel.findOneAndUpdate(
+      { donor: user },
+      { capacity: capacity }
+    );
 
-  try{
-
-    await BloodBagModel.findOneAndUpdate({donor:user},{capacity:capacity})
-
-    return res.status(200).json({msg:'capacity updated'});
-
-  }catch(error){
-
-    return res.status(500).json({msg:'failed to update blood bag'});
+    return res.status(200).json({ msg: "capacity updated" });
+  } catch (error) {
+    return res.status(500).json({ msg: "failed to update blood bag" });
   }
+};
 
-}
+const getCancelledCampaigns = async (req, res) => {
+  const foundCampaigns = await CampaignModel.find({ isCancelled: true });
 
-const getCancelledCampaigns = async(req,res)=>{
-
-
-  const foundCampaigns = await CampaignModel.find({isCancelled:true});
-
-
-  return res.status(200).json({foundCampaigns})
-
-}
+  return res.status(200).json({ foundCampaigns });
+};
 
 const updateCampaign = async (req, res, next) => {
   const {
@@ -322,5 +446,8 @@ module.exports = {
   findPendingCampaigns,
   cancellCampaign,
   getCancelledCampaigns,
-  updateBloodBag
+  updateBloodBag,
+  findCompletedActions,
+  findStaffAndDonors,
+  findStaffAndDonorsExpand,
 };
