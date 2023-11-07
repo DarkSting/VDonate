@@ -8,16 +8,17 @@ const {
     findUser,
     deleteUser,
     loginUser,
-    invalidPass
+    invalidPass,
+    invalidEmail,
+    makeDonation,
+    loginAdmin
 } = require('./DataObjectsFortesting');
 
-let storedCookie = '';
+let storedCookie = null;
 
 describe('Testing the user API',()=>{
     beforeAll(async()=>{
-        await mongoose.connect(process.env.MONGO_URI).then(()=>{
-            console.log("DB connected");
-        })
+        await mongoose.connect(process.env.MONGO_URI)
     })
 
     test('Adding a user',async()=>{
@@ -41,74 +42,101 @@ describe('Testing the user API',()=>{
 
     })
 
-    test('Login a user', async()=>{
+    test('Login a user with correct password and email', async()=>{
 
-        await supertest(app).post('/user/loginUser').send(loginUser).expect(200)
+        const response = await supertest(app).post('/user/loginUser').send(loginUser).expect(200);
+
+
+        const {header} = response;
+
+        storedCookie = header;
+
     })
+
 
     test('Entering an invalid password and correct email', async()=>{
 
         await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
+
     })
 
     
     test('Entering an invalid email and correct password', async()=>{
 
-        await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
+        await supertest(app).post('/user/loginUser').send(invalidEmail).expect(500)
+
     })
-    
-    
+
+
+    test('Requesting a donation from a admin', async()=>{
+
+        console.log(storedCookie);
+        await supertest(app).post('/user/makeDonationRequest').set('Cookie',[...storedCookie["set-cookie"]]).send(makeDonation).expect(200)
+
+    })
+
     afterAll(async()=>{
+        
         await mongoose.disconnect();
         await mongoose.connection.close();
     })
+
 })
 
-
+let adminCookie = null;
+let Request = null;
+let user = null;
 
 describe('Testing the admin API',()=>{
+    
     beforeAll(async()=>{
-        await mongoose.connect(process.env.MONGO_URI).then(()=>{
-            console.log("DB connected");
-        })
+       await mongoose.connect(process.env.MONGO_URI)
     })
 
-    test('Adding a user',async()=>{
+    test('Login an admin with correct password an email',async()=>{
         
-        await supertest(app).post('/user/addUser')
-        .send(userInsertInput)
-        .expect(201);
+        const{header}=await supertest(app).post('/admin/loginadmin')
+        .send(loginAdmin)
+        .expect(200);
+
+        adminCookie = header;
 
     });
 
-    test('Find a user',async()=>{
-        const{body}=await supertest(app).get(`/user/getuser?user=${"testName"}`)
-        .send({})
-        expect(body.username).toBe("testName");
-    })
-    
-    test('Delete a user', async()=>{
-        
-        const{body} = await supertest(app).delete(`/user/deleteuser?user=${deleteUser.user}`)
+    test('Get donation requests',async()=>{
+        const response = await supertest(app).get(`/donation/getdonationrequests`)
         .send({}).expect(200)
+        
+        const obj = JSON.parse(response.text)
+        const{User,request}=obj.requestsArrays[0];
+
+        user = User;
+        Request = request;
+
+    })
+    
+    test('Approve donations received from donors', async()=>{
+        
+        const{body} = await supertest(app).post(`/donation/acceptdonationrequest`)
+        .send({donorID:user._id, requestID:Request._id}).expect(200)
 
     })
 
-    test('Login a user', async()=>{
+    // test('Login a user', async()=>{
 
-        await supertest(app).post('/user/loginUser').send(loginUser).expect(200)
-    })
+    //     await supertest(app).post('/user/loginUser').send(loginUser).expect(200)
+    // })
 
-    test('Entering an invalid password and correct email', async()=>{
+    // test('Entering an invalid password and correct email', async()=>{
 
-        await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
-    })
+    //     await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
+    // })
 
     
-    test('Entering an invalid email and correct password', async()=>{
+    // test('Entering an invalid email and correct password', async()=>{
 
-        await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
-    })
+    //     await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
+    // })
     
     
     afterAll(async()=>{

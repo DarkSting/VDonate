@@ -28,6 +28,16 @@ const invalidPass = {
     password:"12345"
 }
 
+const makeDonation = {
+    donationType:"Plasma", 
+    description:"test desctiption"
+}
+
+const invalidEmail = {
+    email:"123",
+    password:"akash"
+}
+
 const deleteUser ={
     user:"testName"
 }
@@ -36,11 +46,14 @@ const updateBloodBage ={
     capacity:200
 }
 
-updateUser = {
-    username:"DarkSting",
-    email:"akashgeethanjana320@gmail.com",
-    phoneNumber:"0763345678",
+
+//////////// admin test data /////////////////////
+
+const loginAdmin = {
+    licenseNumber:'123456', 
+    password:'@j5t4'
 }
+
 
 module.exports ={
     
@@ -48,8 +61,10 @@ module.exports ={
     findUser,
     loginUser,
     deleteUser,
-    updateUser,
     updateBloodBage,
-    invalidPass
+    invalidPass,
+    invalidEmail,
+    makeDonation,
+    loginAdmin
 
 }

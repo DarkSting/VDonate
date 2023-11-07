@@ -322,8 +322,6 @@ const loginUser = async (req, res) => {
 
     if (user) {
 
-    
-
         const token = crateToken(user._id);
         console.log(token);
         res.cookie("jwt", token, { httpOnly: true });
