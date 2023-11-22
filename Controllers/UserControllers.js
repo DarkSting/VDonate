@@ -11,6 +11,7 @@ const BloodBagModel = require("../Models/BloodBagModel");
 const { MessageModel } = require("../Models/UserMessageModel");
 const { AdminModel } = require("../Models/AdminModel");
 const bcrypt = require("bcrypt");
+const webtoken = require('jsonwebtoken');
 
 //set the living time of the cookie which will be set in the login
 const maxAge = 2 * 60 * 60;
@@ -318,11 +319,18 @@ const loginUser = async (req, res) => {
   try {
     const user = await UserModel.login(email, password);
 
+
     if (user) {
-      const token = crateToken(user._id);
-      console.log(token);
-      res.cookie("jwt", token, { httpOnly: true });
+
+        const token = crateToken(user._id);
+        console.log(token);
+        res.cookie("jwt", token, { httpOnly: true });
+        console.log("token attached")
+
+      
+  
       res.status(200).json({ user: user._id });
+      
     } else {
       return res.status(500).json({ msg: "user not found", code: 200 });
     }
@@ -336,7 +344,7 @@ const deleteUser = async (req, res) => {
 
   console.log(user);
 
-  const deletedUser = await UserModel.findOneAndDelete({ _id: user });
+  const deletedUser = await UserModel.findOneAndDelete({ userName: user });
 
   if (deletedUser) {
     return res.status(200).json({ msg: "user deleted successfully" });
@@ -491,16 +499,43 @@ const findUser = async (req, res, next) => {
    
 };
 
+/*get
+//getting a user
+*/
+const getuser = async (req, res, next) => {
+  const { user } = req.query;
+
+ const foundUser = await UserModel.findOne({
+    userName:user
+  })
+
+  let obj = {}
+  obj.username = foundUser.userName;
+  obj.phoneNumber = foundUser.phone;
+  obj.email = foundUser.email
+  obj.bloodType = foundUser.bloodType;
+  obj.nic = foundUser.nic;
+  obj.location = foundUser.location.name
+  
+
+  return res.status(200).json(obj)
+   
+};
+
 /*PUT
+
 updates a user
+
 */
 const updateUser = async (req, res, next) => {
  
     const {
+
     username,
     email,
     phoneNumber,
     user
+
   } = req.body;
 
   const foundUser = await UserModel.findOneAndUpdate({_id:user._id},{userName:username,email:email, phone:phoneNumber})
@@ -527,4 +562,5 @@ module.exports = {
   deleteUser,
   getUserLocations,
   updatePassword,
+  getuser
 };

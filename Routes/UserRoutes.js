@@ -17,6 +17,7 @@ const {
   deleteUser,
   getUserLocations,
   updatePassword,
+  getuser,
 } = require("../Controllers/UserControllers.js");
 const { makeDonationRequest } = require("../Controllers/DonationController.js");
 const { sendmail } = require("../Controllers/MailControllers.js");
@@ -29,6 +30,7 @@ const routes = Router();
 routes.post("/addUser", addUser);
 routes.put("/updateUser",authenticateUserMiddleware,updateUser);
 routes.get("/findUser",authenticateUserMiddleware,findUser);
+routes.get("/getuser",getuser);
 routes.get("/findAllUsers", findAllUsers);
 routes.post("/loginUser", loginUser);
 routes.post("/makeRequest", makeRequest);
