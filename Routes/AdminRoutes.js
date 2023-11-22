@@ -14,6 +14,7 @@ const {
   rejectAdminSignUp,
   getMessages,
   sendMessage,
+  updatePassword,
 } = require("../Controllers/AdminControllers.js");
 const {
   authenticateUser,
@@ -25,8 +26,8 @@ const routes = Router();
 routes.post("/addadmin", addAdmin);
 routes.post("/loginadmin", loginAdmin);
 routes.get("/admindashboard", welcomeAdmin);
-routes.post("/updateAdmin", updateAdmin);
-routes.get("/findAdmin", findAdmin);
+routes.put("/updateAdmin",authenticateAdminMiddleware, updateAdmin);
+routes.get("/findAdmin", authenticateAdminMiddleware,findAdmin);
 routes.get("/findAllAdmins", findAllAdmins);
 routes.post("/confirmAdmin", confirmAdmin);
 routes.get("/validateUsers", getYetToValidateUsers);
@@ -36,5 +37,6 @@ routes.post("/updatepassworduser", updatePasswordUser);
 routes.put("/rejectadmin", rejectAdminSignUp);
 routes.get("/getmessages", authenticateAdminMiddleware, getMessages);
 routes.post("/sendmessage", sendMessage);
+routes.post("/updatepass", authenticateAdminMiddleware, updatePassword);
 
 module.exports = routes;

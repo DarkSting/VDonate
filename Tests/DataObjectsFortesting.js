@@ -13,10 +13,18 @@ const userInsertInput = {
     address:"Negombo Beach, Negombo, Sri Lanka",
 }
 
+const makeComplain = {
+    description:"testing a complain"
+}
+
 const findUser = {
     name:"testName"
 }
 
+const pendingCampaigns = {
+    startTime:'2023-11-22T08:30:00.000+00:00',
+     endTime: '2023-11-22T10:30:00.000+00:00'
+}
 
 const loginUser ={
     email:"akashgeethanjana320@gmail.com",
@@ -65,6 +73,8 @@ module.exports ={
     invalidPass,
     invalidEmail,
     makeDonation,
-    loginAdmin
+    loginAdmin,
+    pendingCampaigns,
+    makeComplain
 
 }

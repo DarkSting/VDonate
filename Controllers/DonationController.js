@@ -40,8 +40,6 @@ const makeDonationRequest = async (req, res) => {
   const { donationType, description } = req.body;
   const token = req.cookies.jwt;
 
-  console.log("this is the token "+token);
-
   let refid = 0;
 
   //to get the receivers mail.
@@ -70,7 +68,6 @@ const makeDonationRequest = async (req, res) => {
   } else {
     refid = parseInt(list[0].refNo) + 1;
   }
-
   if (token) {
     //veryfying the token
     jwt.verify(token, process.env.SECRET, (err, decoded) => {

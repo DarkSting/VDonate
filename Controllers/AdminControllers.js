@@ -81,7 +81,7 @@ const addAdmin = async (req, res) => {
   }
 
   try {
-    var newAdmin = new AdminModel({
+    const newAdmin = new AdminModel({
       userName: name,
       email: email,
       phone: phone,
@@ -90,12 +90,13 @@ const addAdmin = async (req, res) => {
       licenseNumber: licenseNumber,
       role: role,
     });
-
+    
     const result = await newAdmin.save();
     return res.status(201).json(result);
+
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: error.keyValue, code: 11000 });
+    return res.status(500).json({ msg: error.message, code: 11000 });
   }
 };
 
@@ -125,6 +126,38 @@ const loginAdmin = async (req, res) => {
   } catch (error) {
     return res.status(500).json(error.message);
   }
+};
+
+
+const updatePassword = async (req, res) => {
+  const { oldPassword, newPassword, user } = req.body;
+
+  console.log(oldPassword);
+  console.log(newPassword);
+
+  let foundUser = await AdminModel.findOne({ _id: user._id });
+
+  const auth = await bcrypt.compare(oldPassword, foundUser.password.trim());
+
+  console.log(auth);
+
+  if (auth && foundUser) {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword.trim(), salt);
+
+    foundUser.password = hashedPassword;
+
+    console.log(auth);
+
+    await AdminModel.findOneAndUpdate(
+      { _id: user._id },
+      { password: hashedPassword }
+    );
+
+    return res.status(200).json({ msg: "Password updated" });
+  }
+
+  return res.status(500).json({ msg: "Password update failed" });
 };
 
 const updatePasswordAdmin = async (req, res) => {
@@ -404,99 +437,38 @@ const findAllAdmins = async (req, res, next) => {
 };
 
 const findAdmin = async (req, res) => {
-  const { name, nic, phone } = req.body;
+  const { user } = req.body;
 
-  await AdminModel.findOne({
-    $or: [{ name: name }, { nic: nic }, { phone: phone }],
-  })
-    .then((result) => {
-      return res.status(201).json(result);
-    })
-    .catch((error) => {
-      return res.status(500).json(error);
-    });
+      user.password = null;
+
+      return res.status(201).json(user);
+   
 };
 
 const updateAdmin = async (req, res, next) => {
   const {
-    name,
-    updatedName,
+
     nic,
-    gender,
-    updatedEmail,
-    updatedPhoneNumber,
+    email,
     phone,
-    updateValidate,
-    bloodType,
-    role,
-    updatedRole,
+    user
   } = req.body;
 
-  const errors = [];
+  
+  console.log(user);
 
-  if (updatedName !== undefined) {
-    console.log(updatedName);
     await AdminModel.findOneAndUpdate(
-      { $or: [{ userName: name }, { nic: nic }, { phone: phone }] },
-      { userName: updatedName }
+      { _id:user._id},
+      { nic:nic ,phone:phone,email:email }
     )
       .then((result) => {
-        console.log(result);
+        return res.status(201).json({msg:"ok"});
       })
       .catch((err) => {
-        errors.push("invalid name");
+        return res.status(500).json({msg:"error"});
       });
-  }
-  if (updatedEmail !== undefined) {
-    await AdminModel.findOneAndUpdate(
-      { $or: [{ userName: name }, { nic: nic }, { phone: phone }] },
-      { email: updatedEmail }
-    )
-      .then((result) => {})
-      .catch((err) => {
-        errors.push("invalid email");
-      });
-  }
-  if (updatedPhoneNumber !== undefined) {
-    await AdminModel.findOneAndUpdate(
-      { $or: [{ userName: name }, { nic: nic }, { phone: phone }] },
-      { phone: updatedPhoneNumber }
-    )
-      .then((result) => {})
-      .catch((err) => {
-        errors.push("invalid phone number");
-      });
-  }
+  
 
-  if (updatedRole != undefined) {
-    await AdminModel.findOneAndUpdate(
-      { $or: [{ userName: name }, { nic: nic }, { phone: phone }] },
-      { role: role }
-    )
-      .then((result) => {})
-      .catch((err) => {
-        errors.push("invalid phone number");
-      });
-  }
-
-  if (updateValidate !== undefined) {
-    await AdminModel.findOneAndUpdate(
-      { $or: [{ userName: name }, { nic: nic }, { phone: phone }] },
-      { role: updateValidate }
-    )
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((err) => {
-        errors.push("invalid input");
-      });
-  }
-
-  if (errors.length == 4) {
-    return res.status(500).json(errors);
-  }
-
-  return res.status(201).json(errors);
 };
 
 module.exports = {
@@ -514,4 +486,5 @@ module.exports = {
   rejectAdminSignUp,
   getMessages,
   sendMessage,
+  updatePassword
 };

@@ -4,7 +4,6 @@ const { UserModel } = require("../Models/UserModel");
 const jwt = require("jsonwebtoken");
 const { DonationModel } = require("../Models/DonationModel");
 const { ComplainModel } = require("../Models/ComplainModel");
-const { resolver } = require("../Middlewares/IPResolver");
 const { updatePasswordUser } = require("./AdminControllers");
 const { CampaignModel } = require("../Models/CampaignModel");
 const BloodBagModel = require("../Models/BloodBagModel");
@@ -12,6 +11,7 @@ const { MessageModel } = require("../Models/UserMessageModel");
 const { AdminModel } = require("../Models/AdminModel");
 const bcrypt = require("bcrypt");
 const webtoken = require('jsonwebtoken');
+const validator = require('validator');
 
 //set the living time of the cookie which will be set in the login
 const maxAge = 2 * 60 * 60;
@@ -260,6 +260,11 @@ const addUser = async (req, res) => {
   } = req.body;
 
   try {
+
+    if(validator.isEmail(email)){
+      return res.status(500).json({msg: "invalid email", code: 500})
+    }
+
     var newUser = new UserModel({
       userName: name,
       email: email,
@@ -531,14 +536,22 @@ const updateUser = async (req, res, next) => {
  
     const {
 
-    username,
+    nic,
     email,
-    phoneNumber,
-    user
+    phone,
+    userUD,
+    user,
+    bloodType
 
   } = req.body;
 
-  const foundUser = await UserModel.findOneAndUpdate({_id:user._id},{userName:username,email:email, phone:phoneNumber})
+  console.log(nic);
+
+  if(bloodType){
+    const foundUser = await UserModel.findOneAndUpdate({ $or: [{ _id: user?._id }, { _id: userUD }]},{nic:nic,email:email, phone:phone,bloodType:bloodType})
+  }else{
+    const foundUser = await UserModel.findOneAndUpdate({ $or: [{ _id: user?._id }, { _id: userUD }]},{nic:nic,email:email, phone:phone})
+  }
 
 
   return res.status(200).json({ msg: "user updated", code: 200 });

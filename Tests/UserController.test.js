@@ -11,7 +11,9 @@ const {
     invalidPass,
     invalidEmail,
     makeDonation,
-    loginAdmin
+    loginAdmin,
+    pendingCampaigns,
+    makeComplain
 } = require('./DataObjectsFortesting');
 
 let storedCookie = null;
@@ -34,6 +36,7 @@ describe('Testing the user API',()=>{
         .send({})
         expect(body.username).toBe("testName");
     })
+
     
     test('Delete a user', async()=>{
         
@@ -75,10 +78,17 @@ describe('Testing the user API',()=>{
 
     })
 
+    test('Sending a complain', async()=>{
+
+        await supertest(app).post('/user/makeComplain').set('Cookie',[...storedCookie["set-cookie"]]).send(makeComplain).expect(201)
+
+    })
+
     afterAll(async()=>{
         
         await mongoose.disconnect();
         await mongoose.connection.close();
+        
     })
 
 })
@@ -122,22 +132,6 @@ describe('Testing the admin API',()=>{
 
     })
 
-    // test('Login a user', async()=>{
-
-    //     await supertest(app).post('/user/loginUser').send(loginUser).expect(200)
-    // })
-
-    // test('Entering an invalid password and correct email', async()=>{
-
-    //     await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
-    // })
-
-    
-    // test('Entering an invalid email and correct password', async()=>{
-
-    //     await supertest(app).post('/user/loginUser').send(invalidPass).expect(500)
-    // })
-    
     
     afterAll(async()=>{
         await mongoose.disconnect();
@@ -145,3 +139,24 @@ describe('Testing the admin API',()=>{
     })
 })
 
+
+describe('Testing the campaign API',()=>{
+    
+    beforeAll(async()=>{
+       await mongoose.connect(process.env.MONGO_URI)
+    })
+
+    test('Getting the pending campaign',async()=>{
+        
+        const{header}=await supertest(app).get('/campaign/getpendingcampaigns')
+        .send(pendingCampaigns)
+        .expect(200);
+
+    });
+
+    
+    afterAll(async()=>{
+        await mongoose.disconnect();
+        await mongoose.connection.close();
+    })
+})
