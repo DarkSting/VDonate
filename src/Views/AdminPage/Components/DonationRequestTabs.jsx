@@ -1,50 +1,45 @@
-import React, { useContext, useState} from 'react';
+import React, { useContext, useState } from "react";
 import DonationRequest from "../DonationRequest";
-import { Box,Tab, Tabs, Typography } from '@mui/material';
-import GetApprovedDonationRequests from '../ApproveDonationRequestsTab';
-import RejectedDonationRequests from '../RejectedRequestsTab';
+import { Box, Tab, Tabs, Typography } from "@mui/material";
+import GetApprovedDonationRequests from "../ApproveDonationRequestsTab";
+import RejectedDonationRequests from "../RejectedRequestsTab";
 import MainTab from "../../../CommonComponents/TabComponent";
-import { MyContext } from '../../..';
-
+import { MyContext } from "../../..";
 
 function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`tabpanel-${index}`}
-        aria-labelledby={`tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-  
+  const { children, value, index, ...other } = props;
 
-  function ContentTabs({currentTab,handleTabChange}){
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
-    
-
-    return(
-      <div>
-        <Tabs
+function ContentTabs({ currentTab, handleTabChange }) {
+  return (
+    <div>
+      <Tabs
         value={currentTab}
         onChange={handleTabChange}
         aria-label="Multiple Tabs Example"
-        sx={{alignSelf:'flex-start',marginTop:3}}
+        sx={{ alignSelf: "flex-start", marginTop: 3 }}
       >
         <Tab label="Pending Requests" />
         <Tab label="Approved Requests" />
         <Tab label="Rejected Requests" />
       </Tabs>
-      <TabPanel value={currentTab} index={0} >
+      <TabPanel value={currentTab} index={0}>
         <DonationRequest />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
@@ -54,32 +49,32 @@ function TabPanel(props) {
         <RejectedDonationRequests />
       </TabPanel>
     </div>
-    )
-  }
+  );
+}
 
+function DonationReqTab() {
+  const { darkColor } = useContext(MyContext);
 
-  function DonationReqTab() {
-    
-    const {  darkColor } = useContext(MyContext);
+  const [currentTab, setCurrentTab] = useState(0);
 
-    const [currentTab, setCurrentTab] = useState(0);
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
 
-    const handleTabChange = (event, newValue) => {
-      setCurrentTab(newValue);
-    };
-    
-  
-    return (
-      <MainTab
-          title="Requests"
-          fontSize="h4"
-          fontColor="white"
-          titleBackColor={darkColor}
-          renderContent={<ContentTabs currentTab={currentTab} handleTabChange={handleTabChange} />}
-        ></MainTab>
+  return (
+    <MainTab
+      title="Requests"
+      fontSize="h4"
+      fontColor="white"
+      titleBackColor={darkColor}
+      renderContent={
+        <ContentTabs
+          currentTab={currentTab}
+          handleTabChange={handleTabChange}
+        />
+      }
+    ></MainTab>
+  );
+}
 
-    );
-  }
-  
-  export default DonationReqTab;
-  
+export default DonationReqTab;

@@ -1,0 +1,253 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 8,
+    "passes": 8,
+    "pending": 0,
+    "failures": 0,
+    "start": "2023-11-10T16:39:24.783Z",
+    "end": "2023-11-10T16:40:27.104Z",
+    "duration": 62321,
+    "testsRegistered": 8,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a0ee91b9-c6d7-448a-bb0a-d579f8be9e78",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0fb21288-c7b9-43c7-9865-1f961bcb7376",
+          "title": "Testing the donor functionality",
+          "fullFile": "C:\\xampp\\htdocs\\VDonate\\client\\test\\FrontendTest.test.js",
+          "file": "\\test\\FrontendTest.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Successful donor login ",
+              "fullTitle": "Testing the donor functionality Successful donor login ",
+              "timedOut": false,
+              "duration": 6487,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n// navigates to the login page\nawait driver\n  .findElement(By.xpath('//*[@id=\"root\"]/header/div/div[2]/button[2]'))\n  .click();\n//sending text to the email field\nawait driver\n  .findElement(By.xpath('//*[@id=\":r0:\"]'))\n  .sendKeys(\"akashgeethanjana320@gmail.com\");\n//sending password to the password field\nawait driver.findElement(By.xpath('//*[@id=\":r1:\"]')).sendKeys(\"akash\");\n//clicking login button\nawait driver\n  .findElement(\n    By.xpath('//*[@id=\"root\"]/div[1]/div/div[2]/div/div/div[3]/button')\n  )\n  .click();\ndriver.sleep(2000).then(async () => {\n  //clicking the profile button //*[@id=\"menu\"]/div[3]/ul/li[2]\n  await driver.findElement(By.xpath('//*[@id=\"menu-button\"]')).click();\n  //clicking the menu watch profile button\n  await driver\n    .findElement(By.xpath('//*[@id=\"menu\"]/div[3]/ul/li[2]'))\n    .click();\n  await driver\n    .findElement(By.xpath(\"/html/body/div[3]/div[3]/div/div/div/p[1]\"))\n    .getText()\n    .then((value) => {\n      console.log(value);\n      return value;\n    });\n  await driver.close();\n  assert.strictEqual(value, \"Username: Akeesh\");\n});",
+              "err": {},
+              "uuid": "237dfc00-5e23-490c-a881-76a650fbd599",
+              "parentUUID": "0fb21288-c7b9-43c7-9865-1f961bcb7376",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Searching a donor location",
+              "fullTitle": "Testing the donor functionality Searching a donor location",
+              "timedOut": false,
+              "duration": 6903,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n//logs into the donor page\nawait loginDonor(driver);\ndriver.sleep(2000).then(async () => {\n  await driver.findElement(By.xpath('//*[@id=\"List\"]/li[2]/div')).click();\n  driver.sleep(3000).then(async () => {\n    //select the all types of blood groups\n    await driver\n      .findElement(By.xpath('//*[@id=\"demo-simple-select\"]'))\n      .click();\n    await driver\n      .findElement(By.xpath('//*[@id=\"menu-\"]/div[3]/ul/li[9]'))\n      .click();\n    //asserting\n    driver.sleep(2000).then(async () => {\n      let outputText = await driver\n        .findElement(By.xpath('//*[@id=\"root\"]/div[4]/div'))\n        .getText()\n        .then((value) => {\n          return value;\n        });\n      await driver.close();\n      assert.strictEqual(outputText, \"Locations available\");\n    });\n  });\n});",
+              "err": {},
+              "uuid": "2c4ea57e-d178-41a5-8100-bf7adfd3e7cf",
+              "parentUUID": "0fb21288-c7b9-43c7-9865-1f961bcb7376",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Manipulating blood bag",
+              "fullTitle": "Testing the donor functionality Manipulating blood bag",
+              "timedOut": false,
+              "duration": 10601,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\nawait loginDonor(driver);\ndriver.sleep(2000).then(async () => {\n  //clicks the blood bag tab //*[@id=\":r7:\"]\n  await driver.findElement(By.xpath('//*[@id=\"List\"]/li[3]/div')).click();\n  await driver.findElement(By.xpath('//*[@id=\":r7:\"]')).click();\n  for (let i = 0; i > 3; i++) {\n    await driver\n      .findElement(By.xpath('//*[@id=\":r7:\"]'))\n      .sendKeys(Key.BACK_SPACE);\n  }\n  //updating the count\n  await driver\n    .findElement(By.xpath('//*[@id=\":r7:\"]'))\n    .sendKeys(Key.NUMPAD2);\n  await driver\n    .findElement(By.xpath('//*[@id=\":r7:\"]'))\n    .sendKeys(Key.NUMPAD0);\n  await driver\n    .findElement(By.xpath('//*[@id=\":r7:\"]'))\n    .sendKeys(Key.NUMPAD0);\n  //clicking the update button\n  await driver\n    .findElement(\n      By.xpath(\n        '//*[@id=\"root\"]/div[3]/div[2]/div/div/div/div/div[1]/button[2]'\n      )\n    )\n    .click();\n  //asserting\n  await driver.sleep(2000).then(async () => {\n    let outputText = await driver\n      .findElement(By.xpath('//*[@id=\"root\"]/div[4]/div'))\n      .getText()\n      .then(async (value) => {\n        return value;\n      });\n    await driver.close();\n    assert.strictEqual(outputText, \"Blood bag capacity updated\");\n  });\n});",
+              "err": {},
+              "uuid": "a9c27fb9-8a68-4619-bab3-b29a65647eec",
+              "parentUUID": "0fb21288-c7b9-43c7-9865-1f961bcb7376",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Making a complain",
+              "fullTitle": "Testing the donor functionality Making a complain",
+              "timedOut": false,
+              "duration": 8241,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n//logs into the donor page\nawait loginDonor(driver);\ndriver.sleep(2000).then(async () => {\n  await driver.findElement(By.xpath('//*[@id=\"List\"]/li[6]/div')).click();\n  driver.sleep(3000).then(async () => {\n    //select the all types of blood groups\n    await driver\n      .findElement(By.xpath('//*[@id=\"outlined-multiline-flexible\"]'))\n      .sendKeys(\"This is an automated testing\");\n    await driver\n      .findElement(\n        By.xpath('//*[@id=\"root\"]/div[3]/div[2]/div/div/div/div[3]/button')\n      )\n      .click();\n    //asserting\n    driver.sleep(2000).then(async () => {\n      let outputText = await driver\n        .findElement(By.xpath('//*[@id=\"root\"]/div[4]/div'))\n        .getText()\n        .then((value) => {\n          return value;\n        });\n      await driver.close();\n      assert.strictEqual(outputText, \"Locations available\");\n    });\n  });\n});",
+              "err": {},
+              "uuid": "e838fe0f-adcc-4bda-80e3-057861bb6de7",
+              "parentUUID": "0fb21288-c7b9-43c7-9865-1f961bcb7376",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "237dfc00-5e23-490c-a881-76a650fbd599",
+            "2c4ea57e-d178-41a5-8100-bf7adfd3e7cf",
+            "a9c27fb9-8a68-4619-bab3-b29a65647eec",
+            "e838fe0f-adcc-4bda-80e3-057861bb6de7"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 32232,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        },
+        {
+          "uuid": "725d679e-95a7-4989-998f-f6b9effa95ac",
+          "title": "Testing the admin functionality",
+          "fullFile": "C:\\xampp\\htdocs\\VDonate\\client\\test\\FrontendTest.test.js",
+          "file": "\\test\\FrontendTest.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Sucessful admin login",
+              "fullTitle": "Testing the admin functionality Sucessful admin login",
+              "timedOut": false,
+              "duration": 7508,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\nawait loginAdmin(driver);\ndriver.sleep(3000).then(async () => {\n  await driver.close();\n});",
+              "err": {},
+              "uuid": "575128c4-ef52-4b8e-9ae6-37067feb23ee",
+              "parentUUID": "725d679e-95a7-4989-998f-f6b9effa95ac",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Naviagate to campaign tab",
+              "fullTitle": "Testing the admin functionality Naviagate to campaign tab",
+              "timedOut": false,
+              "duration": 7190,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n//entering credintials\nawait loginAdmin(driver);\n//navigating to the campaign tab\ndriver.sleep(3000).then(async () => {\n  await driver.findElement(By.xpath('//*[@id=\"List\"]/li[4]/a')).click();\n  driver.sleep(1000).then(async () => {\n    await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"root\"]/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div/button[1]'\n        )\n      )\n      .click();\n    await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"root\"]/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div/button[2]'\n        )\n      )\n      .click();\n    await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"root\"]/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div/button[3]'\n        )\n      )\n      .click();\n  });\n  await driver.close();\n});",
+              "err": {},
+              "uuid": "371bc35e-9f8b-4209-b73f-2ae94d1b13d7",
+              "parentUUID": "725d679e-95a7-4989-998f-f6b9effa95ac",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Logging out admin",
+              "fullTitle": "Testing the admin functionality Logging out admin",
+              "timedOut": false,
+              "duration": 7332,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n//entering credintials\nawait loginAdmin(driver);\n//navigating to the campaign tab\ndriver.sleep(3000).then(async () => {\n  await driver.findElement(By.xpath('//*[@id=\"menu-button\"]')).click();\n  driver.sleep(1000).then(async () => {\n\n    //clicks profile icon\n    await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"root\"]/div[2]/div[2]/div/div/div[2]/div/div[1]/div[2]/button'\n        )\n      )\n      .click();\n\n      //clicks loggout button\n      await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"menu\"]/div[3]/ul/li[3]'\n        )\n      )\n      .click();\n          //clicks logout\n      await driver\n      .findElement(\n        By.xpath(\n          '/html/body/div[14]/div[3]/div/div[2]/button[2]'\n        )\n      )\n      .click();\n  \n  });\n  await driver.close();\n});",
+              "err": {},
+              "uuid": "7e7047d3-1a4c-49af-aa51-f1ae48405b87",
+              "parentUUID": "725d679e-95a7-4989-998f-f6b9effa95ac",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Check Complains",
+              "fullTitle": "Testing the admin functionality Check Complains",
+              "timedOut": false,
+              "duration": 8009,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "let driver = await new Builder().forBrowser(\"chrome\").build();\nawait driver.get(\"http://localhost:3000\");\n//entering credintials\nawait loginAdmin(driver);\n//navigating to the campaign tab\ndriver.sleep(3000).then(async () => {\n  await driver.findElement(By.xpath('//*[@id=\"List\"]/li[7]/a')).click();\n  driver.sleep(1000).then(async () => {\n    await driver\n      .findElement(\n        By.xpath(\n          '//*[@id=\"root\"]/div[2]/div[2]/div/div/div[2]/div/div[1]/div[2]/button'\n        )\n      )\n      .click();\n  \n  });\n  await driver.close();\n});",
+              "err": {},
+              "uuid": "abd772d3-3686-4cb5-8773-a6577d501349",
+              "parentUUID": "725d679e-95a7-4989-998f-f6b9effa95ac",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "575128c4-ef52-4b8e-9ae6-37067feb23ee",
+            "371bc35e-9f8b-4209-b73f-2ae94d1b13d7",
+            "7e7047d3-1a4c-49af-aa51-f1ae48405b87",
+            "abd772d3-3686-4cb5-8773-a6577d501349"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 30039,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 0
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}
