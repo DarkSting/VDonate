@@ -52,8 +52,8 @@ const SentMessageList = () => {
 
         console.log(er)
         openSnackbar({
-            message: `Message Loading Failed`,
-            color:'red',
+            message: `No sent messages`,
+            color:'black',
         
     })
     })

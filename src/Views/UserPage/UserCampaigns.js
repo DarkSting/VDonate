@@ -162,7 +162,7 @@ export default function Users() {
 
   return(
 
-  !campaign?NoData("No Pending Campaigns"):(<CampaignCard campaign={campaign} />)
+  !campaign?<Box sx={{width:'100%',backgroundColor:'white',padding:'20px'}}>{NoData("No Pending Campaigns")}</Box>:(<CampaignCard campaign={campaign} />)
 
   );
 }

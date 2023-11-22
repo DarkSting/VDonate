@@ -1,4 +1,4 @@
-import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person} from "@mui/icons-material";
+import { Mail, Notifications, Pets,Search as Srch, ArrowRight ,Settings,Lock,DarkMode, Person, Sync, Logout} from "@mui/icons-material";
 
 import {
   AppBar,
@@ -22,12 +22,14 @@ import {
   DialogContent,
   TextField
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from "react-router-dom";
 import Axios from '../../../api/axios'
 import UserProfile from "../Profile";
+import PasswordChangeDialog from './PasswordDialog';
+import EditProfileDialog from "../UpdateProfile";
 
 
 
@@ -233,6 +235,54 @@ const Navbar = (props) => {
   }
 
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+  useEffect(()=>{
+
+    Axios.get('user/findUser').then(r=>{
+
+      console.log(r.data);
+      setUser(r.data)
+
+    }).catch(er=>{
+
+      console.log(er)
+
+    })
+
+  },[])
+
+  const initialUser = {
+    username: 'JohnDoe',
+    email: 'johndoe@example.com',
+    phoneNumber: '123-456-7890',
+  };
+  
+    const [dialogProfileOpen, setDialogProfileOpen] = useState(false);
+    const [user, setUser] = useState(initialUser);
+  
+    const handleOpenProfileDialog = () => {
+      setDialogProfileOpen(true);
+    };
+  
+    const handleCloseProfileDialog = () => {
+      setDialogProfileOpen(false);
+    };
+  
+    const handleUpdateUser = (updatedUser) => {
+      setUser(updatedUser);
+    };
+
+
   return (
 
     <>
@@ -300,6 +350,25 @@ const Navbar = (props) => {
           <ListItemText>
               Profile
           </ListItemText>
+          
+        </MenuItem>
+        <MenuItem onClick={handleOpenProfileDialog} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+          <ListItemIcon>
+            <Sync />
+          </ListItemIcon>
+          <ListItemText>
+              Update Profile
+          </ListItemText>
+          
+        </MenuItem>
+        <MenuItem onClick={handleOpenDialog} onMouseEnter={handleMouse} onMouseLeave={handleMouse} sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
+          <ListItemIcon>
+            <Lock />
+          </ListItemIcon>
+          <ListItemText>
+              Change Password
+          </ListItemText>
+          
         </MenuItem>
         <Divider />
         <MenuItem onClick={()=>{
@@ -307,7 +376,7 @@ const Navbar = (props) => {
           
           }} onMouseEnter={handleMouse} onMouseLeave={handleMouse}  sx={{'&:hover':{backgroundColor:props.color,color:'white'}}}>
           <ListItemIcon>
-            <Lock  />
+            <Logout  />
           </ListItemIcon>
           <ListItemText>
               Logout
@@ -319,7 +388,7 @@ const Navbar = (props) => {
   
       </StyledToolbar>
     </NavBar>
-    <UserProfile open={profileopen} setOpen={setProfileOpen} />
+    <UserProfile open={profileopen} setOpen={setProfileOpen} user={user} />
     <Dialog
         open={opendialog}
         onClose={handleClose}
@@ -362,6 +431,13 @@ const Navbar = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <PasswordChangeDialog open={dialogOpen} onClose={handleCloseDialog} />
+      <EditProfileDialog
+        open={dialogProfileOpen}
+        onClose={handleCloseProfileDialog}
+        user={user}
+        onUpdateUser={handleUpdateUser}
+      />
     </div>
     </>
   );

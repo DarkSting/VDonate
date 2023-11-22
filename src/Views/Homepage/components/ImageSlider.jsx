@@ -75,17 +75,17 @@ const ImageSlider = () => {
     <div className="boxes-container">
     <div className="box" style={{backgroundColor:'#BA704F'}}>
       <Typography variant='h3'>Island Wide Donations</Typography>
-      <Typography variant='h1'><CountUp end={campaigns==0?50:campaigns} duration={5} /></Typography>
+      <Typography variant='h1'><CountUp end={totalDonations==0?500:campaigns} duration={5} /></Typography>
         
       
     </div>
     <div className="box" style={{backgroundColor:'#9E6F21'}}>
       <Typography variant='h3'>Island Wide Completed Campaigns</Typography>
-      <Typography variant='h1'><CountUp end={onGoingCamps==0?20:onGoingCamps} duration={5} /></Typography>
+      <Typography variant='h1'><CountUp end={campaigns==0?200:onGoingCamps} duration={5} /></Typography>
     </div>
     <div className="box" style={{backgroundColor:'#C38154'}}>
       <Typography variant='h3'>Island Wide On Going Campaigns</Typography>
-      <Typography variant='h1'><CountUp end={totalDonations==0?200:totalDonations} duration={5} /></Typography>
+      <Typography variant='h1'><CountUp end={onGoingCamps==0?20:totalDonations} duration={5} /></Typography>
     </div>
   </div> 
   </>

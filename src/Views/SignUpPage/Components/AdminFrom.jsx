@@ -142,42 +142,46 @@ export default function Form({ fontColor }) {
         role:arr[6]
       };
 
-      await Axios.post("admin/addadmin", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      await Axios.post("/admin/addadmin", data)
         .then((res) => {
           console.log(res);
           setsccMSG("Sign Up Success");
           setSeverity("success");
           setsccColor("#03C988");
-          navigate("/adminlogin");
           handleClick(SlideTransition);
+          navigate(`/success?user=${'admin'}`);
         })
         .catch((err) => {
 
           
-          const er = err.response.data
-          console.log(er);
-          if(er.code==11000 && er.msg?.email ){
-            setsccMSG("Email already exists");
+          const er = err.response.data?.msg
+          
+          let arr = er.split(",");
+
+
+          for(let current of arr){
+
+              let splits = current.split(':');
+
+       
+
+              if(splits[1].trim()==="email"){
+                setEmailErr("Enter an valid email");
+              }
+
+              if(splits[0].trim()==="phone"){
+                setPhoneErr("Enter a valid phone number");
+              }
+
+          }
+
+
+            setsccMSG("Sign Up Failed");
             setSeverity("error");
             setsccColor("#F24C3D");
             handleClick(SlideTransition);
-          }
-          else if(er.code==11000 && er.msg?.licenseNumber){
-            setsccMSG("License number already exists");
-            setSeverity("error");
-            setsccColor("#F24C3D");
-            handleClick(SlideTransition);
-          }
-          else{
-          setsccMSG("Unkown Error");
-          setSeverity("error");
-          setsccColor("#F24C3D");
-          handleClick(SlideTransition);
-          }
+
+        
           
         });
     };

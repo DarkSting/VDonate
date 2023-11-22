@@ -27,6 +27,7 @@ import MessageTabs from "./Views/AdminPage/Components/MessageTabs";
 import DonorsTabs from "./Views/AdminPage/Components/DonorsTabs";
 import CustomMap from "./Views/Map/DonorMap";
 import ContactPage from "./Views/ContactPage/ContactPage";
+import SignUpSuccess from "./CommonComponents/SignupSuccess";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
       <Route path="userlogin" element={<LoginPage />} />
       <Route path="adminlogin" element={<AdminLogin />} />
       <Route path="contact" element={<ContactPage />}/>
+      <Route path="success" element={<SignUpSuccess />}/>
       <Route path="userdashboard" element={<Dashboard />}>
         
         

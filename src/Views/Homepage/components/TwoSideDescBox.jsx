@@ -91,7 +91,9 @@ export default function DescBox(props){
                         </Typography>
                     </CardContent>
                     <CardActions sx={{ display:'flex', justifyContent:'flex-end'}}>
-                        <CardButton size="small" onClick={()=>{}} sx={{backgroundColor:props.btnclr,color:props.btntxtclr}}>{props.btntxt}</CardButton>
+                        <CardButton size="small" onClick={()=>{
+                            props.handle();
+                        }} sx={{backgroundColor:props.btnclr,color:props.btntxtclr}}>{props.btntxt}</CardButton>
                     </CardActions>
                 </CardBox>
                 </Grid>

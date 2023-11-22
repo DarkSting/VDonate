@@ -126,8 +126,8 @@ function renderComponent(current,props,array){
       return <CustomTab title="Inbox" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<RenderMessageTab props={props}/>}/>
     case array[6]:
         return <CustomTab title="Reports" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<UserReportList />}/>
-    case array[3]:
-        return <CustomTab title="Emergencies" titleBackColor={props.backColor} fontSize="h5" fontColor="white" renderContent={<></>}/>
+
+       
   }
 
 }
@@ -183,15 +183,7 @@ const Sidebar = (props) => {
             </ListItemButton>
           </ListItem>
 
-        {/*Emergencies*/}
-          <ListItem disablePadding>
-            <ListItemButton selected={selectedItem===state[3]} onClick={()=>{setSelectedItem(state[3])}} sx={ListButtonProp(props)}>
-              <ListItemIcon>
-                <EmergencyShareIcon sx={IconProp(props)}/>
-              </ListItemIcon>
-              <ListText  sx={{display:{xs:'none',md:'block'}}} primary={state[3]} />
-            </ListItemButton>
-          </ListItem>
+        
 
          {/*Inbox*/}
           <ListItem disablePadding>

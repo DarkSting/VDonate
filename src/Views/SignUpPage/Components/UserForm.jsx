@@ -262,15 +262,34 @@ export default function Form({ fontColor }) {
           setSeverity("success");
           setsccColor("#03C988");
           setsccMSG("Sign Up Success");
-          navigate("/userlogin");
+          navigate(`/success?user=${'user'}`);
           
         })
         .catch((err) => {
           console.log(err);
           
+          let arr = err.response.data.msg.split(',');
+
+          for(let current of arr){
+
+              let splits = current.split(':');
+
+              console.log(splits);
+
+              if(splits[1].trim()==="email"){
+                setEmailErr("Enter a valid email");
+              }
+
+              if(splits[0].trim()==="phone"){
+                setPhoneErr("Enter a valid phone number")
+              }
+
+          }
+
           setSeverity("error");
           setsccColor("#F24C3D");
           setsccMSG("Sign Up Failed");
+
         });
 
     };

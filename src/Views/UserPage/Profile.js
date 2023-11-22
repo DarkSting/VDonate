@@ -10,42 +10,28 @@ import {
 } from '@mui/material';
 
 const UserProfileDialog = ({ open, onClose, userData }) => {
-  const { username, age, nic, email, profileCreatedDate, phone, gender, bloodType, location } = userData;
 
   return (
     <Dialog open={open} onClose={onClose} >
       <DialogTitle>User Profile</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" sx={{padding:'30px'}}>
-          <Typography variant="subtitle1">Username: {username}</Typography>
-          <Typography variant="subtitle1">Age: {age}</Typography>
-          <Typography variant="subtitle1">NIC: {nic}</Typography>
-          <Typography variant="subtitle1">Email: {email}</Typography>
-          <Typography variant="subtitle1">Profile Created Date: {profileCreatedDate}</Typography>
-          <Typography variant="subtitle1">Phone: {phone}</Typography>
-          <Typography variant="subtitle1">Gender: {gender}</Typography>
-          <Typography variant="subtitle1">Blood Type: {bloodType}</Typography>
-          <Typography variant="subtitle1">Location: {location}</Typography>
+        <Box display="flex" flexDirection="column" sx={{padding:'30px',gap:2}}>
+          <Typography variant="body1"><b>Username</b>: {userData?.username}</Typography>
+          <Typography variant="body1"><b>NIC</b>: {userData?.nic}</Typography>
+          <Typography variant="body1"><b>Email</b>: {userData?.email}</Typography>
+          <Typography variant="body1"><b>Phone</b>: {userData?.phoneNumber}</Typography>
+          <Typography variant="body1"><b>Blood Type</b>: {userData?.bloodType}</Typography>
+          <Typography variant="body1"><b>Location</b>: {userData?.location}</Typography>
         </Box>
       </DialogContent>
     </Dialog>
   );
 };
 
-const UserProfile = ({open,setOpen}) => {
+const UserProfile = ({open,setOpen,user}) => {
   
 
-  const userData = {
-    username: 'JohnDoe',
-    age: 30,
-    nic: '12345-67890',
-    email: 'john@example.com',
-    profileCreatedDate: '2023-09-30',
-    phone: '+1 123-456-7890',
-    gender: 'Male',
-    bloodType: 'O+',
-    location: 'New York, USA',
-  };
+  const userData = user
 
 
   const handleClose = () => {

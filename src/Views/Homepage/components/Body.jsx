@@ -14,6 +14,7 @@ import Description from './TwoSideDescBox';
 import donateimg from '../images/donating.jpg'
 import './text.css'
 import FeaturesList from './services';
+import { useNavigate } from 'react-router-dom';
 
 const ImageBox = styled(Paper)({
 
@@ -71,6 +72,13 @@ const gridItem = ()=>{
 
 const ImgSlider = ()=>{
    
+    let navigate = useNavigate();
+
+    const handleLogin = ()=>{
+
+        navigate('/userlogin')
+        
+    }
 
   let desc1 = 'Source plasma donation and blood donation are critically important activities that contribute to saving lives.'
   + 'For many with rare diseases, these are the only therapies available to treat these chronic conditions.'
@@ -119,7 +127,7 @@ const ImgSlider = ()=>{
 
         <Description image={donateimg} height={'300px'} topic={'Lets Donate'} direction="row-reverse" content={cont2}
         topicColor={'#fff'} padding={3} textImage={"linear-gradient(100deg, #D3756B, #F0997D)"}  textColor={'white'}
-         btnclr={'white'} btntxtclr={'black'} btntxt={'Donate'}/>
+         btnclr={'white'} btntxtclr={'black'} btntxt={'Donate'} handle={handleLogin}/>
             
         
     

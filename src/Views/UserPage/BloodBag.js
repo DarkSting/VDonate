@@ -30,7 +30,7 @@ useEffect(()=>{
     console.log(error)
 
     openSnackbar({
-      message:'Blood Bag Loading Failed',
+      message:'You have no pending campaigns',
       color:'black'
     })
   })

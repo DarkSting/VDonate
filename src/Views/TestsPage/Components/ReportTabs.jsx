@@ -1,10 +1,10 @@
 import React, { useContext, useState} from 'react';
-import DonationRequest from "../DonationRequest";
 import { Box,Tab, Tabs, Typography } from '@mui/material';
-import GetApprovedDonationRequests from '../ApproveDonationRequestsTab';
-import RejectedDonationRequests from '../RejectedRequestsTab';
 import MainTab from "../../../CommonComponents/TabComponent";
 import { MyContext } from '../../..';
+import UploadTest from '../Reports';
+import PendingFilesTab from '../PendingRpeorts';
+import CheckedReportsTab from '../CompletedReports';
 
 
 function TabPanel(props) {
@@ -33,32 +33,32 @@ function TabPanel(props) {
     
 
     return(
-      <div>
+      <div >
         <Tabs
         value={currentTab}
         onChange={handleTabChange}
         aria-label="Multiple Tabs Example"
-        sx={{alignSelf:'flex-start',marginTop:3}}
+        sx={{alignSelf:'flex-start',marginTop:5,}}
       >
-        <Tab label="Pending Requests" />
-        <Tab label="Approved Requests" />
-        <Tab label="Rejected Requests" />
+        <Tab label="Upload Tests"  />
+        <Tab label="Checked Tests" />
+        <Tab label="Pending Tests" />
       </Tabs>
       <TabPanel value={currentTab} index={0} >
-        <DonationRequest />
+        <UploadTest />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <GetApprovedDonationRequests />
+        <CheckedReportsTab />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
-        <RejectedDonationRequests />
+        <PendingFilesTab />
       </TabPanel>
     </div>
     )
   }
 
 
-  function DonationReqTab() {
+  function ReportTab() {
     
     const {  darkColor } = useContext(MyContext);
 
@@ -71,7 +71,7 @@ function TabPanel(props) {
   
     return (
       <MainTab
-          title="Requests"
+          title="Reports"
           fontSize="h4"
           fontColor="white"
           titleBackColor={darkColor}
@@ -81,5 +81,5 @@ function TabPanel(props) {
     );
   }
   
-  export default DonationReqTab;
+  export default ReportTab;
   
